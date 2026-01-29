@@ -1,0 +1,2202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strut AI - Professional Studio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            color: #ffffff;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        /* Professional Studio Layout */
+        .pro-studio {
+            display: flex;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        /* Top Bar */
+        .studio-header {
+            height: 60px;
+            background: rgba(0, 0, 0, 0.95);
+            border-bottom: 1px solid rgba(220, 20, 60, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 1000;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .studio-logo {
+            font-size: 18px;
+            font-weight: 900;
+            color: #DC143C;
+            cursor: pointer;
+        }
+
+        .pro-badge {
+            padding: 4px 12px;
+            background: linear-gradient(135deg, #DC143C, #8B0000);
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .studio-title {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .header-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .header-btn:hover {
+            background: rgba(220, 20, 60, 0.2);
+            border-color: rgba(220, 20, 60, 0.5);
+        }
+
+        .header-btn.primary {
+            background: linear-gradient(135deg, #DC143C, #8B0000);
+            border: none;
+        }
+
+        .collab-avatars {
+            display: flex;
+            margin-left: 8px;
+        }
+
+        .collab-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #DC143C, #8B0000);
+            border: 2px solid #0a0a0a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            margin-left: -10px;
+        }
+
+        .collab-avatar:first-child {
+            margin-left: 0;
+        }
+
+        /* Main Content Area */
+        .studio-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Canvas Area */
+        .canvas-area {
+            flex: 0 0 70%;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(220, 20, 60, 0.2);
+            min-height: 0;
+        }
+
+        .canvas-toolbar {
+            height: 50px;
+            background: rgba(0, 0, 0, 0.5);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            flex-shrink: 0;
+        }
+
+        .toolbar-group {
+            display: flex;
+            gap: 5px;
+        }
+
+        .toolbar-btn {
+            width: 35px;
+            height: 35px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .toolbar-btn:hover {
+            background: rgba(220, 20, 60, 0.2);
+        }
+
+        .toolbar-btn.active {
+            background: #DC143C;
+            border-color: #DC143C;
+        }
+
+        .viewport-3d {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: #1a1a1a;
+            padding: 50px;
+            overflow: hidden;
+            min-height: 0;
+            transition: background 0.4s ease; /* Smooth background change, model stays sharp */
+        }
+
+        .model-preview {
+            max-width: 38%;
+            max-height: 60%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .model-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5));
+            transition: none; /* No transitions - model stays perfectly sharp and aligned */
+            pointer-events: none;
+            /* Subject layer never changes - only viewport background changes */
+            will-change: auto;
+        }
+
+        .model-preview img.no-background {
+            filter: none;
+        }
+
+        .viewport-controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 12px 16px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .viewport-controls.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .view-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .view-btn:hover, .view-btn.active {
+            background: #DC143C;
+            border-color: #DC143C;
+            color: #ffffff;
+        }
+
+        .canvas-footer {
+            height: 50px;
+            background: rgba(0, 0, 0, 0.5);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            flex-shrink: 0;
+        }
+
+        .render-quality {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .render-quality select {
+            padding: 6px 12px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: #ffffff;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .enhance-btn {
+            padding: 8px 20px;
+            background: linear-gradient(135deg, #DC143C, #8B0000);
+            border: none;
+            border-radius: 6px;
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .enhance-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(220, 20, 60, 0.5);
+        }
+
+        /* Right Control Panel */
+        .control-panel {
+            flex: 0 0 30%;
+            display: flex;
+            flex-direction: column;
+            background: rgba(10, 10, 10, 0.95);
+            max-height: 100%;
+            overflow: hidden;
+        }
+
+        .panel-tabs {
+            display: flex;
+            background: rgba(0, 0, 0, 0.5);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            flex-shrink: 0;
+        }
+
+        .panel-tab {
+            flex: 1;
+            padding: 15px 10px;
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+
+        .panel-tab:hover {
+            color: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .panel-tab.active {
+            color: #DC143C;
+            border-bottom-color: #DC143C;
+            background: rgba(220, 20, 60, 0.05);
+        }
+
+        .panel-content {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 25px;
+            display: none;
+            min-height: 0;
+        }
+
+        .panel-content.active {
+            display: block;
+        }
+
+        .panel-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .panel-content::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .panel-content::-webkit-scrollbar-thumb {
+            background: rgba(220, 20, 60, 0.5);
+            border-radius: 4px;
+        }
+
+        .panel-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(220, 20, 60, 0.7);
+        }
+
+        .control-section {
+            margin-bottom: 35px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .control-section:last-child {
+            border-bottom: none;
+        }
+
+        .control-section h3 {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #DC143C;
+            margin-bottom: 18px;
+        }
+
+        .color-picker-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .color-input {
+            width: 50px;
+            height: 40px;
+            border: 2px solid rgba(220, 20, 60, 0.3);
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .color-presets {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .color-swatch {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .color-swatch:hover, .color-swatch.active {
+            transform: scale(1.1);
+            border-color: #DC143C;
+        }
+
+        .fabric-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .fabric-btn {
+            padding: 14px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .fabric-btn:hover {
+            background: rgba(220, 20, 60, 0.1);
+            border-color: rgba(220, 20, 60, 0.3);
+        }
+
+        .fabric-btn.active {
+            background: rgba(220, 20, 60, 0.2);
+            border-color: #DC143C;
+            color: #ffffff;
+        }
+
+        .slider-control {
+            margin-bottom: 20px;
+        }
+
+        .slider-control label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 10px;
+        }
+
+        .slider-value {
+            color: #DC143C;
+        }
+
+        .slider {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: linear-gradient(135deg, #DC143C, #8B0000);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(220, 20, 60, 0.5);
+        }
+
+        .studio-select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .studio-select:focus {
+            outline: none;
+            border-color: #DC143C;
+        }
+
+        .size-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .size-btn {
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .size-btn:hover {
+            background: rgba(220, 20, 60, 0.1);
+            border-color: rgba(220, 20, 60, 0.3);
+        }
+
+        .size-btn.active {
+            background: #DC143C;
+            border-color: #DC143C;
+            color: #ffffff;
+        }
+
+        .upload-logo-btn {
+            width: 100%;
+            padding: 12px;
+            background: rgba(220, 20, 60, 0.1);
+            border: 2px dashed rgba(220, 20, 60, 0.5);
+            border-radius: 8px;
+            color: #DC143C;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .upload-logo-btn:hover {
+            background: rgba(220, 20, 60, 0.2);
+            border-color: #DC143C;
+        }
+
+        .model-gender {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .gender-btn {
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .gender-btn:hover {
+            background: rgba(220, 20, 60, 0.1);
+            border-color: rgba(220, 20, 60, 0.3);
+        }
+
+        .gender-btn.active {
+            background: #DC143C;
+            border-color: #DC143C;
+            color: #ffffff;
+        }
+
+        .pose-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .pose-btn {
+            padding: 12px 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pose-btn:hover {
+            background: rgba(220, 20, 60, 0.1);
+            border-color: rgba(220, 20, 60, 0.3);
+        }
+
+        .pose-btn.active {
+            background: rgba(220, 20, 60, 0.2);
+            border-color: #DC143C;
+            color: #ffffff;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: rgba(220, 20, 60, 0.2);
+            border-color: rgba(220, 20, 60, 0.5);
+        }
+
+        .bg-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .bg-btn {
+            padding: 12px 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .bg-btn:hover {
+            background: rgba(220, 20, 60, 0.1);
+            border-color: rgba(220, 20, 60, 0.3);
+        }
+
+        .bg-btn.active {
+            background: rgba(220, 20, 60, 0.2);
+            border-color: #DC143C;
+            color: #ffffff;
+        }
+
+        .lighting-presets {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .lighting-btn {
+            padding: 12px 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lighting-btn:hover {
+            background: rgba(220, 20, 60, 0.1);
+            border-color: rgba(220, 20, 60, 0.3);
+        }
+
+        .lighting-btn.active {
+            background: rgba(220, 20, 60, 0.2);
+            border-color: #DC143C;
+            color: #ffffff;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: #DC143C;
+        }
+
+        .text-input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .export-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .export-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .export-option:hover {
+            background: rgba(220, 20, 60, 0.1);
+            border-color: rgba(220, 20, 60, 0.3);
+        }
+
+        .export-option input[type="radio"] {
+            accent-color: #DC143C;
+        }
+
+        .export-option span {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .platform-btn {
+            padding: 12px 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .platform-btn:hover {
+            background: rgba(220, 20, 60, 0.1);
+            border-color: rgba(220, 20, 60, 0.3);
+        }
+
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            cursor: pointer;
+        }
+
+        .checkbox-option input[type="checkbox"] {
+            accent-color: #DC143C;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .checkbox-option span {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .export-final-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #DC143C, #8B0000);
+            border: none;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .export-final-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(220, 20, 60, 0.5);
+        }
+
+        /* Team Collaboration Modal */
+        .team-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .team-modal.show {
+            display: flex;
+        }
+
+        .team-modal-content {
+            background: rgba(20, 20, 20, 0.95);
+            border: 1px solid rgba(220, 20, 60, 0.3);
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+        }
+
+        .team-modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 24px;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .team-modal-close:hover {
+            color: #DC143C;
+        }
+
+        .team-modal h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #DC143C;
+        }
+
+        .team-modal p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 25px;
+        }
+
+        .member-list {
+            margin-bottom: 25px;
+        }
+
+        .member-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .member-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #DC143C, #8B0000);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .member-info {
+            flex: 1;
+        }
+
+        .member-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .member-role {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .member-remove {
+            padding: 6px 12px;
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            border-radius: 4px;
+            color: #ff4444;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .invite-input {
+            width: 100%;
+            padding: 14px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .invite-input:focus {
+            outline: none;
+            border-color: #DC143C;
+        }
+
+        .permission-select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 13px;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .send-invite-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #DC143C, #8B0000);
+            border: none;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .send-invite-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(220, 20, 60, 0.5);
+        }
+
+        /* Scene Selection Modal */
+        .scene-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .scene-modal.show {
+            display: flex;
+        }
+
+        .scene-modal-content {
+            background: rgba(20, 20, 20, 0.98);
+            border: 1px solid rgba(220, 20, 60, 0.3);
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .scene-modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 24px;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .scene-modal-close:hover {
+            color: #DC143C;
+        }
+
+        .scene-modal h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #DC143C;
+        }
+
+        .scene-modal p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 30px;
+        }
+
+        .scene-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .scene-option {
+            cursor: pointer;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .scene-option:hover {
+            border-color: rgba(220, 20, 60, 0.5);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(220, 20, 60, 0.3);
+        }
+
+        .scene-option.active {
+            border-color: #DC143C;
+            box-shadow: 0 0 20px rgba(220, 20, 60, 0.5);
+        }
+
+        .scene-preview {
+            width: 100%;
+            height: 150px;
+            background: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+
+        .scene-name {
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.8);
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="pro-studio">
+        <!-- Header -->
+        <div class="studio-header">
+            <div class="header-left">
+                <div class="studio-logo" onclick="window.location.href='strut-ai.html'">STRUT AI</div>
+                <span class="pro-badge">PRO STUDIO</span>
+                <div class="studio-title">Professional Studio</div>
+            </div>
+
+            <div class="header-actions">
+                <button class="header-btn" onclick="showTeamModal()">
+                    👥 Team
+                    <div class="collab-avatars">
+                        <div class="collab-avatar">JD</div>
+                        <div class="collab-avatar">SM</div>
+                        <div class="collab-avatar">+</div>
+                    </div>
+                </button>
+                <button class="header-btn" onclick="undoAction()">↶ Undo</button>
+                <button class="header-btn" onclick="redoAction()">↷ Redo</button>
+                <button class="header-btn" onclick="saveProject()">💾 Save</button>
+                <button class="header-btn primary" onclick="renderProject()">✨ Render</button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="studio-content">
+            <!-- Canvas Area -->
+            <div class="canvas-area">
+                <div class="canvas-toolbar">
+                    <div class="toolbar-group">
+                        <button class="toolbar-btn" title="Undo" onclick="undoAction()">↶</button>
+                        <button class="toolbar-btn" title="Redo" onclick="redoAction()">↷</button>
+                        <button class="toolbar-btn" title="Reset" onclick="resetView()">⟳</button>
+                    </div>
+                    <div class="toolbar-group">
+                        <button class="toolbar-btn active" title="Select" onclick="selectTool(this, 'select')">⌖</button>
+                        <button class="toolbar-btn" title="Move" onclick="selectTool(this, 'move')">✥</button>
+                        <button class="toolbar-btn" title="Rotate" onclick="selectTool(this, 'rotate')">↻</button>
+                        <button class="toolbar-btn" title="Scale" onclick="selectTool(this, 'scale')">⤡</button>
+                    </div>
+                    <div class="toolbar-group">
+                        <button class="toolbar-btn" title="Zoom In" onclick="zoomIn()">+</button>
+                        <button class="toolbar-btn" title="Zoom Out" onclick="zoomOut()">−</button>
+                        <button class="toolbar-btn" title="Fit" onclick="fitToScreen()">⛶</button>
+                    </div>
+                </div>
+
+                <div class="viewport-3d">
+                    <div class="model-preview">
+                        <img src="https://i.imgur.com/zCukqmO.png" alt="Model">
+                    </div>
+
+                    <div class="viewport-controls">
+                        <button class="view-btn active">Front</button>
+                        <button class="view-btn">Side</button>
+                        <button class="view-btn">Back</button>
+                        <button class="view-btn">3/4 View</button>
+                    </div>
+                </div>
+
+                <div class="canvas-footer">
+                    <div class="render-quality">
+                        <span>Quality:</span>
+                        <select>
+                            <option>Preview</option>
+                            <option selected>High (4K)</option>
+                            <option>Ultra (8K)</option>
+                            <option>Max (16K)</option>
+                        </select>
+                    </div>
+                    <button class="enhance-btn">✨ AI Enhance</button>
+                </div>
+            </div>
+
+            <!-- Control Panel -->
+            <div class="control-panel">
+                <div class="panel-tabs">
+                    <button class="panel-tab active" onclick="switchPanel(event, 'garment')">Garment</button>
+                    <button class="panel-tab" onclick="switchPanel(event, 'model')">Model</button>
+                    <button class="panel-tab" onclick="event.preventDefault(); showSceneModal();">Scene</button>
+                    <button class="panel-tab" onclick="switchPanel(event, 'export')">Export</button>
+                </div>
+
+                <!-- Garment Panel -->
+                <div class="panel-content active" id="garmentPanel">
+                    <div class="control-section">
+                        <h3>Upload Garment</h3>
+                        <button class="upload-logo-btn">📤 Upload Files (.obj, .fbx, .gltf)</button>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Background</h3>
+                        <button class="upload-logo-btn" onclick="removeBackground()" style="border-style: solid;">🎨 Remove Background</button>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Garment Color</h3>
+                        <div class="color-picker-row">
+                            <input type="color" value="#DC143C" class="color-input" id="garmentColor">
+                            <div class="color-presets">
+                                <button class="color-swatch" style="background: #000000"></button>
+                                <button class="color-swatch" style="background: #FFFFFF"></button>
+                                <button class="color-swatch active" style="background: #DC143C"></button>
+                                <button class="color-swatch" style="background: #0066CC"></button>
+                                <button class="color-swatch" style="background: #2E7D32"></button>
+                                <button class="color-swatch" style="background: #FFD700"></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Fabric Texture</h3>
+                        <div class="fabric-grid">
+                            <button class="fabric-btn active">Cotton</button>
+                            <button class="fabric-btn">Denim</button>
+                            <button class="fabric-btn">Leather</button>
+                            <button class="fabric-btn">Silk</button>
+                            <button class="fabric-btn">Knit</button>
+                            <button class="fabric-btn">Tech</button>
+                        </div>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Fit</h3>
+                        <select class="studio-select">
+                            <option>Tight</option>
+                            <option selected>Regular</option>
+                            <option>Relaxed</option>
+                            <option>Oversized</option>
+                        </select>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Dimensions</h3>
+                        <div class="slider-control">
+                            <label>
+                                <span>Sleeve Length</span>
+                                <span class="slider-value">50%</span>
+                            </label>
+                            <input type="range" min="0" max="100" value="50" class="slider" oninput="updateSlider(this)">
+                        </div>
+                        <div class="slider-control">
+                            <label>
+                                <span>Inseam</span>
+                                <span class="slider-value">32"</span>
+                            </label>
+                            <input type="range" min="26" max="38" value="32" class="slider" oninput="updateSlider(this)">
+                        </div>
+                        <div class="slider-control">
+                            <label>
+                                <span>Waist Rise</span>
+                                <span class="slider-value">Mid</span>
+                            </label>
+                            <input type="range" min="0" max="100" value="50" class="slider" oninput="updateSlider(this)">
+                        </div>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Size Grading</h3>
+                        <div class="size-grid">
+                            <button class="size-btn">XS</button>
+                            <button class="size-btn">S</button>
+                            <button class="size-btn active">M</button>
+                            <button class="size-btn">L</button>
+                            <button class="size-btn">XL</button>
+                            <button class="size-btn">2X</button>
+                            <button class="size-btn">3X</button>
+                            <button class="size-btn">4X</button>
+                            <button class="size-btn">5X</button>
+                        </div>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Logo & Branding</h3>
+                        <button class="upload-logo-btn">📤 Upload Brand Logo</button>
+                        <div class="slider-control">
+                            <label>
+                                <span>Logo Size</span>
+                                <span class="slider-value">30%</span>
+                            </label>
+                            <input type="range" min="0" max="100" value="30" class="slider" oninput="updateSlider(this)">
+                        </div>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Physics Simulation</h3>
+                        <label class="checkbox-option">
+                            <input type="checkbox" checked>
+                            <span>Realistic Draping</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" checked>
+                            <span>Gravity Simulation</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" checked>
+                            <span>Wrinkle Generation</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" checked>
+                            <span>Collision Detection</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Model Panel -->
+                <div class="panel-content" id="modelPanel">
+                    <div class="control-section">
+                        <h3>Gender</h3>
+                        <div class="model-gender">
+                            <button class="gender-btn active">Female</button>
+                            <button class="gender-btn">Male</button>
+                        </div>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Body Proportions</h3>
+                        <div class="slider-control">
+                            <label>
+                                <span>Height</span>
+                                <span class="slider-value">5'10"</span>
+                            </label>
+                            <input type="range" min="60" max="78" value="70" class="slider" oninput="updateSlider(this)">
+                        </div>
+                        <div class="slider-control">
+                            <label>
+                                <span>Weight</span>
+                                <span class="slider-value">130 lbs</span>
+                            </label>
+                            <input type="range" min="90" max="250" value="130" class="slider" oninput="updateSlider(this)">
+                        </div>
+                        <div class="slider-control">
+                            <label>
+                                <span>Bust</span>
+                                <span class="slider-value">34"</span>
+                            </label>
+                            <input type="range" min="28" max="48" value="34" class="slider" oninput="updateSlider(this)">
+                        </div>
+                        <div class="slider-control">
+                            <label>
+                                <span>Waist</span>
+                                <span class="slider-value">24"</span>
+                            </label>
+                            <input type="range" min="22" max="42" value="24" class="slider" oninput="updateSlider(this)">
+                        </div>
+                        <div class="slider-control">
+                            <label>
+                                <span>Hips</span>
+                                <span class="slider-value">35"</span>
+                            </label>
+                            <input type="range" min="30" max="50" value="35" class="slider" oninput="updateSlider(this)">
+                        </div>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Body Shape</h3>
+                        <select class="studio-select">
+                            <option>Athletic</option>
+                            <option selected>Average</option>
+                            <option>Hourglass</option>
+                            <option>Pear</option>
+                            <option>Apple</option>
+                            <option>Plus Size</option>
+                        </select>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Appearance</h3>
+                        <div class="slider-control">
+                            <label>
+                                <span>Skin Tone</span>
+                                <span class="slider-value">Medium</span>
+                            </label>
+                            <input type="range" min="0" max="100" value="40" class="slider" oninput="updateSlider(this)">
+                        </div>
+                        <select class="studio-select">
+                            <option>18-25</option>
+                            <option selected>25-35</option>
+                            <option>35-45</option>
+                            <option>45+</option>
+                        </select>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Pose Library</h3>
+                        <div class="pose-grid">
+                            <button class="pose-btn active">Standing</button>
+                            <button class="pose-btn">Walking</button>
+                            <button class="pose-btn">Editorial</button>
+                            <button class="pose-btn">Streetwear</button>
+                            <button class="pose-btn">E-commerce</button>
+                            <button class="pose-btn">Runway</button>
+                            <button class="pose-btn">Sitting</button>
+                            <button class="pose-btn">Leaning</button>
+                        </div>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Movement Preview</h3>
+                        <div class="action-buttons">
+                            <button class="action-btn">▶ Walking</button>
+                            <button class="action-btn">↻ 360° Turn</button>
+                            <button class="action-btn">🎬 Turntable</button>
+                            <button class="action-btn">🚶 Runway Walk</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scene Panel -->
+                <div class="panel-content" id="scenePanel">
+                    <div class="control-section">
+                        <h3>Background</h3>
+                        <div class="bg-grid">
+                            <button class="bg-btn active">Studio</button>
+                            <button class="bg-btn">Urban</button>
+                            <button class="bg-btn">Runway</button>
+                            <button class="bg-btn">Lifestyle</button>
+                            <button class="bg-btn">Transparent</button>
+                            <button class="bg-btn">Custom</button>
+                        </div>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Lighting</h3>
+                        <div class="lighting-presets">
+                            <button class="lighting-btn active">Studio</button>
+                            <button class="lighting-btn">Natural</button>
+                            <button class="lighting-btn">Dramatic</button>
+                            <button class="lighting-btn">Soft</button>
+                            <button class="lighting-btn">Golden Hour</button>
+                            <button class="lighting-btn">High Key</button>
+                        </div>
+                        <div class="slider-control">
+                            <label>
+                                <span>Shadow</span>
+                                <span class="slider-value">50%</span>
+                            </label>
+                            <input type="range" min="0" max="100" value="50" class="slider" oninput="updateSlider(this)">
+                        </div>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Camera</h3>
+                        <div class="slider-control">
+                            <label>
+                                <span>Angle</span>
+                                <span class="slider-value">0°</span>
+                            </label>
+                            <input type="range" min="0" max="360" value="0" class="slider" oninput="updateSlider(this)">
+                        </div>
+                        <div class="slider-control">
+                            <label>
+                                <span>Zoom</span>
+                                <span class="slider-value">50%</span>
+                            </label>
+                            <input type="range" min="0" max="100" value="50" class="slider" oninput="updateSlider(this)">
+                        </div>
+                        <div class="slider-control">
+                            <label>
+                                <span>Depth of Field</span>
+                                <span class="slider-value">30%</span>
+                            </label>
+                            <input type="range" min="0" max="100" value="30" class="slider" oninput="updateSlider(this)">
+                        </div>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Text Overlays</h3>
+                        <input type="text" placeholder="Collection Name" class="text-input">
+                        <input type="text" placeholder="Drop Date" class="text-input">
+                        <input type="text" placeholder="Price" class="text-input">
+                    </div>
+                </div>
+
+                <!-- Export Panel -->
+                <div class="panel-content" id="exportPanel">
+                    <div class="control-section">
+                        <h3>Format</h3>
+                        <div class="export-options">
+                            <label class="export-option">
+                                <input type="radio" name="format" checked>
+                                <span>PNG High-Res</span>
+                            </label>
+                            <label class="export-option">
+                                <input type="radio" name="format">
+                                <span>PNG Transparent</span>
+                            </label>
+                            <label class="export-option">
+                                <input type="radio" name="format">
+                                <span>JPG Optimized</span>
+                            </label>
+                            <label class="export-option">
+                                <input type="radio" name="format">
+                                <span>MP4 Turntable</span>
+                            </label>
+                            <label class="export-option">
+                                <input type="radio" name="format">
+                                <span>MP4 Walking</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Resolution</h3>
+                        <select class="studio-select">
+                            <option>Social (1080x1080)</option>
+                            <option>Web HD (1920x1080)</option>
+                            <option selected>Print 4K</option>
+                            <option>Print 8K</option>
+                            <option>Ultra 16K</option>
+                        </select>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Platforms</h3>
+                        <div class="platform-grid">
+                            <button class="platform-btn">Instagram</button>
+                            <button class="platform-btn">Shopify</button>
+                            <button class="platform-btn">Etsy</button>
+                            <button class="platform-btn">Website</button>
+                            <button class="platform-btn">Print</button>
+                            <button class="platform-btn">Lookbook</button>
+                        </div>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Batch Export</h3>
+                        <label class="checkbox-option">
+                            <input type="checkbox">
+                            <span>All color variants</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox">
+                            <span>All angles</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox">
+                            <span>All sizes (XS-5X)</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox">
+                            <span>Lookbook layout</span>
+                        </label>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Watermark</h3>
+                        <label class="checkbox-option">
+                            <input type="checkbox">
+                            <span>Add watermark</span>
+                        </label>
+                    </div>
+
+                    <button class="export-final-btn">📥 Export Final Render</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scene Selection Modal -->
+    <div class="scene-modal" id="sceneModal">
+        <div class="scene-modal-content">
+            <button class="scene-modal-close" onclick="hideSceneModal()">×</button>
+            <h2>Choose Scene Background</h2>
+            <p>Select a background scene for your model</p>
+
+            <div class="scene-grid">
+                <div class="scene-option active" onclick="selectScene('studio', this)">
+                    <div class="scene-preview" style="background: linear-gradient(180deg, #f5f5f5 0%, #e0e0e0 100%);">🏢</div>
+                    <div class="scene-name">Studio White</div>
+                </div>
+
+                <div class="scene-option" onclick="selectScene('urban', this)">
+                    <div class="scene-preview" style="background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);">🏙️</div>
+                    <div class="scene-name">Urban Street</div>
+                </div>
+
+                <div class="scene-option" onclick="selectScene('runway', this)">
+                    <div class="scene-preview" style="background: linear-gradient(180deg, #1a1a1a 0%, #000000 100%);">✨</div>
+                    <div class="scene-name">Runway</div>
+                </div>
+
+                <div class="scene-option" onclick="selectScene('beach', this)">
+                    <div class="scene-preview" style="background: linear-gradient(180deg, #87CEEB 0%, #F4A460 100%);">🏖️</div>
+                    <div class="scene-name">Beach</div>
+                </div>
+
+                <div class="scene-option" onclick="selectScene('nature', this)">
+                    <div class="scene-preview" style="background: linear-gradient(180deg, #228B22 0%, #006400 100%);">🌿</div>
+                    <div class="scene-name">Nature</div>
+                </div>
+
+                <div class="scene-option" onclick="selectScene('city', this)">
+                    <div class="scene-preview" style="background: linear-gradient(180deg, #FF6B6B 0%, #4ECDC4 100%);">🌆</div>
+                    <div class="scene-name">City Night</div>
+                </div>
+
+                <div class="scene-option" onclick="selectScene('minimal', this)">
+                    <div class="scene-preview" style="background: #ffffff;">⚪</div>
+                    <div class="scene-name">Minimal White</div>
+                </div>
+
+                <div class="scene-option" onclick="selectScene('dark', this)">
+                    <div class="scene-preview" style="background: #000000;">⚫</div>
+                    <div class="scene-name">Dark Mode</div>
+                </div>
+
+                <div class="scene-option" onclick="selectScene('transparent', this)">
+                    <div class="scene-preview" style="background: repeating-conic-gradient(#808080 0% 25%, #505050 0% 50%) 50% / 20px 20px;">🔲</div>
+                    <div class="scene-name">Transparent</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Modal -->
+    <div class="team-modal" id="teamModal">
+        <div class="team-modal-content">
+            <button class="team-modal-close" onclick="hideTeamModal()">×</button>
+            <h2>Team Collaboration</h2>
+            <p>Invite team members to work on this project together</p>
+
+            <div class="member-list">
+                <h3 style="font-size: 13px; margin-bottom: 15px; color: rgba(255,255,255,0.7);">Current Members</h3>
+                <div class="member-item">
+                    <div class="member-avatar">JD</div>
+                    <div class="member-info">
+                        <div class="member-name">John Doe (You)</div>
+                        <div class="member-role">Owner</div>
+                    </div>
+                </div>
+                <div class="member-item">
+                    <div class="member-avatar">SM</div>
+                    <div class="member-info">
+                        <div class="member-name">Sarah Miller</div>
+                        <div class="member-role">Editor</div>
+                    </div>
+                    <button class="member-remove">Remove</button>
+                </div>
+            </div>
+
+            <label style="font-size: 12px; color: rgba(255, 255, 255, 0.6); margin-bottom: 8px; display: block;">Email Address</label>
+            <input type="email" class="invite-input" placeholder="teammate@example.com" id="inviteEmail">
+
+            <label style="font-size: 12px; color: rgba(255, 255, 255, 0.6); margin-bottom: 8px; display: block;">Permission Level</label>
+            <select class="permission-select">
+                <option>Can View Only</option>
+                <option selected>Can Edit</option>
+                <option>Admin (Full Access)</option>
+            </select>
+
+            <button class="send-invite-btn" onclick="sendInvite()">Send Invitation</button>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let modelState = {
+            color: '#DC143C',
+            fabric: 'Cotton',
+            fit: 'Regular',
+            dimensions: {
+                sleeveLength: 50,
+                inseam: 32,
+                waistRise: 50
+            },
+            size: 'M',
+            gender: 'Female',
+            bodyShape: 'Average',
+            pose: 'Standing',
+            background: 'Studio',
+            lighting: 'Studio',
+            backgroundRemoved: false,
+            currentScene: 'studio', // Track current scene
+            zoom: 100,
+            tool: 'select'
+        };
+
+        // Undo/Redo History
+        let history = [];
+        let historyIndex = -1;
+        const MAX_HISTORY = 50;
+
+        // Save state to history
+        function saveToHistory() {
+            // Remove any future states if we're not at the end
+            history = history.slice(0, historyIndex + 1);
+            
+            // Add current state
+            history.push(JSON.parse(JSON.stringify(modelState)));
+            
+            // Limit history size
+            if (history.length > MAX_HISTORY) {
+                history.shift();
+            } else {
+                historyIndex++;
+            }
+        }
+
+        // Initialize history with current state
+        saveToHistory();
+
+        // Undo Action
+        function undoAction() {
+            if (historyIndex > 0) {
+                historyIndex--;
+                modelState = JSON.parse(JSON.stringify(history[historyIndex]));
+                applyStateToUI();
+                showNotification('Undo');
+            } else {
+                showNotification('Nothing to undo');
+            }
+        }
+
+        // Redo Action
+        function redoAction() {
+            if (historyIndex < history.length - 1) {
+                historyIndex++;
+                modelState = JSON.parse(JSON.stringify(history[historyIndex]));
+                applyStateToUI();
+                showNotification('Redo');
+            } else {
+                showNotification('Nothing to redo');
+            }
+        }
+
+        // Apply state to UI after undo/redo
+        function applyStateToUI() {
+            // Reapply all visual settings from state
+            const viewport = document.querySelector('.viewport-3d');
+            
+            // Restore scene
+            selectSceneByName(modelState.currentScene);
+            
+            // Restore zoom
+            const modelPreview = document.querySelector('.model-preview');
+            modelPreview.style.transform = `scale(${modelState.zoom / 100})`;
+            
+            console.log('State restored:', modelState);
+        }
+
+        // Reset View
+        function resetView() {
+            if (confirm('Reset all changes to default?')) {
+                modelState.zoom = 100;
+                const modelPreview = document.querySelector('.model-preview');
+                modelPreview.style.transform = 'scale(1)';
+                showNotification('View reset');
+            }
+        }
+
+        // Tool Selection
+        let currentTool = 'select';
+        function selectTool(button, tool) {
+            // Remove active from all tool buttons
+            document.querySelectorAll('.toolbar-btn[title="Select"], .toolbar-btn[title="Move"], .toolbar-btn[title="Rotate"], .toolbar-btn[title="Scale"]')
+                .forEach(btn => btn.classList.remove('active'));
+            
+            // Add active to clicked button
+            button.classList.add('active');
+            currentTool = tool;
+            modelState.tool = tool;
+            
+            showNotification(`Tool: ${tool.charAt(0).toUpperCase() + tool.slice(1)}`);
+        }
+
+        // Zoom Functions
+        function zoomIn() {
+            modelState.zoom = Math.min(modelState.zoom + 10, 200);
+            const modelPreview = document.querySelector('.model-preview');
+            modelPreview.style.transform = `scale(${modelState.zoom / 100})`;
+            showNotification(`Zoom: ${modelState.zoom}%`);
+            saveToHistory();
+        }
+
+        function zoomOut() {
+            modelState.zoom = Math.max(modelState.zoom - 10, 50);
+            const modelPreview = document.querySelector('.model-preview');
+            modelPreview.style.transform = `scale(${modelState.zoom / 100})`;
+            showNotification(`Zoom: ${modelState.zoom}%`);
+            saveToHistory();
+        }
+
+        function fitToScreen() {
+            modelState.zoom = 100;
+            const modelPreview = document.querySelector('.model-preview');
+            modelPreview.style.transform = 'scale(1)';
+            showNotification('Fit to screen');
+            saveToHistory();
+        }
+
+        // Save Project
+        function saveProject() {
+            const projectData = {
+                state: modelState,
+                timestamp: new Date().toISOString(),
+                version: '1.0'
+            };
+            
+            console.log('Saving project:', projectData);
+            
+            // In production, this would save to backend
+            localStorage.setItem('strut_project', JSON.stringify(projectData));
+            
+            showNotification('✅ Project saved successfully!');
+        }
+
+        // Render Project
+        function renderProject() {
+            showNotification('🎬 Rendering high-quality output...');
+            
+            // Simulate rendering process
+            setTimeout(() => {
+                showNotification('✨ Render complete! Ready to export.');
+            }, 2000);
+            
+            console.log('Rendering with settings:', modelState);
+            // In production, this would trigger actual render pipeline
+        }
+
+        // Helper to select scene by name (for undo/redo)
+        function selectSceneByName(sceneName) {
+            const viewport = document.querySelector('.viewport-3d');
+            
+            switch(sceneName) {
+                case 'studio':
+                    viewport.style.background = 'linear-gradient(180deg, #f5f5f5 0%, #e0e0e0 100%)';
+                    break;
+                case 'urban':
+                    viewport.style.background = 'linear-gradient(180deg, #2c3e50 0%, #34495e 100%)';
+                    break;
+                case 'runway':
+                    viewport.style.background = 'linear-gradient(180deg, #1a1a1a 0%, #000000 100%)';
+                    break;
+                case 'beach':
+                    viewport.style.background = 'linear-gradient(180deg, #87CEEB 0%, #F4A460 100%)';
+                    break;
+                case 'nature':
+                    viewport.style.background = 'linear-gradient(180deg, #228B22 0%, #006400 100%)';
+                    break;
+                case 'city':
+                    viewport.style.background = 'linear-gradient(180deg, #FF6B6B 0%, #4ECDC4 100%)';
+                    break;
+                case 'minimal':
+                    viewport.style.background = '#ffffff';
+                    break;
+                case 'dark':
+                    viewport.style.background = '#000000';
+                    break;
+                case 'transparent':
+                    viewport.style.background = 'repeating-conic-gradient(#808080 0% 25%, #505050 0% 50%) 50% / 20px 20px';
+                    break;
+            }
+        }
+
+        // Viewport controls click toggle
+        const viewportArea = document.querySelector('.viewport-3d');
+        const viewportControls = document.querySelector('.viewport-controls');
+        const modelPreview = document.querySelector('.model-preview');
+
+        // Click on model image to toggle controls
+        modelPreview.addEventListener('click', function(e) {
+            e.stopPropagation(); // Prevent click from bubbling to viewport
+            viewportControls.classList.toggle('show');
+        });
+
+        // Click anywhere else to hide controls
+        document.addEventListener('click', function(e) {
+            // Check if click is outside the controls and model
+            if (!viewportControls.contains(e.target) && !modelPreview.contains(e.target)) {
+                viewportControls.classList.remove('show');
+            }
+        });
+
+        // Prevent controls from closing when clicking on them
+        viewportControls.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+
+        // Panel Switching
+        function switchPanel(event, panelName) {
+            document.querySelectorAll('.panel-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            document.querySelectorAll('.panel-content').forEach(panel => panel.classList.remove('active'));
+            document.getElementById(panelName + 'Panel').classList.add('active');
+        }
+
+        // Slider Updates
+        function updateSlider(slider) {
+            const value = slider.value;
+            const valueSpan = slider.previousElementSibling.querySelector('.slider-value');
+            
+            // Update display based on context
+            const label = slider.previousElementSibling.querySelector('span').textContent;
+            
+            if (label.includes('Height')) {
+                const feet = Math.floor(value / 12);
+                const inches = value % 12;
+                valueSpan.textContent = `${feet}'${inches}"`;
+            } else if (label.includes('Weight')) {
+                valueSpan.textContent = `${value} lbs`;
+            } else if (label.includes('Bust') || label.includes('Waist') || label.includes('Hips') || label.includes('Inseam')) {
+                valueSpan.textContent = `${value}"`;
+            } else if (label.includes('Angle') || label.includes('Shoulder') || label.includes('Hip')) {
+                valueSpan.textContent = `${value}°`;
+            } else if (label.includes('Waist Rise')) {
+                if (value < 33) valueSpan.textContent = 'Low';
+                else if (value < 66) valueSpan.textContent = 'Mid';
+                else valueSpan.textContent = 'High';
+            } else if (label.includes('Skin Tone')) {
+                if (value < 25) valueSpan.textContent = 'Light';
+                else if (value < 50) valueSpan.textContent = 'Medium';
+                else if (value < 75) valueSpan.textContent = 'Tan';
+                else valueSpan.textContent = 'Dark';
+            } else {
+                valueSpan.textContent = `${value}%`;
+            }
+
+            // Apply visual feedback
+            applyModelChanges();
+        }
+
+        // Color Selection
+        function setColor(color) {
+            modelState.color = color;
+            document.getElementById('garmentColor').value = color;
+            document.querySelectorAll('.color-swatch').forEach(swatch => {
+                swatch.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Visual feedback
+            showNotification(`Color changed to ${color}`);
+            applyModelChanges();
+        }
+
+        // Fabric Selection
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fabric buttons
+            document.querySelectorAll('.fabric-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.fabric-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    modelState.fabric = this.textContent;
+                    showNotification(`Fabric changed to ${this.textContent}`);
+                    applyModelChanges();
+                });
+            });
+
+            // Size buttons
+            document.querySelectorAll('.size-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    modelState.size = this.textContent;
+                    showNotification(`Size changed to ${this.textContent}`);
+                    applyModelChanges();
+                });
+            });
+
+            // Gender buttons
+            document.querySelectorAll('.gender-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    modelState.gender = this.textContent;
+                    showNotification(`Gender changed to ${this.textContent}`);
+                    applyModelChanges();
+                });
+            });
+
+            // Pose buttons
+            document.querySelectorAll('.pose-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.pose-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    modelState.pose = this.textContent;
+                    showNotification(`Pose changed to ${this.textContent}`);
+                    applyModelChanges();
+                });
+            });
+
+            // Background buttons
+            document.querySelectorAll('.bg-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.bg-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    modelState.background = this.textContent;
+                    
+                    const viewport = document.querySelector('.viewport-3d');
+                    const bgName = this.textContent.trim();
+                    
+                    // Change viewport background based on selection
+                    switch(bgName) {
+                        case 'Studio':
+                            viewport.style.background = '#e5e5e5';
+                            break;
+                        case 'Urban':
+                            viewport.style.background = 'linear-gradient(180deg, #2c3e50 0%, #34495e 100%)';
+                            break;
+                        case 'Runway':
+                            viewport.style.background = 'linear-gradient(180deg, #1a1a1a 0%, #000000 100%)';
+                            break;
+                        case 'Lifestyle':
+                            viewport.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                            break;
+                        case 'Transparent':
+                            viewport.style.background = 'repeating-conic-gradient(#808080 0% 25%, transparent 0% 50%) 50% / 20px 20px';
+                            break;
+                        case 'Custom':
+                            viewport.style.background = '#1a1a1a';
+                            break;
+                        default:
+                            viewport.style.background = '#1a1a1a';
+                    }
+                    
+                    showNotification(`Background changed to ${bgName}`);
+                    applyModelChanges();
+                });
+            });
+
+            // Lighting buttons
+            document.querySelectorAll('.lighting-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.lighting-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    modelState.lighting = this.textContent;
+                    showNotification(`Lighting changed to ${this.textContent}`);
+                    applyModelChanges();
+                });
+            });
+
+            // Color swatches
+            document.querySelectorAll('.color-swatch').forEach(swatch => {
+                swatch.addEventListener('click', function() {
+                    const color = this.style.background;
+                    setColor(color);
+                });
+            });
+
+            // Color picker
+            const colorInput = document.getElementById('garmentColor');
+            if (colorInput) {
+                colorInput.addEventListener('change', function() {
+                    modelState.color = this.value;
+                    showNotification(`Custom color applied: ${this.value}`);
+                    applyModelChanges();
+                });
+            }
+        });
+
+        // Remove Background Function
+        function removeBackground() {
+            const modelImg = document.querySelector('.model-preview img');
+            const viewport = document.querySelector('.viewport-3d');
+            modelState.backgroundRemoved = !modelState.backgroundRemoved;
+            
+            if (modelState.backgroundRemoved) {
+                // Remove drop shadow from image only
+                modelImg.classList.add('no-background');
+                // Make viewport background a checkerboard pattern (transparency indicator)
+                viewport.style.background = 'repeating-conic-gradient(#808080 0% 25%, #505050 0% 50%) 50% / 20px 20px';
+                showNotification('Background removed! (Simulated - use transparent PNG)');
+            } else {
+                // Restore drop shadow
+                modelImg.classList.remove('no-background');
+                // Restore default background
+                viewport.style.background = '#1a1a1a';
+                showNotification('Background restored');
+            }
+            applyModelChanges();
+        }
+
+        // Apply Model Changes (Visual Feedback)
+        function applyModelChanges() {
+            // Model stays perfectly static - no transforms, no effects
+            // Only state is logged for debugging
+            console.log('Model state updated:', modelState);
+            console.log('Subject layer unchanged - only parameters updated');
+        }
+
+        // Notification System
+        function showNotification(message) {
+            // Create notification element if it doesn't exist
+            let notification = document.getElementById('notification');
+            if (!notification) {
+                notification = document.createElement('div');
+                notification.id = 'notification';
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 80px;
+                    right: 20px;
+                    background: rgba(220, 20, 60, 0.95);
+                    color: white;
+                    padding: 12px 20px;
+                    border-radius: 8px;
+                    font-size: 13px;
+                    font-weight: 600;
+                    z-index: 10000;
+                    opacity: 0;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 4px 12px rgba(220, 20, 60, 0.4);
+                `;
+                document.body.appendChild(notification);
+            }
+
+            notification.textContent = message;
+            notification.style.opacity = '1';
+            notification.style.transform = 'translateY(0)';
+
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateY(-10px)';
+            }, 2000);
+        }
+
+        // Team Modal Functions
+        function showTeamModal() {
+            document.getElementById('teamModal').classList.add('show');
+        }
+
+        function hideTeamModal() {
+            document.getElementById('teamModal').classList.remove('show');
+        }
+
+        function sendInvite() {
+            const email = document.getElementById('inviteEmail').value;
+            if (email) {
+                showNotification(`Invitation sent to ${email}!`);
+                hideTeamModal();
+                document.getElementById('inviteEmail').value = '';
+            } else {
+                showNotification('Please enter an email address');
+            }
+        }
+
+        // Close modal on outside click
+        document.getElementById('teamModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideTeamModal();
+            }
+        });
+
+        // Scene Modal Functions
+        function showSceneModal() {
+            document.getElementById('sceneModal').classList.add('show');
+        }
+
+        function hideSceneModal() {
+            document.getElementById('sceneModal').classList.remove('show');
+        }
+
+        function selectScene(sceneName, element) {
+            // Remove active class from all options
+            document.querySelectorAll('.scene-option').forEach(opt => opt.classList.remove('active'));
+            element.classList.add('active');
+
+            const viewport = document.querySelector('.viewport-3d');
+            const sceneName_display = element.querySelector('.scene-name').textContent;
+
+            // Store the scene name in state
+            modelState.currentScene = sceneName;
+
+            // Apply different background based on scene - ONLY changes viewport background
+            // Model image remains completely untouched
+            switch(sceneName) {
+                case 'studio':
+                    viewport.style.background = 'linear-gradient(180deg, #f5f5f5 0%, #e0e0e0 100%)';
+                    break;
+                case 'urban':
+                    viewport.style.background = 'linear-gradient(180deg, #2c3e50 0%, #34495e 100%)';
+                    break;
+                case 'runway':
+                    viewport.style.background = 'linear-gradient(180deg, #1a1a1a 0%, #000000 100%)';
+                    break;
+                case 'beach':
+                    viewport.style.background = 'linear-gradient(180deg, #87CEEB 0%, #F4A460 100%)';
+                    break;
+                case 'nature':
+                    viewport.style.background = 'linear-gradient(180deg, #228B22 0%, #006400 100%)';
+                    break;
+                case 'city':
+                    viewport.style.background = 'linear-gradient(180deg, #FF6B6B 0%, #4ECDC4 100%)';
+                    break;
+                case 'minimal':
+                    viewport.style.background = '#ffffff';
+                    break;
+                case 'dark':
+                    viewport.style.background = '#000000';
+                    break;
+                case 'transparent':
+                    viewport.style.background = 'repeating-conic-gradient(#808080 0% 25%, #505050 0% 50%) 50% / 20px 20px';
+                    break;
+                default:
+                    viewport.style.background = '#1a1a1a';
+            }
+
+            // Instant visual feedback - no delays, no regeneration
+            showNotification(`Scene: ${sceneName_display}`);
+            
+            // Save to history for undo/redo
+            saveToHistory();
+            
+            // Model stays perfectly intact - no modifications, no re-processing
+            // This is a non-destructive layer-based approach
+            console.log(`Scene changed to: ${sceneName_display} (Subject layer unchanged)`);
+        }
+
+        // Background removal function (simulated)
+        function removeModelBackground() {
+            const modelImg = document.querySelector('.model-preview img');
+            modelImg.style.filter = 'drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3))';
+            // In production, this would call an AI background removal API
+            console.log('Background removal applied (simulated)');
+        }
+
+        // Close scene modal on outside click
+        document.getElementById('sceneModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideSceneModal();
+            }
+        });
+    </script>
+</body>
+</html>
