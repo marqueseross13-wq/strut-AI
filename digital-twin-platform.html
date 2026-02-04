@@ -1,0 +1,1805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ModelTwin — Premium Digital Model Platform</title>
+    <style>
+        /* ===================================
+           GLOBAL RESET & BASE STYLES
+        =================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            background: #fafafa;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+
+        /* ===================================
+           TOOLBAR (PERSISTENT NAVIGATION)
+        =================================== */
+        .toolbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background: #ffffff;
+            border-bottom: 1px solid #e5e5e5;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            z-index: 1000;
+        }
+
+        .toolbar-logo {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+            cursor: pointer;
+            letter-spacing: -0.5px;
+        }
+
+        .toolbar-center {
+            display: flex;
+            gap: 40px;
+        }
+
+        .toolbar-link {
+            color: #666;
+            text-decoration: none;
+            font-size: 15px;
+            padding-bottom: 2px;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .toolbar-link:hover {
+            color: #1a1a1a;
+        }
+
+        .toolbar-link.active {
+            color: #1a1a1a;
+            border-bottom-color: #dc2626;
+        }
+
+        .toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #e5e5e5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            font-size: 14px;
+            position: relative;
+        }
+
+        .user-dropdown {
+            position: absolute;
+            top: 50px;
+            right: 40px;
+            background: #ffffff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 8px 0;
+            min-width: 160px;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .user-dropdown.active {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 10px 20px;
+            cursor: pointer;
+            color: #333;
+            transition: background 0.15s;
+        }
+
+        .dropdown-item:hover {
+            background: #f5f5f5;
+        }
+
+        /* ===================================
+           MAIN CONTAINER
+        =================================== */
+        .main-container {
+            margin-top: 64px;
+            min-height: calc(100vh - 64px);
+        }
+
+        /* ===================================
+           PUBLIC HOMEPAGE
+        =================================== */
+        .homepage {
+            background: #ffffff;
+        }
+
+        .hero-section {
+            padding: 100px 40px;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            font-size: 56px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            letter-spacing: -1px;
+            line-height: 1.1;
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            color: #666;
+            margin-bottom: 40px;
+            line-height: 1.5;
+        }
+
+        .cta-button {
+            background: #dc2626;
+            color: #ffffff;
+            border: none;
+            padding: 16px 40px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .cta-button:hover {
+            background: #b91c1c;
+        }
+
+        .secondary-button {
+            background: transparent;
+            color: #1a1a1a;
+            border: 1px solid #e5e5e5;
+            padding: 16px 40px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            margin-left: 16px;
+        }
+
+        .secondary-button:hover {
+            border-color: #1a1a1a;
+        }
+
+        .features-section {
+            padding: 80px 40px;
+            background: #fafafa;
+        }
+
+        .features-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 40px 24px;
+        }
+
+        .feature-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .feature-description {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* ===================================
+           DASHBOARD
+        =================================== */
+        .dashboard {
+            padding: 60px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            font-size: 36px;
+            font-weight: 600;
+            margin-bottom: 40px;
+        }
+
+        .dashboard-section {
+            margin-bottom: 60px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .view-all-link {
+            color: #dc2626;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .project-card {
+            background: #ffffff;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .project-card:hover {
+            border-color: #c5c5c5;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 16px;
+        }
+
+        .project-info h3 {
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+
+        .project-agency {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .project-tier {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 4px;
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        .project-tier.tier-3 {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .project-status {
+            margin: 16px 0;
+            padding: 12px;
+            background: #fafafa;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .status-label {
+            color: #666;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .time-remaining {
+            font-weight: 600;
+            color: #dc2626;
+        }
+
+        .project-action {
+            width: 100%;
+            background: #1a1a1a;
+            color: #ffffff;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 16px;
+        }
+
+        .project-action:hover {
+            background: #333;
+        }
+
+        .project-action.primary {
+            background: #dc2626;
+        }
+
+        .project-action.primary:hover {
+            background: #b91c1c;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+
+        /* ===================================
+           BROWSE MODELS PAGE
+        =================================== */
+        .browse-page {
+            padding: 60px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .model-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 32px;
+        }
+
+        .model-card {
+            background: #ffffff;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .model-card:hover {
+            border-color: #c5c5c5;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+        }
+
+        .model-image {
+            width: 100%;
+            height: 380px;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e5e5e5 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 14px;
+        }
+
+        .model-details {
+            padding: 20px;
+        }
+
+        .model-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .model-agency {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 16px;
+        }
+
+        .model-stats {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 16px;
+        }
+
+        /* ===================================
+           PROJECTS PAGE
+        =================================== */
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 32px;
+            border-bottom: 1px solid #e5e5e5;
+            padding-bottom: 0;
+        }
+
+        .filter-tab {
+            padding: 12px 24px;
+            background: transparent;
+            border: none;
+            color: #666;
+            font-size: 15px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .filter-tab:hover {
+            color: #1a1a1a;
+        }
+
+        .filter-tab.active {
+            color: #1a1a1a;
+            border-bottom-color: #dc2626;
+        }
+
+        /* ===================================
+           PROJECT DETAIL VIEW
+        =================================== */
+        .detail-view {
+            padding: 60px 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .detail-header {
+            background: #ffffff;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+
+        .detail-title {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .detail-meta {
+            display: flex;
+            gap: 24px;
+            color: #666;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .meta-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .meta-value {
+            font-size: 16px;
+            color: #1a1a1a;
+            font-weight: 500;
+        }
+
+        .detail-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .detail-button {
+            padding: 14px 24px;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid #e5e5e5;
+            background: #ffffff;
+            color: #1a1a1a;
+            transition: all 0.2s;
+        }
+
+        .detail-button:hover {
+            border-color: #1a1a1a;
+        }
+
+        .detail-button.primary {
+            background: #dc2626;
+            border-color: #dc2626;
+            color: #ffffff;
+        }
+
+        .detail-button.primary:hover {
+            background: #b91c1c;
+            border-color: #b91c1c;
+        }
+
+        .detail-button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .alert-box {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 24px;
+            color: #991b1b;
+        }
+
+        .alert-box.info {
+            background: #f0f9ff;
+            border-color: #bae6fd;
+            color: #075985;
+        }
+
+        /* ===================================
+           PRICING / TIERS PAGE
+        =================================== */
+        .pricing-page {
+            padding: 60px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .tier-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 32px;
+            margin-top: 48px;
+        }
+
+        .tier-card {
+            background: #ffffff;
+            border: 2px solid #e5e5e5;
+            border-radius: 16px;
+            padding: 40px 32px;
+            position: relative;
+        }
+
+        .tier-card.featured {
+            border-color: #dc2626;
+        }
+
+        .tier-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #dc2626;
+            color: #ffffff;
+            padding: 4px 16px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .tier-name {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .tier-price {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 24px;
+        }
+
+        .tier-features {
+            list-style: none;
+            margin-bottom: 32px;
+        }
+
+        .tier-features li {
+            padding: 12px 0;
+            border-bottom: 1px solid #f5f5f5;
+            color: #333;
+            font-size: 15px;
+        }
+
+        .tier-features li:last-child {
+            border-bottom: none;
+        }
+
+        /* ===================================
+           IMAGE GENERATOR (TIER 1 & 2)
+        =================================== */
+        .generator-view {
+            display: flex;
+            height: calc(100vh - 64px);
+            background: #fafafa;
+        }
+
+        .generator-sidebar {
+            width: 320px;
+            background: #ffffff;
+            border-right: 1px solid #e5e5e5;
+            padding: 32px 24px;
+            overflow-y: auto;
+        }
+
+        .generator-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 32px;
+            overflow-y: auto;
+        }
+
+        .preview-area {
+            flex: 1;
+            background: #ffffff;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 500px;
+            margin-bottom: 24px;
+        }
+
+        .preview-placeholder {
+            text-align: center;
+            color: #999;
+        }
+
+        .preview-placeholder-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+
+        .control-section {
+            margin-bottom: 32px;
+        }
+
+        .control-label {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            color: #666;
+        }
+
+        .preset-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .preset-button {
+            padding: 12px;
+            background: #fafafa;
+            border: 1px solid #e5e5e5;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .preset-button:hover {
+            background: #f5f5f5;
+            border-color: #c5c5c5;
+        }
+
+        .preset-button.active {
+            background: #fef2f2;
+            border-color: #dc2626;
+            color: #dc2626;
+        }
+
+        .upload-area {
+            border: 2px dashed #e5e5e5;
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .upload-area:hover {
+            border-color: #c5c5c5;
+            background: #fafafa;
+        }
+
+        .generator-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .generator-button {
+            flex: 1;
+            padding: 16px;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid #e5e5e5;
+            background: #ffffff;
+            transition: all 0.2s;
+        }
+
+        .generator-button.primary {
+            background: #dc2626;
+            border-color: #dc2626;
+            color: #ffffff;
+        }
+
+        .generator-button.primary:hover {
+            background: #b91c1c;
+        }
+
+        /* ===================================
+           PRO STUDIO (TIER 3)
+        =================================== */
+        .studio-view {
+            display: flex;
+            height: calc(100vh - 64px);
+            background: #2a2a2a;
+            color: #e5e5e5;
+        }
+
+        .studio-left-panel {
+            width: 280px;
+            background: #1f1f1f;
+            border-right: 1px solid #3a3a3a;
+            padding: 24px 16px;
+            overflow-y: auto;
+        }
+
+        .studio-canvas {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #2a2a2a;
+        }
+
+        .studio-top-bar {
+            height: 56px;
+            background: #1f1f1f;
+            border-bottom: 1px solid #3a3a3a;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+        }
+
+        .studio-tools {
+            display: flex;
+            gap: 8px;
+        }
+
+        .studio-tool-button {
+            padding: 8px 16px;
+            background: transparent;
+            border: 1px solid #3a3a3a;
+            color: #e5e5e5;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .studio-tool-button:hover {
+            background: #3a3a3a;
+        }
+
+        .studio-main-area {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .studio-canvas-area {
+            width: 100%;
+            max-width: 900px;
+            aspect-ratio: 3/4;
+            background: #3a3a3a;
+            border: 1px solid #4a4a4a;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .studio-right-panel {
+            width: 280px;
+            background: #1f1f1f;
+            border-left: 1px solid #3a3a3a;
+            padding: 24px 16px;
+            overflow-y: auto;
+        }
+
+        .studio-section {
+            margin-bottom: 24px;
+        }
+
+        .studio-section-title {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            color: #999;
+        }
+
+        .studio-control {
+            background: #2a2a2a;
+            border: 1px solid #3a3a3a;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .studio-slider {
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        /* ===================================
+           UTILITY CLASSES
+        =================================== */
+        .hidden {
+            display: none !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-40 {
+            margin-top: 40px;
+        }
+
+        /* ===================================
+           RESPONSIVE
+        =================================== */
+        @media (max-width: 768px) {
+            .toolbar {
+                padding: 0 20px;
+            }
+
+            .toolbar-center {
+                display: none;
+            }
+
+            .hero-title {
+                font-size: 40px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .project-grid,
+            .model-grid,
+            .tier-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .generator-view {
+                flex-direction: column;
+            }
+
+            .generator-sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #e5e5e5;
+            }
+
+            .studio-view {
+                flex-direction: column;
+            }
+
+            .studio-left-panel,
+            .studio-right-panel {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===================================
+         PERSISTENT TOOLBAR
+    =================================== -->
+    <div class="toolbar" id="toolbar">
+        <div class="toolbar-logo" onclick="navigateTo('dashboard')">ModelTwin</div>
+        <div class="toolbar-center">
+            <a class="toolbar-link" data-page="browse" onclick="navigateTo('browse')">Browse Models</a>
+            <a class="toolbar-link" data-page="projects" onclick="navigateTo('projects')">Projects</a>
+            <a class="toolbar-link" data-page="pricing" onclick="navigateTo('pricing')">Pricing / Tiers</a>
+            <a class="toolbar-link" data-page="how-it-works" onclick="navigateTo('how-it-works')">How It Works</a>
+        </div>
+        <div class="toolbar-right">
+            <div class="user-avatar" onclick="toggleUserDropdown()">JD</div>
+        </div>
+    </div>
+
+    <!-- User Dropdown Menu -->
+    <div class="user-dropdown" id="userDropdown">
+        <div class="dropdown-item" onclick="alert('Account settings')">Account</div>
+        <div class="dropdown-item" onclick="alert('Settings')">Settings</div>
+        <div class="dropdown-item" onclick="signOut()">Sign Out</div>
+    </div>
+
+    <!-- ===================================
+         MAIN CONTAINER
+    =================================== -->
+    <div class="main-container">
+
+        <!-- ===================================
+             PUBLIC HOMEPAGE
+        =================================== -->
+        <div id="homepage" class="homepage">
+            <div class="hero-section">
+                <h1 class="hero-title">The Future of Fashion Content Creation</h1>
+                <p class="hero-subtitle">
+                    Work with agency-represented digital model twins through our premium platform.
+                    Time-based bookings, professional tools, seamless agency coordination.
+                </p>
+                <button class="cta-button" onclick="signIn()">Get Started</button>
+                <button class="secondary-button" onclick="navigateTo('how-it-works')">Learn More</button>
+            </div>
+
+            <div class="features-section">
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <h3 class="feature-title">Agency-Represented Only</h3>
+                        <p class="feature-description">
+                            All models remain represented by their agencies. Bookings are confirmed through
+                            proper channels while access is managed through our platform.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <h3 class="feature-title">Time-Based Projects</h3>
+                        <p class="feature-description">
+                            Start projects with flexible time windows. Save your work, return anytime,
+                            and extend when needed with agency approval.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <h3 class="feature-title">Tiered Access Levels</h3>
+                        <p class="feature-description">
+                            Choose from Essential, Advanced, or Pro Studio tiers based on your creative
+                            needs and project complexity.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================================
+             DASHBOARD (SIGNED-IN HOME)
+        =================================== -->
+        <div id="dashboard" class="dashboard hidden">
+            <h1 class="page-title">Dashboard</h1>
+
+            <!-- Active Projects Section -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h2 class="section-title">Active Projects</h2>
+                    <a href="#" class="view-all-link" onclick="navigateTo('projects'); return false;">View All</a>
+                </div>
+                <div class="project-grid" id="activeProjectsGrid">
+                    <!-- Projects will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Pending Bookings Section -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h2 class="section-title">Pending Bookings</h2>
+                </div>
+                <div class="project-grid" id="pendingBookingsGrid">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⏳</div>
+                        <p>No pending bookings</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Archived Projects Section -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h2 class="section-title">Recently Archived</h2>
+                    <a href="#" class="view-all-link" onclick="navigateTo('projects'); return false;">View All</a>
+                </div>
+                <div class="project-grid" id="archivedProjectsGrid">
+                    <!-- Projects will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================================
+             BROWSE MODELS PAGE
+        =================================== -->
+        <div id="browse" class="browse-page hidden">
+            <h1 class="page-title">Browse Models</h1>
+            <div class="model-grid" id="modelGrid">
+                <!-- Models will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- ===================================
+             PROJECTS PAGE
+        =================================== -->
+        <div id="projects" class="browse-page hidden">
+            <h1 class="page-title">Projects</h1>
+            
+            <div class="filter-tabs">
+                <button class="filter-tab active" onclick="filterProjects('all')">All</button>
+                <button class="filter-tab" onclick="filterProjects('active')">Active</button>
+                <button class="filter-tab" onclick="filterProjects('pending')">Pending</button>
+                <button class="filter-tab" onclick="filterProjects('archived')">Archived</button>
+            </div>
+
+            <div class="project-grid" id="allProjectsGrid">
+                <!-- Projects will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- ===================================
+             PROJECT DETAIL VIEW
+        =================================== -->
+        <div id="projectDetail" class="detail-view hidden">
+            <div class="detail-header">
+                <div class="alert-box hidden" id="projectAlert"></div>
+                
+                <h1 class="detail-title" id="detailProjectName">Spring Campaign 2026</h1>
+                
+                <div class="detail-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Model</span>
+                        <span class="meta-value" id="detailModelName">Aria Chen</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Agency</span>
+                        <span class="meta-value" id="detailAgency">Elite Model Management</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Tier</span>
+                        <span class="meta-value" id="detailTier">Pro Studio</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Status</span>
+                        <span class="meta-value" id="detailStatus">Active</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Time Remaining</span>
+                        <span class="meta-value time-remaining" id="detailTimeRemaining">47h 23m</span>
+                    </div>
+                </div>
+
+                <div class="detail-actions">
+                    <button class="detail-button primary" id="btnEnterGenerator" onclick="navigateTo('generator')">
+                        Enter Image Generator
+                    </button>
+                    <button class="detail-button primary" id="btnEnterStudio" onclick="navigateTo('studio')">
+                        Enter Pro Studio
+                    </button>
+                    <button class="detail-button" onclick="alert('Session saved')">Save Session</button>
+                    <button class="detail-button" id="btnExport">Export Project</button>
+                    <button class="detail-button" id="btnExtension">Request Extension</button>
+                </div>
+            </div>
+
+            <button class="secondary-button" onclick="navigateTo('projects')">← Back to Projects</button>
+        </div>
+
+        <!-- ===================================
+             PRICING / TIERS PAGE
+        =================================== -->
+        <div id="pricing" class="pricing-page hidden">
+            <h1 class="page-title text-center">Choose Your Tier</h1>
+            <p class="hero-subtitle text-center">
+                Select the access level that matches your creative needs
+            </p>
+
+            <div class="tier-grid">
+                <!-- Tier 1 -->
+                <div class="tier-card">
+                    <h3 class="tier-name">Essential</h3>
+                    <div class="tier-price">Starting at $500 / booking</div>
+                    <ul class="tier-features">
+                        <li>Access to digital twin</li>
+                        <li>Basic image generator</li>
+                        <li>Preset poses & lighting</li>
+                        <li>Limited camera angles</li>
+                        <li>Low / mid resolution exports</li>
+                        <li>24-hour booking window</li>
+                    </ul>
+                    <button class="cta-button" style="width: 100%;" onclick="alert('Start Essential booking')">
+                        Get Started
+                    </button>
+                </div>
+
+                <!-- Tier 2 -->
+                <div class="tier-card featured">
+                    <div class="tier-badge">POPULAR</div>
+                    <h3 class="tier-name">Advanced</h3>
+                    <div class="tier-price">Starting at $1,200 / booking</div>
+                    <ul class="tier-features">
+                        <li>Everything in Essential</li>
+                        <li>Enhanced pose control</li>
+                        <li>Adjustable lighting</li>
+                        <li>Full camera angle control</li>
+                        <li>Clothing uploads</li>
+                        <li>High resolution exports</li>
+                        <li>72-hour booking window</li>
+                    </ul>
+                    <button class="cta-button" style="width: 100%;" onclick="alert('Start Advanced booking')">
+                        Get Started
+                    </button>
+                </div>
+
+                <!-- Tier 3 -->
+                <div class="tier-card">
+                    <h3 class="tier-name">Pro Studio</h3>
+                    <div class="tier-price">Starting at $3,000 / booking</div>
+                    <ul class="tier-features">
+                        <li>Full studio workspace</li>
+                        <li>Advanced pose manipulation</li>
+                        <li>Detailed garment editing</li>
+                        <li>Fabric fit simulation</li>
+                        <li>Layer & scene composition</li>
+                        <li>Highest resolution exports</li>
+                        <li>168-hour booking window</li>
+                        <li>Studio-style interface</li>
+                    </ul>
+                    <button class="cta-button" style="width: 100%;" onclick="alert('Start Pro Studio booking')">
+                        Get Started
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================================
+             HOW IT WORKS PAGE
+        =================================== -->
+        <div id="how-it-works" class="pricing-page hidden">
+            <h1 class="page-title text-center">How It Works</h1>
+            <div class="features-section">
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <h3 class="feature-title">1. Browse Models</h3>
+                        <p class="feature-description">
+                            Explore our catalog of agency-represented digital twins. Each model
+                            is professionally created and managed by their agency.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <h3 class="feature-title">2. Select Your Tier</h3>
+                        <p class="feature-description">
+                            Choose Essential, Advanced, or Pro Studio based on your project
+                            requirements. Each tier offers different tools and time windows.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <h3 class="feature-title">3. Agency Confirmation</h3>
+                        <p class="feature-description">
+                            Your booking request is sent to the model's agency for approval.
+                            Once confirmed, you'll gain platform access.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <h3 class="feature-title">4. Create Content</h3>
+                        <p class="feature-description">
+                            Use our Image Generator or Pro Studio to create your content.
+                            Save your work and return anytime during your booking window.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <h3 class="feature-title">5. Export & Extend</h3>
+                        <p class="feature-description">
+                            Export your final assets in the appropriate resolution for your tier.
+                            Need more time? Request an extension through the agency.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <h3 class="feature-title">6. Archive & Reuse</h3>
+                        <p class="feature-description">
+                            Completed projects are archived for reference. Start new bookings
+                            anytime to continue working with the same or different models.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================================
+             IMAGE GENERATOR (TIER 1 & 2)
+        =================================== -->
+        <div id="generator" class="generator-view hidden">
+            <div class="generator-sidebar">
+                <h2 style="margin-bottom: 24px; font-size: 20px;">Image Generator</h2>
+
+                <!-- Pose Presets -->
+                <div class="control-section">
+                    <div class="control-label">Pose Presets</div>
+                    <div class="preset-grid">
+                        <button class="preset-button active">Standing</button>
+                        <button class="preset-button">Walking</button>
+                        <button class="preset-button">Seated</button>
+                        <button class="preset-button">Profile</button>
+                    </div>
+                </div>
+
+                <!-- Lighting Presets -->
+                <div class="control-section">
+                    <div class="control-label">Lighting</div>
+                    <div class="preset-grid">
+                        <button class="preset-button active">Studio</button>
+                        <button class="preset-button">Natural</button>
+                        <button class="preset-button">Dramatic</button>
+                        <button class="preset-button">Soft</button>
+                    </div>
+                </div>
+
+                <!-- Background Presets -->
+                <div class="control-section">
+                    <div class="control-label">Background</div>
+                    <div class="preset-grid">
+                        <button class="preset-button active">White</button>
+                        <button class="preset-button">Gray</button>
+                        <button class="preset-button">Black</button>
+                        <button class="preset-button">Outdoor</button>
+                    </div>
+                </div>
+
+                <!-- Clothing Upload -->
+                <div class="control-section">
+                    <div class="control-label">Clothing Upload</div>
+                    <div class="upload-area">
+                        <p style="font-size: 14px; color: #666;">
+                            📎 Click to upload garment images
+                        </p>
+                        <p style="font-size: 12px; color: #999; margin-top: 8px;">
+                            PNG, JPG up to 10MB
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="control-section">
+                    <div class="generator-actions">
+                        <button class="generator-button">Save</button>
+                        <button class="generator-button primary" onclick="alert('Generating image...')">
+                            Generate
+                        </button>
+                    </div>
+                </div>
+
+                <button class="secondary-button" style="width: 100%; margin-top: 16px;" 
+                        onclick="navigateTo('projectDetail')">
+                    Exit Generator
+                </button>
+            </div>
+
+            <div class="generator-main">
+                <div class="preview-area">
+                    <div class="preview-placeholder">
+                        <div class="preview-placeholder-icon">👤</div>
+                        <p>Preview will appear here</p>
+                        <p style="font-size: 14px; color: #bbb; margin-top: 8px;">
+                            Select options and click Generate
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================================
+             PRO STUDIO (TIER 3)
+        =================================== -->
+        <div id="studio" class="studio-view hidden">
+            <!-- Left Tool Panel -->
+            <div class="studio-left-panel">
+                <div class="studio-section">
+                    <div class="studio-section-title">Pose Editor</div>
+                    <div class="studio-control">
+                        <div>Head Rotation</div>
+                        <input type="range" class="studio-slider" min="0" max="100" value="50">
+                    </div>
+                    <div class="studio-control">
+                        <div>Arm Position</div>
+                        <input type="range" class="studio-slider" min="0" max="100" value="50">
+                    </div>
+                    <div class="studio-control">
+                        <div>Body Angle</div>
+                        <input type="range" class="studio-slider" min="0" max="100" value="50">
+                    </div>
+                </div>
+
+                <div class="studio-section">
+                    <div class="studio-section-title">Garment Controls</div>
+                    <div class="studio-control">
+                        <div>Fabric Fit</div>
+                        <input type="range" class="studio-slider" min="0" max="100" value="50">
+                    </div>
+                    <div class="studio-control">
+                        <div>Wrinkle Detail</div>
+                        <input type="range" class="studio-slider" min="0" max="100" value="30">
+                    </div>
+                </div>
+
+                <div class="studio-section">
+                    <div class="studio-section-title">Lighting Rig</div>
+                    <div class="studio-control">
+                        <div>Key Light Intensity</div>
+                        <input type="range" class="studio-slider" min="0" max="100" value="70">
+                    </div>
+                    <div class="studio-control">
+                        <div>Fill Light</div>
+                        <input type="range" class="studio-slider" min="0" max="100" value="40">
+                    </div>
+                    <div class="studio-control">
+                        <div>Rim Light</div>
+                        <input type="range" class="studio-slider" min="0" max="100" value="60">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Canvas Area -->
+            <div class="studio-canvas">
+                <div class="studio-top-bar">
+                    <div class="studio-tools">
+                        <button class="studio-tool-button">↶ Undo</button>
+                        <button class="studio-tool-button">↷ Redo</button>
+                        <button class="studio-tool-button">💾 Save</button>
+                        <button class="studio-tool-button" 
+                                style="background: #dc2626; border-color: #dc2626;">
+                            Export
+                        </button>
+                    </div>
+                    <button class="studio-tool-button" onclick="navigateTo('projectDetail')">
+                        Exit Studio
+                    </button>
+                </div>
+
+                <div class="studio-main-area">
+                    <div class="studio-canvas-area">
+                        <div style="text-align: center; color: #999;">
+                            <div style="font-size: 48px; margin-bottom: 16px;">🎨</div>
+                            <p>Pro Studio Canvas</p>
+                            <p style="font-size: 13px; margin-top: 8px;">
+                                Advanced pose manipulation & garment editing
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Layers Panel -->
+            <div class="studio-right-panel">
+                <div class="studio-section">
+                    <div class="studio-section-title">Layers</div>
+                    <div class="studio-control">Background</div>
+                    <div class="studio-control" style="background: #3a3a3a;">Model</div>
+                    <div class="studio-control">Garment Layer 1</div>
+                    <div class="studio-control">Garment Layer 2</div>
+                    <div class="studio-control">Lighting</div>
+                </div>
+
+                <div class="studio-section">
+                    <div class="studio-section-title">Scene Elements</div>
+                    <div class="studio-control">Props</div>
+                    <div class="studio-control">Environment</div>
+                    <div class="studio-control">Effects</div>
+                </div>
+
+                <div class="studio-section">
+                    <div class="studio-section-title">Export Settings</div>
+                    <div class="studio-control">
+                        <select style="width: 100%; background: #1f1f1f; border: 1px solid #3a3a3a; 
+                                       color: #e5e5e5; padding: 8px; border-radius: 4px;">
+                            <option>4K Resolution</option>
+                            <option>8K Resolution</option>
+                            <option>Custom</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ===================================
+         JAVASCRIPT
+    =================================== -->
+    <script>
+        // ===================================
+        // STATE MANAGEMENT
+        // ===================================
+        let currentUser = null;
+        let currentPage = 'homepage';
+
+        // Sample Data
+        const models = [
+            { id: 1, name: 'Aria Chen', agency: 'Elite Model Management', height: '5\'10"', measurements: '34-24-35' },
+            { id: 2, name: 'Lucas Rivera', agency: 'IMG Models', height: '6\'2"', measurements: '40-32-34' },
+            { id: 3, name: 'Sophie Laurent', agency: 'Next Management', height: '5\'11"', measurements: '33-24-35' },
+            { id: 4, name: 'Marcus Johnson', agency: 'Elite Model Management', height: '6\'1"', measurements: '41-31-35' },
+            { id: 5, name: 'Isabella Costa', agency: 'The Society', height: '5\'9"', measurements: '32-23-34' },
+            { id: 6, name: 'Kai Nakamura', agency: 'IMG Models', height: '6\'0"', measurements: '39-30-33' }
+        ];
+
+        const projects = [
+            {
+                id: 1,
+                name: 'Spring Campaign 2026',
+                modelName: 'Aria Chen',
+                agency: 'Elite Model Management',
+                tier: 3,
+                tierName: 'Pro Studio',
+                status: 'active',
+                timeRemaining: '47h 23m',
+                timeRemainingMs: 170580000
+            },
+            {
+                id: 2,
+                name: 'Lookbook Shoot',
+                modelName: 'Lucas Rivera',
+                agency: 'IMG Models',
+                tier: 2,
+                tierName: 'Advanced',
+                status: 'active',
+                timeRemaining: '12h 45m',
+                timeRemainingMs: 45900000
+            },
+            {
+                id: 3,
+                name: 'Editorial Test',
+                modelName: 'Sophie Laurent',
+                agency: 'Next Management',
+                tier: 1,
+                tierName: 'Essential',
+                status: 'archived',
+                timeRemaining: 'Expired',
+                timeRemainingMs: 0
+            },
+            {
+                id: 4,
+                name: 'Product Launch',
+                modelName: 'Isabella Costa',
+                agency: 'The Society',
+                tier: 2,
+                tierName: 'Advanced',
+                status: 'archived',
+                timeRemaining: 'Expired',
+                timeRemainingMs: 0
+            }
+        ];
+
+        let selectedProject = projects[0];
+
+        // ===================================
+        // NAVIGATION
+        // ===================================
+        function navigateTo(page) {
+            // Hide all pages
+            const pages = ['homepage', 'dashboard', 'browse', 'projects', 'projectDetail', 
+                          'pricing', 'how-it-works', 'generator', 'studio'];
+            pages.forEach(p => {
+                const el = document.getElementById(p);
+                if (el) el.classList.add('hidden');
+            });
+
+            // Show selected page
+            const targetPage = document.getElementById(page);
+            if (targetPage) {
+                targetPage.classList.remove('hidden');
+            }
+
+            // Update toolbar state
+            updateToolbar(page);
+            currentPage = page;
+
+            // Load page-specific content
+            if (page === 'browse') {
+                loadModels();
+            } else if (page === 'projects') {
+                loadAllProjects();
+            } else if (page === 'dashboard') {
+                loadDashboard();
+            } else if (page === 'projectDetail') {
+                loadProjectDetail();
+            }
+
+            // Hide toolbar on homepage
+            const toolbar = document.getElementById('toolbar');
+            if (page === 'homepage') {
+                toolbar.classList.add('hidden');
+            } else {
+                toolbar.classList.remove('hidden');
+            }
+
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        function updateToolbar(page) {
+            const links = document.querySelectorAll('.toolbar-link');
+            links.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-page') === page) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // ===================================
+        // USER AUTHENTICATION
+        // ===================================
+        function signIn() {
+            currentUser = { name: 'Jane Doe', email: 'jane@example.com' };
+            navigateTo('dashboard');
+        }
+
+        function signOut() {
+            currentUser = null;
+            navigateTo('homepage');
+            closeUserDropdown();
+        }
+
+        function toggleUserDropdown() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('active');
+        }
+
+        function closeUserDropdown() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.remove('active');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const avatar = document.querySelector('.user-avatar');
+            const dropdown = document.getElementById('userDropdown');
+            if (!avatar.contains(event.target) && !dropdown.contains(event.target)) {
+                closeUserDropdown();
+            }
+        });
+
+        // ===================================
+        // DASHBOARD
+        // ===================================
+        function loadDashboard() {
+            loadActiveProjects();
+            loadArchivedProjects();
+        }
+
+        function loadActiveProjects() {
+            const grid = document.getElementById('activeProjectsGrid');
+            const activeProjects = projects.filter(p => p.status === 'active');
+            
+            if (activeProjects.length === 0) {
+                grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📋</div><p>No active projects</p></div>';
+                return;
+            }
+
+            grid.innerHTML = activeProjects.map(project => createProjectCard(project)).join('');
+        }
+
+        function loadArchivedProjects() {
+            const grid = document.getElementById('archivedProjectsGrid');
+            const archivedProjects = projects.filter(p => p.status === 'archived').slice(0, 2);
+            
+            if (archivedProjects.length === 0) {
+                grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📦</div><p>No archived projects</p></div>';
+                return;
+            }
+
+            grid.innerHTML = archivedProjects.map(project => createProjectCard(project)).join('');
+        }
+
+        function createProjectCard(project) {
+            const isArchived = project.status === 'archived';
+            const buttonText = isArchived ? 'View Project' : 
+                             (project.tier === 3 ? 'Enter Studio' : 'Enter Generator');
+            const buttonClass = isArchived ? '' : 'primary';
+            
+            return `
+                <div class="project-card" onclick="viewProject(${project.id})">
+                    <div class="project-header">
+                        <div class="project-info">
+                            <h3>${project.name}</h3>
+                            <div class="project-agency">${project.modelName} • ${project.agency}</div>
+                        </div>
+                        <div class="project-tier ${project.tier === 3 ? 'tier-3' : ''}">${project.tierName}</div>
+                    </div>
+                    <div class="project-status">
+                        <div class="status-label">${isArchived ? 'Archived' : 'Time Remaining'}</div>
+                        <div class="${isArchived ? '' : 'time-remaining'}">${project.timeRemaining}</div>
+                    </div>
+                    <button class="project-action ${buttonClass}" onclick="event.stopPropagation(); ${isArchived ? `viewProject(${project.id})` : `enterProject(${project.id})`}">
+                        ${buttonText}
+                    </button>
+                </div>
+            `;
+        }
+
+        // ===================================
+        // BROWSE MODELS
+        // ===================================
+        function loadModels() {
+            const grid = document.getElementById('modelGrid');
+            grid.innerHTML = models.map(model => `
+                <div class="model-card" onclick="alert('View model: ${model.name}')">
+                    <div class="model-image">Model Image</div>
+                    <div class="model-details">
+                        <h3 class="model-name">${model.name}</h3>
+                        <div class="model-agency">${model.agency}</div>
+                        <div class="model-stats">
+                            <span>${model.height}</span>
+                            <span>${model.measurements}</span>
+                        </div>
+                        <button class="project-action primary" onclick="event.stopPropagation(); alert('Start booking with ${model.name}')">
+                            Start Booking
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ===================================
+        // PROJECTS PAGE
+        // ===================================
+        function loadAllProjects() {
+            const grid = document.getElementById('allProjectsGrid');
+            grid.innerHTML = projects.map(project => createProjectCard(project)).join('');
+        }
+
+        function filterProjects(filter) {
+            // Update active tab
+            const tabs = document.querySelectorAll('.filter-tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Filter projects
+            let filtered = projects;
+            if (filter === 'active') {
+                filtered = projects.filter(p => p.status === 'active');
+            } else if (filter === 'archived') {
+                filtered = projects.filter(p => p.status === 'archived');
+            } else if (filter === 'pending') {
+                filtered = [];
+            }
+
+            const grid = document.getElementById('allProjectsGrid');
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📋</div><p>No ${filter} projects</p></div>`;
+            } else {
+                grid.innerHTML = filtered.map(project => createProjectCard(project)).join('');
+            }
+        }
+
+        // ===================================
+        // PROJECT DETAIL
+        // ===================================
+        function viewProject(projectId) {
+            selectedProject = projects.find(p => p.id === projectId);
+            navigateTo('projectDetail');
+        }
+
+        function loadProjectDetail() {
+            if (!selectedProject) return;
+
+            const isArchived = selectedProject.status === 'archived';
+            
+            document.getElementById('detailProjectName').textContent = selectedProject.name;
+            document.getElementById('detailModelName').textContent = selectedProject.modelName;
+            document.getElementById('detailAgency').textContent = selectedProject.agency;
+            document.getElementById('detailTier').textContent = selectedProject.tierName;
+            document.getElementById('detailStatus').textContent = 
+                isArchived ? 'Archived' : 'Active';
+            document.getElementById('detailTimeRemaining').textContent = selectedProject.timeRemaining;
+
+            // Show/hide alert
+            const alert = document.getElementById('projectAlert');
+            if (isArchived) {
+                alert.textContent = 'This project has expired. Request an extension to continue editing.';
+                alert.classList.remove('hidden');
+            } else {
+                alert.classList.add('hidden');
+            }
+
+            // Configure buttons
+            const btnGenerator = document.getElementById('btnEnterGenerator');
+            const btnStudio = document.getElementById('btnEnterStudio');
+            const btnExport = document.getElementById('btnExport');
+            const btnExtension = document.getElementById('btnExtension');
+
+            // Show appropriate entry buttons based on tier
+            if (selectedProject.tier === 3) {
+                btnGenerator.classList.add('hidden');
+                btnStudio.classList.remove('hidden');
+            } else {
+                btnGenerator.classList.remove('hidden');
+                btnStudio.classList.add('hidden');
+            }
+
+            // Disable buttons if archived
+            btnGenerator.disabled = isArchived;
+            btnStudio.disabled = isArchived;
+            btnExport.disabled = isArchived;
+            
+            // Show extension button only if archived
+            if (isArchived) {
+                btnExtension.classList.remove('hidden');
+                btnExtension.textContent = 'Request Extension';
+                btnExtension.onclick = () => alert('Extension request sent to agency');
+            } else {
+                btnExtension.classList.add('hidden');
+            }
+        }
+
+        function enterProject(projectId) {
+            selectedProject = projects.find(p => p.id === projectId);
+            if (selectedProject.tier === 3) {
+                navigateTo('studio');
+            } else {
+                navigateTo('generator');
+            }
+        }
+
+        // ===================================
+        // PRESET BUTTON INTERACTIONS
+        // ===================================
+        document.addEventListener('click', function(event) {
+            if (event.target.classList.contains('preset-button')) {
+                // Remove active class from siblings
+                const siblings = event.target.parentElement.querySelectorAll('.preset-button');
+                siblings.forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                event.target.classList.add('active');
+            }
+        });
+
+        // ===================================
+        // INITIALIZE
+        // ===================================
+        navigateTo('homepage');
+    </script>
+
+</body>
+</html>
