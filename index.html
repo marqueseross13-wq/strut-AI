@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strut AI - Book Models, Create with Digital Twins</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a0a 50%, #0a0a0a 100%);
+            color: #ffffff;
+            font-family: 'Helvetica Neue', 'Arial', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(220, 20, 60, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 60px;
+            z-index: 1000;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            color: #DC143C;
+            filter: drop-shadow(0 0 10px rgba(220, 20, 60, 0.5));
+        }
+
+        .logo-text {
+            font-size: 32px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #DC143C 0%, #ffffff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-items {
+            display: flex;
+            gap: 45px;
+            align-items: center;
+        }
+
+        .nav-items a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-items a:hover {
+            color: #DC143C;
+        }
+
+        .nav-items a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #DC143C;
+            transition: width 0.3s ease;
+        }
+
+        .nav-items a:hover::after {
+            width: 100%;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-secondary, .btn-primary {
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+        }
+
+        .btn-secondary:hover {
+            border-color: #DC143C;
+            background: rgba(220, 20, 60, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #DC143C, #8B0000);
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(220, 20, 60, 0.4);
+        }
+
+        /* Hero Storyboard */
+        .hero-storyboard {
+            margin-top: 80px;
+            height: calc(100vh - 80px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .storyboard-frame {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 80px;
+        }
+
+        .storyboard-frame.active {
+            opacity: 1;
+            z-index: 2;
+        }
+
+        .storyboard-content {
+            max-width: 1400px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 80px;
+        }
+
+        .storyboard-text {
+            flex: 1;
+            max-width: 600px;
+        }
+
+        .storyboard-text h1 {
+            font-size: 72px;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            letter-spacing: -2px;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, #DC143C 0%, #ffffff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .storyboard-text p {
+            font-size: 20px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 40px;
+        }
+
+        .storyboard-visual {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Frame 1: Galaxy of Talent */
+        .constellation-container {
+            width: 600px;
+            height: 600px;
+            position: relative;
+        }
+
+        .face-avatar {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, rgba(220, 20, 60, 0.3), rgba(255, 255, 255, 0.1));
+            border: 2px solid rgba(220, 20, 60, 0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            animation: facePulse 3s ease-in-out infinite;
+        }
+
+        @keyframes facePulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.6;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 1;
+                box-shadow: 0 0 20px rgba(220, 20, 60, 0.5);
+            }
+        }
+
+        /* Frame 2: Model Selection */
+        .model-selection-view {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .model-card-large {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(220, 20, 60, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            width: 300px;
+            transition: all 0.3s ease;
+        }
+
+        .model-card-large:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(220, 20, 60, 0.4);
+        }
+
+        .model-image-large {
+            width: 100%;
+            height: 350px;
+            background: linear-gradient(135deg, rgba(220, 20, 60, 0.2), rgba(0, 0, 0, 0.6));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 100px;
+            margin-bottom: 20px;
+        }
+
+        .model-info-large h3 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .model-info-large p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 15px;
+        }
+
+        .book-model-btn-large {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #DC143C, #8B0000);
+            border: none;
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .book-model-btn-large:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(220, 20, 60, 0.6);
+        }
+
+        /* Frame 3: Agency Approval */
+        .approval-flow {
+            display: flex;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .flow-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            width: 280px;
+            text-align: center;
+        }
+
+        .flow-card.pending {
+            border-color: rgba(255, 170, 0, 0.5);
+        }
+
+        .flow-card.approved {
+            border-color: rgba(0, 255, 0, 0.5);
+            animation: approvalGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes approvalGlow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(0, 255, 0, 0.6);
+            }
+        }
+
+        .flow-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .flow-arrow {
+            font-size: 48px;
+            color: #DC143C;
+            animation: arrowPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes arrowPulse {
+            0%, 100% {
+                transform: translateX(0);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translateX(10px);
+                opacity: 1;
+            }
+        }
+
+        /* Frame 4: Digital Twin Activation */
+        .twin-activation {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .twin-stage {
+            text-align: center;
+        }
+
+        .twin-portrait {
+            width: 250px;
+            height: 350px;
+            background: linear-gradient(135deg, rgba(220, 20, 60, 0.2), rgba(0, 0, 0, 0.6));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 100px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .twin-portrait.activated {
+            border: 3px solid #DC143C;
+            animation: twinGlow 2s ease-in-out infinite;
+        }
+
+        .twin-portrait.activated::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(220, 20, 60, 0.5), transparent);
+            animation: twinShine 3s ease-in-out infinite;
+        }
+
+        @keyframes twinGlow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(220, 20, 60, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 50px rgba(220, 20, 60, 0.8);
+            }
+        }
+
+        @keyframes twinShine {
+            0% {
+                left: -100%;
+            }
+            100% {
+                left: 200%;
+            }
+        }
+
+        .time-badge {
+            display: inline-block;
+            padding: 10px 20px;
+            background: rgba(220, 20, 60, 0.2);
+            border: 2px solid #DC143C;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* Frame 5: Studio in Action */
+        .studio-preview {
+            width: 700px;
+            height: 500px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid rgba(220, 20, 60, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            position: relative;
+        }
+
+        .studio-toolbar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .studio-tool {
+            padding: 10px 20px;
+            background: rgba(220, 20, 60, 0.2);
+            border: 1px solid rgba(220, 20, 60, 0.4);
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .studio-tool:hover {
+            background: rgba(220, 20, 60, 0.4);
+        }
+
+        .studio-viewport {
+            width: 100%;
+            height: 350px;
+            background: linear-gradient(135deg, rgba(220, 20, 60, 0.1), rgba(0, 0, 0, 0.5));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .watermark-demo {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            padding: 8px 15px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.6);
+            transform: rotate(-3deg);
+        }
+
+        /* Frame 6: Archived Mode */
+        .archive-view {
+            width: 700px;
+            position: relative;
+        }
+
+        .archive-banner {
+            background: rgba(255, 170, 0, 0.2);
+            border: 2px solid rgba(255, 170, 0, 0.5);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .archive-studio {
+            width: 100%;
+            height: 400px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            opacity: 0.6;
+            position: relative;
+        }
+
+        .archive-studio::before {
+            content: '🔒 View Only';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .archive-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .extend-btn {
+            flex: 1;
+            padding: 16px;
+            background: linear-gradient(135deg, #DC143C, #8B0000);
+            border: none;
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .extend-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(220, 20, 60, 0.6);
+        }
+
+        .view-renders-btn {
+            flex: 1;
+            padding: 16px;
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .view-renders-btn:hover {
+            border-color: #DC143C;
+            background: rgba(220, 20, 60, 0.1);
+        }
+
+        /* Storyboard Navigation */
+        .storyboard-nav {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 10;
+        }
+
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot.active {
+            background: #DC143C;
+            width: 40px;
+            border-radius: 6px;
+        }
+
+        /* Value Propositions Section */
+        .value-props {
+            padding: 120px 80px;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-header h2 {
+            font-size: 56px;
+            font-weight: 900;
+            margin-bottom: 20px;
+        }
+
+        .section-header p {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .props-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 50px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .prop-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 50px 40px;
+            transition: all 0.4s ease;
+        }
+
+        .prop-card:hover {
+            background: rgba(220, 20, 60, 0.05);
+            border-color: rgba(220, 20, 60, 0.5);
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(220, 20, 60, 0.2);
+        }
+
+        .prop-icon {
+            font-size: 64px;
+            margin-bottom: 30px;
+        }
+
+        .prop-card h3 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #DC143C;
+        }
+
+        .prop-card p {
+            font-size: 16px;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 120px 80px;
+        }
+
+        .steps-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+            margin-top: 60px;
+        }
+
+        .step {
+            position: relative;
+            text-align: center;
+        }
+
+        .step::after {
+            content: '→';
+            position: absolute;
+            top: 60px;
+            right: -40px;
+            font-size: 32px;
+            color: #DC143C;
+        }
+
+        .step:last-child::after {
+            display: none;
+        }
+
+        .step-number {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #DC143C, #8B0000);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: 900;
+            margin: 0 auto 25px;
+            box-shadow: 0 10px 30px rgba(220, 20, 60, 0.4);
+        }
+
+        .step h4 {
+            font-size: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .step p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.6;
+        }
+
+        /* Trust Section */
+        .trust-section {
+            padding: 120px 80px;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .trust-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+            margin-top: 60px;
+        }
+
+        .trust-item {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .trust-icon {
+            font-size: 56px;
+            margin-bottom: 20px;
+        }
+
+        .trust-item h4 {
+            font-size: 18px;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .trust-item p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.6;
+        }
+
+        /* Pricing Section */
+        .pricing-section {
+            padding: 120px 80px;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            max-width: 1300px;
+            margin: 0 auto;
+            margin-top: 60px;
+        }
+
+        .pricing-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 50px 40px;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .pricing-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(220, 20, 60, 0.5);
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(220, 20, 60, 0.2);
+        }
+
+        .pricing-card.featured {
+            border-color: #DC143C;
+            background: rgba(220, 20, 60, 0.05);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #DC143C, #8B0000);
+            color: #ffffff;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .pricing-card h3 {
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        .pricing-card .price {
+            font-size: 56px;
+            font-weight: 900;
+            color: #DC143C;
+            margin-bottom: 10px;
+        }
+
+        .pricing-card .price span {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 400;
+        }
+
+        .pricing-card .tokens {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .pricing-card ul {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+
+        .pricing-card ul li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pricing-card ul li::before {
+            content: '✓';
+            color: #DC143C;
+            font-weight: bold;
+        }
+
+        .pricing-btn {
+            width: 100%;
+            padding: 16px;
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .pricing-btn:hover {
+            background: linear-gradient(135deg, #DC143C, #8B0000);
+            border-color: transparent;
+        }
+
+        /* Final CTA */
+        .final-cta {
+            padding: 120px 80px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(220, 20, 60, 0.1), rgba(0, 0, 0, 0.5));
+        }
+
+        .final-cta h2 {
+            font-size: 56px;
+            font-weight: 900;
+            margin-bottom: 40px;
+        }
+
+        .final-cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .final-cta-btn {
+            padding: 20px 50px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .final-cta-btn.primary {
+            background: linear-gradient(135deg, #DC143C, #8B0000);
+            border: none;
+            color: #ffffff;
+        }
+
+        .final-cta-btn.primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(220, 20, 60, 0.5);
+        }
+
+        .final-cta-btn.secondary {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+        }
+
+        .final-cta-btn.secondary:hover {
+            border-color: #DC143C;
+            background: rgba(220, 20, 60, 0.1);
+        }
+
+        /* Footer */
+        .footer {
+            padding: 60px 80px 40px;
+            background: rgba(0, 0, 0, 0.8);
+            border-top: 1px solid rgba(220, 20, 60, 0.3);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand h3 {
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        .footer-brand p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.6;
+        }
+
+        .footer-links h4 {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: #DC143C;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links ul li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links ul li a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links ul li a:hover {
+            color: #DC143C;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 13px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .props-grid,
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .steps-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .trust-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .storyboard-content {
+                flex-direction: column;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <a href="index.html" class="logo">
+            <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+            </svg>
+            <span class="logo-text">STRUT AI</span>
+        </a>
+
+        <nav class="nav-items">
+            <a href="#how-it-works">How It Works</a>
+            <a href="#for-brands">For Brands</a>
+            <a href="#for-agencies">For Agencies</a>
+            <a href="#pricing">Pricing</a>
+            <div class="cta-buttons">
+                <button class="btn-secondary" onclick="window.location.href='browse-models.html'">Browse Models</button>
+                <button class="btn-primary" onclick="window.location.href='agency-portal.html'">Agency Portal</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Storyboard -->
+    <section class="hero-storyboard">
+        <!-- Frame 1: Galaxy of Talent -->
+        <div class="storyboard-frame active" data-frame="1">
+            <div class="storyboard-content">
+                <div class="storyboard-text">
+                    <h1>
+                        500 Models. <br>
+                        One Studio. <br>
+                        <span class="highlight">The Future of Fashion.</span>
+                    </h1>
+                    <p>Book real models through their agencies. Create with their digital twins. Professional campaigns without the photoshoot.</p>
+                </div>
+                <div class="storyboard-visual">
+                    <div class="constellation-container" id="constellation">
+                        <!-- Faces generated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Frame 2: Model Selection -->
+        <div class="storyboard-frame" data-frame="2">
+            <div class="storyboard-content">
+                <div class="storyboard-text">
+                    <h1>
+                        <span class="highlight">Book the Model.</span><br>
+                        Not the Twin.
+                    </h1>
+                    <p>Browse agency-represented talent. Request a booking. Get approved. The digital twin is your delivery method.</p>
+                </div>
+                <div class="storyboard-visual">
+                    <div class="model-selection-view">
+                        <div class="model-card-large">
+                            <div class="model-image-large">👤</div>
+                            <div class="model-info-large">
+                                <h3>Aria Thompson</h3>
+                                <p>Elite Model Management</p>
+                                <p style="margin-bottom: 20px;">5'10" • 34-24-35</p>
+                                <button class="book-model-btn-large">Book Aria</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Frame 3: Agency Approval -->
+        <div class="storyboard-frame" data-frame="3">
+            <div class="storyboard-content">
+                <div class="storyboard-text">
+                    <h1>
+                        Your Request.<br>
+                        <span class="highlight">Their Approval.</span><br>
+                        Complete Control.
+                    </h1>
+                    <p>Every booking goes to the agency. They approve terms, duration, and usage. Models and agencies stay in full control.</p>
+                </div>
+                <div class="storyboard-visual">
+                    <div class="approval-flow">
+                        <div class="flow-card pending">
+                            <div class="flow-icon">📤</div>
+                            <h4>Request Sent</h4>
+                            <p>Pending agency review</p>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-card approved">
+                            <div class="flow-icon">✓</div>
+                            <h4>Approved!</h4>
+                            <p>Twin activated</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Frame 4: Digital Twin Activation -->
+        <div class="storyboard-frame" data-frame="4">
+            <div class="storyboard-content">
+                <div class="storyboard-text">
+                    <h1>
+                        Approved. <br>
+                        <span class="highlight">Twin Activated</span><br>
+                        for 14 Days.
+                    </h1>
+                    <p>The digital twin unlocks in our studio. Time-limited. Usage-tracked. Agency-protected. Create unlimited visuals during your booking window.</p>
+                </div>
+                <div class="storyboard-visual">
+                    <div class="twin-activation">
+                        <div class="twin-stage">
+                            <div class="twin-portrait">👤</div>
+                            <p style="color: rgba(255,255,255,0.6);">Original Model</p>
+                        </div>
+                        <div style="font-size: 48px; color: #DC143C;">→</div>
+                        <div class="twin-stage">
+                            <div class="twin-portrait activated">✨</div>
+                            <div class="time-badge">14 Days Access</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Frame 5: Studio in Action -->
+        <div class="storyboard-frame" data-frame="5">
+            <div class="storyboard-content">
+                <div class="storyboard-text">
+                    <h1>
+                        <span class="highlight">Create. Control.</span><br>
+                        Export. Repeat.
+                    </h1>
+                    <p>Dress the twin. Adjust lighting. Change poses. Generate renders. Everything is watermarked and tracked. Professional studio power, zero friction.</p>
+                </div>
+                <div class="storyboard-visual">
+                    <div class="studio-preview">
+                        <div class="studio-toolbar">
+                            <div class="studio-tool">👗 Garments</div>
+                            <div class="studio-tool">💡 Lighting</div>
+                            <div class="studio-tool">🧍 Poses</div>
+                            <div class="studio-tool">📸 Render</div>
+                        </div>
+                        <div class="studio-viewport">
+                            <div style="font-size: 120px;">🎨</div>
+                            <div class="watermark-demo">
+                                STRUT AI<br>
+                                Model: M-1234 | Project: P-5678
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Frame 6: Archived Mode -->
+        <div class="storyboard-frame" data-frame="6">
+            <div class="storyboard-content">
+                <div class="storyboard-text">
+                    <h1>
+                        Time Ended. <br>
+                        <span class="highlight">Nothing Lost.</span><br>
+                        Extend Anytime.
+                    </h1>
+                    <p>When your booking expires, the project becomes view-only. Access past renders, review your work, or request an extension. Nothing is ever deleted.</p>
+                </div>
+                <div class="storyboard-visual">
+                    <div class="archive-view">
+                        <div class="archive-banner">
+                            ⏱️ Booking with Aria Thompson ended on Jan 15, 2026
+                        </div>
+                        <div class="archive-studio">
+                            <!-- Dimmed studio view -->
+                        </div>
+                        <div class="archive-actions">
+                            <button class="extend-btn">Extend Booking</button>
+                            <button class="view-renders-btn">View Past Renders</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Dots -->
+        <div class="storyboard-nav">
+            <div class="nav-dot active" onclick="goToFrame(1)"></div>
+            <div class="nav-dot" onclick="goToFrame(2)"></div>
+            <div class="nav-dot" onclick="goToFrame(3)"></div>
+            <div class="nav-dot" onclick="goToFrame(4)"></div>
+            <div class="nav-dot" onclick="goToFrame(5)"></div>
+            <div class="nav-dot" onclick="goToFrame(6)"></div>
+        </div>
+    </section>
+
+    <!-- Value Propositions -->
+    <section class="value-props" id="value-props">
+        <div class="section-header">
+            <h2><span class="highlight">Three Platforms.</span> One Ecosystem.</h2>
+            <p>Designed for brands, agencies, and models to work together seamlessly</p>
+        </div>
+
+        <div class="props-grid">
+            <!-- For Brands -->
+            <div class="prop-card" id="for-brands">
+                <div class="prop-icon">🎯</div>
+                <h3>For Brands</h3>
+                <p>Book models through their agencies, get instant studio access. Change garments, lighting, and poses unlimited times. Export publication-ready visuals in minutes, not weeks.</p>
+                <br>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">✓ Zero photoshoot costs</li>
+                    <li style="padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">✓ Unlimited iterations</li>
+                    <li style="padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">✓ Same-day turnaround</li>
+                    <li style="padding: 8px 0;">✓ Transparent token pricing</li>
+                </ul>
+            </div>
+
+            <!-- For Agencies -->
+            <div class="prop-card" id="for-agencies">
+                <div class="prop-icon">🏢</div>
+                <h3>For Agencies</h3>
+                <p>Your models work 24/7 without leaving home. You approve every booking. You see every usage. Time-limited access means recurring revenue streams.</p>
+                <br>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">✓ Full approval control</li>
+                    <li style="padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">✓ Complete visibility</li>
+                    <li style="padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">✓ Recurring bookings</li>
+                    <li style="padding: 8px 0;">✓ Protected IP always</li>
+                </ul>
+            </div>
+
+            <!-- For Models -->
+            <div class="prop-card">
+                <div class="prop-icon">✨</div>
+                <h3>For Models</h3>
+                <p>Get booked while you sleep. Your twin works for you. Approve bookings on your terms. Agency always protects you. Scale your career without scaling your schedule.</p>
+                <br>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">✓ Passive income streams</li>
+                    <li style="padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">✓ Full booking control</li>
+                    <li style="padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">✓ Agency oversight</li>
+                    <li style="padding: 8px 0;">✓ Work from anywhere</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="section-header">
+            <h2>How It <span class="highlight">Works</span></h2>
+            <p>From browse to export in four simple steps</p>
+        </div>
+
+        <div class="steps-container">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h4>Browse</h4>
+                <p>Explore 500+ models by agency, look, and availability</p>
+            </div>
+
+            <div class="step">
+                <div class="step-number">2</div>
+                <h4>Book</h4>
+                <p>Request booking. Agency approves. Access granted.</p>
+            </div>
+
+            <div class="step">
+                <div class="step-number">3</div>
+                <h4>Create</h4>
+                <p>Use digital twin in our studio. Unlimited iterations.</p>
+            </div>
+
+            <div class="step">
+                <div class="step-number">4</div>
+                <h4>Export</h4>
+                <p>Download approved visuals. Extend booking anytime.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust Section -->
+    <section class="trust-section">
+        <div class="section-header">
+            <h2>Built on <span class="highlight">Trust</span></h2>
+            <p>Protected by design. Transparent by default.</p>
+        </div>
+
+        <div class="trust-grid">
+            <div class="trust-item">
+                <div class="trust-icon">🔒</div>
+                <h4>Agency-Controlled</h4>
+                <p>Every booking requires agency approval. Models and agencies maintain full control.</p>
+            </div>
+
+            <div class="trust-item">
+                <div class="trust-icon">⏱️</div>
+                <h4>Time-Limited</h4>
+                <p>Access expires automatically. Extensions require approval. Recurring revenue model.</p>
+            </div>
+
+            <div class="trust-item">
+                <div class="trust-icon">🔍</div>
+                <h4>Fully Transparent</h4>
+                <p>See exactly what's created. Complete usage logs. Real-time dashboards.</p>
+            </div>
+
+            <div class="trust-item">
+                <div class="trust-icon">🏷️</div>
+                <h4>Watermarked</h4>
+                <p>All outputs tracked and protected. Model ID embedded. Forensic tracing.</p>
+            </div>
+
+            <div class="trust-item">
+                <div class="trust-icon">📊</div>
+                <h4>Usage Logs</h4>
+                <p>Complete audit trail. Export limits enforced. Policy violations flagged.</p>
+            </div>
+
+            <div class="trust-item">
+                <div class="trust-icon">🛡️</div>
+                <h4>IP Protected</h4>
+                <p>Twins never leave platform. No raw downloads. Agency-owned always.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing-section" id="pricing">
+        <div class="section-header">
+            <h2>Token-Based <span class="highlight">Pricing</span></h2>
+            <p>Transparent. Scalable. Pay for what you create.</p>
+        </div>
+
+        <div class="pricing-grid">
+            <!-- Starter -->
+            <div class="pricing-card">
+                <h3>Starter</h3>
+                <div class="price">$99<span>/month</span></div>
+                <div class="tokens">200 tokens/month</div>
+                <ul>
+                    <li>1-2 active bookings</li>
+                    <li>Basic studio access</li>
+                    <li>4K exports</li>
+                    <li>2D renders only</li>
+                    <li>Email support</li>
+                    <li>Standard watermarks</li>
+                </ul>
+                <button class="pricing-btn">Get Started</button>
+            </div>
+
+            <!-- Professional -->
+            <div class="pricing-card featured">
+                <div class="popular-badge">Most Popular</div>
+                <h3>Professional</h3>
+                <div class="price">$499<span>/month</span></div>
+                <div class="tokens">2,000 tokens/month</div>
+                <ul>
+                    <li>5-10 active bookings</li>
+                    <li>Full studio access</li>
+                    <li>4K & 8K exports</li>
+                    <li>2D & 3D renders</li>
+                    <li>Priority support</li>
+                    <li>Team collaboration (3 users)</li>
+                    <li>Custom colors & fabrics</li>
+                </ul>
+                <button class="pricing-btn">Get Started</button>
+            </div>
+
+            <!-- Enterprise -->
+            <div class="pricing-card">
+                <h3>Enterprise</h3>
+                <div class="price">$2,499<span>/month</span></div>
+                <div class="tokens">10,000 tokens/month</div>
+                <ul>
+                    <li>Unlimited bookings</li>
+                    <li><strong>Professional Studio</strong></li>
+                    <li>Up to 16K exports</li>
+                    <li>24/7 dedicated support</li>
+                    <li>API access</li>
+                    <li>Custom roles & permissions</li>
+                    <li>Audit logs & SSO</li>
+                    <li>White-label options</li>
+                </ul>
+                <button class="pricing-btn">Contact Sales</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="final-cta">
+        <h2>Ready to Transform <span class="highlight">Your Workflow?</span></h2>
+        <div class="final-cta-buttons">
+            <button class="final-cta-btn primary" onclick="window.location.href='browse-models.html'">Browse Models</button>
+            <button class="final-cta-btn secondary" onclick="window.location.href='agency-portal.html'">Partner With Us</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>STRUT AI</h3>
+                <p>The future of fashion visualization. Book real models, create with their digital twins, and produce professional campaigns without the photoshoot.</p>
+            </div>
+
+            <div class="footer-links">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="#how-it-works">How It Works</a></li>
+                    <li><a href="#pricing">Pricing</a></li>
+                    <li><a href="browse-models.html">Browse Models</a></li>
+                    <li><a href="#">API Documentation</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Press Kit</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            © 2026 Strut AI. All rights reserved. Digital twins remain property of their respective agencies and models.
+        </div>
+    </footer>
+
+    <script>
+        // Generate constellation of faces
+        function generateConstellation() {
+            const container = document.getElementById('constellation');
+            const numFaces = 50; // Visible subset of 500
+
+            for (let i = 0; i < numFaces; i++) {
+                const face = document.createElement('div');
+                face.className = 'face-avatar';
+                face.textContent = '👤';
+                
+                // Random positioning
+                const angle = (i / numFaces) * Math.PI * 2;
+                const radius = 150 + Math.random() * 150;
+                const x = 300 + Math.cos(angle) * radius;
+                const y = 300 + Math.sin(angle) * radius;
+                
+                face.style.left = x + 'px';
+                face.style.top = y + 'px';
+                face.style.animationDelay = (i * 0.05) + 's';
+                
+                container.appendChild(face);
+            }
+        }
+
+        // Storyboard auto-advance
+        let currentFrame = 1;
+        let autoAdvance = true;
+
+        function goToFrame(frameNum) {
+            autoAdvance = false; // Stop auto-advance when manually navigating
+            
+            // Update frames
+            document.querySelectorAll('.storyboard-frame').forEach((frame, index) => {
+                frame.classList.toggle('active', index + 1 === frameNum);
+            });
+
+            // Update dots
+            document.querySelectorAll('.nav-dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index + 1 === frameNum);
+            });
+
+            currentFrame = frameNum;
+        }
+
+        function autoAdvanceFrames() {
+            if (!autoAdvance) return;
+            
+            currentFrame++;
+            if (currentFrame > 6) {
+                currentFrame = 1;
+            }
+            
+            goToFrame(currentFrame);
+            autoAdvance = true; // Re-enable for next cycle
+        }
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', function() {
+            generateConstellation();
+            
+            // Auto-advance every 5 seconds
+            setInterval(autoAdvanceFrames, 5000);
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

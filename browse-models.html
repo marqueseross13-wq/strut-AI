@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Models - Strut AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a0a 50%, #0a0a0a 100%);
+            color: #ffffff;
+            font-family: 'Helvetica Neue', 'Arial', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(220, 20, 60, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 60px;
+            z-index: 1000;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .logo-text {
+            font-size: 32px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #DC143C 0%, #ffffff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-items {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .btn-primary {
+            padding: 12px 28px;
+            background: linear-gradient(135deg, #DC143C, #8B0000);
+            border: none;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(220, 20, 60, 0.4);
+        }
+
+        /* AI Booker Simulator */
+        .ai-booker-section {
+            margin-top: 120px;
+            padding: 60px 80px;
+            background: rgba(220, 20, 60, 0.05);
+            border-bottom: 2px solid rgba(220, 20, 60, 0.3);
+        }
+
+        .simulator-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .simulator-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .simulator-header h1 {
+            font-size: 56px;
+            font-weight: 900;
+            margin-bottom: 15px;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, #DC143C 0%, #ffffff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .simulator-header p {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .simulator-form {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(220, 20, 60, 0.3);
+            border-radius: 20px;
+            padding: 50px;
+            margin-bottom: 40px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 10px;
+        }
+
+        .form-group select,
+        .form-group input {
+            padding: 14px 18px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: #DC143C;
+            box-shadow: 0 0 15px rgba(220, 20, 60, 0.3);
+        }
+
+        .form-group-full {
+            grid-column: 1 / -1;
+        }
+
+        .simulate-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, #DC143C, #8B0000);
+            border: none;
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .simulate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(220, 20, 60, 0.6);
+        }
+
+        /* Results Section */
+        .results-section {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .results-section.show {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .results-header {
+            background: rgba(220, 20, 60, 0.1);
+            border: 2px solid rgba(220, 20, 60, 0.4);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .results-header h3 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #DC143C;
+        }
+
+        .results-header p {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .recommendations-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .recommendation-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .recommendation-card:hover {
+            border-color: rgba(220, 20, 60, 0.5);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(220, 20, 60, 0.3);
+        }
+
+        .rank-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #DC143C, #8B0000);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 900;
+            z-index: 2;
+        }
+
+        .model-image-rec {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, rgba(220, 20, 60, 0.2), rgba(0, 0, 0, 0.6));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 100px;
+        }
+
+        .model-info-rec {
+            padding: 25px;
+        }
+
+        .model-info-rec h4 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .model-info-rec .agency {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 15px;
+        }
+
+        .fit-scores {
+            margin-bottom: 20px;
+        }
+
+        .fit-score-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .fit-score-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .fit-score-value {
+            font-size: 14px;
+            font-weight: 700;
+            color: #DC143C;
+        }
+
+        .rationale {
+            background: rgba(220, 20, 60, 0.1);
+            border-left: 3px solid #DC143C;
+            padding: 12px;
+            margin-bottom: 15px;
+            font-size: 12px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .book-now-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #DC143C, #8B0000);
+            border: none;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .book-now-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(220, 20, 60, 0.5);
+        }
+
+        /* Filters & Browse Section */
+        .browse-section {
+            padding: 80px 80px 120px;
+        }
+
+        .browse-header {
+            max-width: 1400px;
+            margin: 0 auto 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .browse-header h2 {
+            font-size: 42px;
+            font-weight: 900;
+        }
+
+        .view-toggles {
+            display: flex;
+            gap: 10px;
+        }
+
+        .view-toggle {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .view-toggle.active {
+            background: #DC143C;
+            border-color: #DC143C;
+            color: #ffffff;
+        }
+
+        .filters-bar {
+            max-width: 1400px;
+            margin: 0 auto 40px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group select {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        /* Models Grid */
+        .models-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .model-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .model-card:hover {
+            border-color: rgba(220, 20, 60, 0.5);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(220, 20, 60, 0.3);
+        }
+
+        .model-image {
+            width: 100%;
+            height: 350px;
+            background: linear-gradient(135deg, rgba(220, 20, 60, 0.2), rgba(0, 0, 0, 0.6));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 100px;
+            position: relative;
+        }
+
+        .availability-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 6px 12px;
+            background: rgba(0, 255, 0, 0.2);
+            border: 1px solid rgba(0, 255, 0, 0.5);
+            border-radius: 15px;
+            font-size: 10px;
+            font-weight: 700;
+            color: #00ff00;
+            text-transform: uppercase;
+        }
+
+        .model-info {
+            padding: 25px;
+        }
+
+        .model-info h3 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .model-info .agency-name {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 15px;
+        }
+
+        .model-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 15px;
+            padding: 15px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .model-stats span {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+        }
+
+        .market-fit-score {
+            background: rgba(220, 20, 60, 0.1);
+            border-left: 3px solid #DC143C;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+
+        .market-fit-score .score-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 5px;
+        }
+
+        .market-fit-score .score-value {
+            font-size: 24px;
+            font-weight: 900;
+            color: #DC143C;
+        }
+
+        .book-btn {
+            width: 100%;
+            padding: 14px;
+            background: transparent;
+            border: 2px solid rgba(220, 20, 60, 0.5);
+            border-radius: 8px;
+            color: #DC143C;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .book-btn:hover {
+            background: linear-gradient(135deg, #DC143C, #8B0000);
+            border-color: transparent;
+            color: #ffffff;
+        }
+
+        /* Reverse Casting */
+        .reverse-casting {
+            padding: 80px 80px;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .reverse-casting-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .reverse-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .reverse-header h2 {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 15px;
+        }
+
+        .reverse-header p {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .upload-zone {
+            background: rgba(255, 255, 255, 0.03);
+            border: 3px dashed rgba(220, 20, 60, 0.4);
+            border-radius: 20px;
+            padding: 60px;
+            text-align: center;
+            margin-bottom: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-zone:hover {
+            background: rgba(220, 20, 60, 0.05);
+            border-color: #DC143C;
+        }
+
+        .upload-zone svg {
+            width: 80px;
+            height: 80px;
+            color: #DC143C;
+            margin-bottom: 20px;
+        }
+
+        .upload-zone h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .upload-zone p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 20px;
+        }
+
+        .upload-btn {
+            padding: 16px 32px;
+            background: linear-gradient(135deg, #DC143C, #8B0000);
+            border: none;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .brief-input {
+            width: 100%;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .brief-input:focus {
+            outline: none;
+            border-color: #DC143C;
+            box-shadow: 0 0 20px rgba(220, 20, 60, 0.3);
+        }
+
+        @media (max-width: 1024px) {
+            .form-grid,
+            .recommendations-grid,
+            .models-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <a href="index.html" class="logo">
+            <span class="logo-text">STRUT AI</span>
+        </a>
+        <nav class="nav-items">
+            <button class="btn-primary" onclick="window.location.href='index.html'">← Back to Home</button>
+        </nav>
+    </header>
+
+    <!-- AI Booker Simulator -->
+    <section class="ai-booker-section">
+        <div class="simulator-container">
+            <div class="simulator-header">
+                <h1><span class="highlight">AI Booker Simulator™</span></h1>
+                <p>Answer a few questions and we'll recommend the perfect models for your campaign</p>
+            </div>
+
+            <form class="simulator-form" id="simulatorForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Campaign Objective</label>
+                        <select id="objective">
+                            <option value="">Select objective...</option>
+                            <option value="brand-lift">Brand Awareness & Lift</option>
+                            <option value="sales">Direct Sales Conversion</option>
+                            <option value="engagement">Social Engagement</option>
+                            <option value="launch">Product Launch</option>
+                            <option value="repositioning">Brand Repositioning</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Target Market</label>
+                        <select id="market">
+                            <option value="">Select market...</option>
+                            <option value="us">United States</option>
+                            <option value="eu">European Union</option>
+                            <option value="uk">United Kingdom</option>
+                            <option value="apac">Asia-Pacific</option>
+                            <option value="latam">Latin America</option>
+                            <option value="global">Global</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Budget Range</label>
+                        <select id="budget">
+                            <option value="">Select budget...</option>
+                            <option value="5k-15k">$5,000 - $15,000</option>
+                            <option value="15k-50k">$15,000 - $50,000</option>
+                            <option value="50k-100k">$50,000 - $100,000</option>
+                            <option value="100k-250k">$100,000 - $250,000</option>
+                            <option value="250k+">$250,000+</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Platform Mix</label>
+                        <select id="platform">
+                            <option value="">Select primary platform...</option>
+                            <option value="social">Social Media (IG, TikTok)</option>
+                            <option value="digital">Digital Display & Programmatic</option>
+                            <option value="ooh">Out-of-Home (OOH)</option>
+                            <option value="tv">Television & Streaming</option>
+                            <option value="print">Print & Editorial</option>
+                            <option value="omni">Omnichannel</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group form-group-full">
+                        <label>Brand Values & Style</label>
+                        <input type="text" id="brandValues" placeholder="e.g., sustainable, luxury, inclusive, edgy, minimalist...">
+                    </div>
+
+                    <div class="form-group form-group-full">
+                        <label>Exclusions (Optional)</label>
+                        <input type="text" id="exclusions" placeholder="e.g., competing brands, specific aesthetics to avoid...">
+                    </div>
+                </div>
+
+                <button type="submit" class="simulate-btn">Generate Recommendations</button>
+            </form>
+
+            <!-- Results -->
+            <div class="results-section" id="resultsSection">
+                <div class="results-header">
+                    <h3>Top 5 Recommendations for Your Campaign</h3>
+                    <p>Based on your inputs, these models offer the highest ROI potential</p>
+                </div>
+
+                <div class="recommendations-grid" id="recommendationsGrid">
+                    <!-- Results populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reverse Casting -->
+    <section class="reverse-casting">
+        <div class="reverse-casting-container">
+            <div class="reverse-header">
+                <h2><span class="highlight">Reverse Casting</span></h2>
+                <p>Upload moodboards or describe your vision. We'll match you with perfect models.</p>
+            </div>
+
+            <div class="upload-zone" onclick="document.getElementById('moodboardUpload').click()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <h3>Upload Moodboard or Reference Images</h3>
+                <p>PNG, JPG, or PDF • Max 10MB per file</p>
+                <input type="file" id="moodboardUpload" multiple accept=".png,.jpg,.jpeg,.pdf" style="display: none;">
+                <button class="upload-btn">Choose Files</button>
+            </div>
+
+            <div class="form-group">
+                <label style="font-size: 13px; font-weight: 600; text-transform: uppercase; margin-bottom: 10px; display: block;">Or Describe Your Vision</label>
+                <textarea class="brief-input" placeholder="Example: Looking for models with editorial experience for a minimalist luxury brand. Need diverse representation, ages 20-30, with strong social presence. Campaign aesthetic is clean, modern, with neutral tones..."></textarea>
+            </div>
+
+            <button class="simulate-btn" style="margin-top: 20px;">Find Matching Models</button>
+        </div>
+    </section>
+
+    <!-- Browse All Models -->
+    <section class="browse-section">
+        <div class="browse-header">
+            <h2><span class="highlight">All Models</span></h2>
+            <div class="view-toggles">
+                <button class="view-toggle active">Grid View</button>
+                <button class="view-toggle">List View</button>
+            </div>
+        </div>
+
+        <div class="filters-bar">
+            <div class="filter-group">
+                <select>
+                    <option value="">All Agencies</option>
+                    <option value="elite">Elite Model Management</option>
+                    <option value="img">IMG Models</option>
+                    <option value="wilhelmina">Wilhelmina Models</option>
+                    <option value="next">Next Management</option>
+                    <option value="ford">Ford Models</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <select>
+                    <option value="">All Markets</option>
+                    <option value="luxury">Luxury Beauty</option>
+                    <option value="commercial">Commercial</option>
+                    <option value="editorial">Editorial</option>
+                    <option value="athletic">Athletic/Sportswear</option>
+                    <option value="genz">Gen Z Digital</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <select>
+                    <option value="">Sort By</option>
+                    <option value="fit-score">Highest Market Fit</option>
+                    <option value="availability">Availability</option>
+                    <option value="recent">Recently Added</option>
+                    <option value="popular">Most Booked</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <select>
+                    <option value="">Availability</option>
+                    <option value="available">Available Now</option>
+                    <option value="upcoming">Available Soon</option>
+                    <option value="all">Show All</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="models-grid">
+            <!-- Model Card 1 -->
+            <div class="model-card" onclick="openModelDetail(1)">
+                <div class="model-image">
+                    👤
+                    <span class="availability-badge">Available</span>
+                </div>
+                <div class="model-info">
+                    <h3>Aria Thompson</h3>
+                    <p class="agency-name">Elite Model Management</p>
+                    
+                    <div class="market-fit-score">
+                        <div class="score-label">Market Fit Score™</div>
+                        <div class="score-value">91%</div>
+                    </div>
+
+                    <div class="model-stats">
+                        <span>Height: 5'10"</span>
+                        <span>Bust: 34"</span>
+                        <span>Waist: 24"</span>
+                        <span>Hips: 35"</span>
+                    </div>
+
+                    <button class="book-btn">Book Aria</button>
+                </div>
+            </div>
+
+            <!-- Model Card 2 -->
+            <div class="model-card" onclick="openModelDetail(2)">
+                <div class="model-image">
+                    👤
+                    <span class="availability-badge">Available</span>
+                </div>
+                <div class="model-info">
+                    <h3>Marcus Chen</h3>
+                    <p class="agency-name">IMG Models</p>
+                    
+                    <div class="market-fit-score">
+                        <div class="score-label">Market Fit Score™</div>
+                        <div class="score-value">88%</div>
+                    </div>
+
+                    <div class="model-stats">
+                        <span>Height: 6'2"</span>
+                        <span>Chest: 40"</span>
+                        <span>Waist: 32"</span>
+                        <span>Shoe: 11</span>
+                    </div>
+
+                    <button class="book-btn">Book Marcus</button>
+                </div>
+            </div>
+
+            <!-- Model Card 3 -->
+            <div class="model-card" onclick="openModelDetail(3)">
+                <div class="model-image">
+                    👤
+                    <span class="availability-badge">Available</span>
+                </div>
+                <div class="model-info">
+                    <h3>Sofia Rodriguez</h3>
+                    <p class="agency-name">The Society Management</p>
+                    
+                    <div class="market-fit-score">
+                        <div class="score-label">Market Fit Score™</div>
+                        <div class="score-value">93%</div>
+                    </div>
+
+                    <div class="model-stats">
+                        <span>Height: 5'9"</span>
+                        <span>Bust: 32"</span>
+                        <span>Waist: 23"</span>
+                        <span>Hips: 34"</span>
+                    </div>
+
+                    <button class="book-btn">Book Sofia</button>
+                </div>
+            </div>
+
+            <!-- Model Card 4 -->
+            <div class="model-card" onclick="openModelDetail(4)">
+                <div class="model-image">
+                    👤
+                    <span class="availability-badge">Available</span>
+                </div>
+                <div class="model-info">
+                    <h3>Isabella Laurent</h3>
+                    <p class="agency-name">Wilhelmina Models</p>
+                    
+                    <div class="market-fit-score">
+                        <div class="score-label">Market Fit Score™</div>
+                        <div class="score-value">89%</div>
+                    </div>
+
+                    <div class="model-stats">
+                        <span>Height: 5'11"</span>
+                        <span>Bust: 35"</span>
+                        <span>Waist: 25"</span>
+                        <span>Hips: 36"</span>
+                    </div>
+
+                    <button class="book-btn">Book Isabella</button>
+                </div>
+            </div>
+
+            <!-- Model Card 5 -->
+            <div class="model-card" onclick="openModelDetail(5)">
+                <div class="model-image">
+                    👤
+                    <span class="availability-badge">Available</span>
+                </div>
+                <div class="model-info">
+                    <h3>Kai Anderson</h3>
+                    <p class="agency-name">Next Management</p>
+                    
+                    <div class="market-fit-score">
+                        <div class="score-label">Market Fit Score™</div>
+                        <div class="score-value">86%</div>
+                    </div>
+
+                    <div class="model-stats">
+                        <span>Height: 6'1"</span>
+                        <span>Chest: 40"</span>
+                        <span>Waist: 32"</span>
+                        <span>Shoe: 11.5</span>
+                    </div>
+
+                    <button class="book-btn">Book Kai</button>
+                </div>
+            </div>
+
+            <!-- Model Card 6 -->
+            <div class="model-card" onclick="openModelDetail(6)">
+                <div class="model-image">
+                    👤
+                    <span class="availability-badge">Available</span>
+                </div>
+                <div class="model-info">
+                    <h3>Luna Kim</h3>
+                    <p class="agency-name">Ford Models</p>
+                    
+                    <div class="market-fit-score">
+                        <div class="score-label">Market Fit Score™</div>
+                        <div class="score-value">92%</div>
+                    </div>
+
+                    <div class="model-stats">
+                        <span>Height: 5'10"</span>
+                        <span>Bust: 33"</span>
+                        <span>Waist: 24"</span>
+                        <span>Hips: 34"</span>
+                    </div>
+
+                    <button class="book-btn">Book Luna</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // AI Booker Simulator
+        document.getElementById('simulatorForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const objective = document.getElementById('objective').value;
+            const market = document.getElementById('market').value;
+            const budget = document.getElementById('budget').value;
+            const platform = document.getElementById('platform').value;
+
+            if (!objective || !market || !budget || !platform) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            // Generate recommendations
+            const recommendations = [
+                {
+                    rank: 1,
+                    name: 'Aria Thompson',
+                    agency: 'Elite Model Management',
+                    image: '👤',
+                    fitScores: {
+                        'Campaign Objective': '94%',
+                        'Target Market': '91%',
+                        'Platform Performance': '88%',
+                        'Brand Alignment': '93%'
+                    },
+                    rationale: `Aria excels in ${platform} campaigns with proven ROI in ${market} markets. Her aesthetic aligns perfectly with your brand values, and she has strong engagement metrics for ${objective} objectives.`,
+                    estimate: '$12,000 - $18,000'
+                },
+                {
+                    rank: 2,
+                    name: 'Sofia Rodriguez',
+                    agency: 'The Society Management',
+                    image: '👤',
+                    fitScores: {
+                        'Campaign Objective': '92%',
+                        'Target Market': '89%',
+                        'Platform Performance': '91%',
+                        'Brand Alignment': '90%'
+                    },
+                    rationale: `Sofia's portfolio demonstrates exceptional performance in similar campaigns. Her demographic reach aligns with your target market, and her booking history shows consistent delivery.`,
+                    estimate: '$10,000 - $15,000'
+                },
+                {
+                    rank: 3,
+                    name: 'Luna Kim',
+                    agency: 'Ford Models',
+                    image: '👤',
+                    fitScores: {
+                        'Campaign Objective': '90%',
+                        'Target Market': '93%',
+                        'Platform Performance': '87%',
+                        'Brand Alignment': '89%'
+                    },
+                    rationale: `Luna offers strong regional performance in ${market} with emerging presence in digital channels. Cost-effective option with high growth trajectory.`,
+                    estimate: '$8,000 - $12,000'
+                },
+                {
+                    rank: 4,
+                    name: 'Marcus Chen',
+                    agency: 'IMG Models',
+                    image: '👤',
+                    fitScores: {
+                        'Campaign Objective': '88%',
+                        'Target Market': '87%',
+                        'Platform Performance': '90%',
+                        'Brand Alignment': '86%'
+                    },
+                    rationale: `Marcus brings strong editorial credentials and cross-platform appeal. His versatility makes him ideal for omnichannel campaigns.`,
+                    estimate: '$11,000 - $16,000'
+                },
+                {
+                    rank: 5,
+                    name: 'Isabella Laurent',
+                    agency: 'Wilhelmina Models',
+                    image: '👤',
+                    fitScores: {
+                        'Campaign Objective': '87%',
+                        'Target Market': '88%',
+                        'Platform Performance': '85%',
+                        'Brand Alignment': '88%'
+                    },
+                    rationale: `Isabella's refined aesthetic and proven track record in luxury campaigns make her a strong alternative. Premium positioning with established credibility.`,
+                    estimate: '$13,000 - $19,000'
+                }
+            ];
+
+            // Populate results
+            const grid = document.getElementById('recommendationsGrid');
+            grid.innerHTML = '';
+
+            recommendations.forEach(rec => {
+                const card = document.createElement('div');
+                card.className = 'recommendation-card';
+                card.innerHTML = `
+                    <div class="rank-badge">#${rec.rank}</div>
+                    <div class="model-image-rec">${rec.image}</div>
+                    <div class="model-info-rec">
+                        <h4>${rec.name}</h4>
+                        <p class="agency">${rec.agency}</p>
+                        
+                        <div class="fit-scores">
+                            ${Object.entries(rec.fitScores).map(([key, value]) => `
+                                <div class="fit-score-item">
+                                    <span class="fit-score-label">${key}</span>
+                                    <span class="fit-score-value">${value}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <div class="rationale">
+                            <strong>Why this model:</strong> ${rec.rationale}
+                        </div>
+
+                        <p style="font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 15px;">
+                            Estimated Rate: ${rec.estimate}
+                        </p>
+
+                        <button class="book-now-btn" onclick="bookModel('${rec.name}')">
+                            Book ${rec.name.split(' ')[0]}
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            // Show results
+            document.getElementById('resultsSection').classList.add('show');
+            
+            // Scroll to results
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+
+        function bookModel(modelName) {
+            alert(`Booking request initiated for ${modelName}!\n\nNext steps:\n1. Complete booking details\n2. Agency approval (24-48h)\n3. Studio access granted`);
+            window.location.href = 'booking-flow.html?model=' + encodeURIComponent(modelName);
+        }
+
+        function openModelDetail(modelId) {
+            window.location.href = 'model-detail.html?id=' + modelId;
+        }
+
+        // File upload handler
+        document.getElementById('moodboardUpload').addEventListener('change', function(e) {
+            const files = e.target.files;
+            if (files.length > 0) {
+                alert(`${files.length} file(s) uploaded. Processing moodboard to find matching models...`);
+            }
+        });
+    </script>
+</body>
+</html>
