@@ -1,0 +1,2146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strut AI - Digital Fashion Studio</title>
+    
+    <!-- External CSS - Dark Mode by default -->
+    <link rel="stylesheet" href="strut-dark.css" id="themeStylesheet">
+</head>
+<body>
+<body>
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <a href="#" onclick="goToHome(); return false;" style="display: flex; align-items: center; text-decoration: none; cursor: pointer;">
+                <span style="font-family: 'Georgia', 'Times New Roman', serif; font-size: 32px; font-weight: 400; color: #ffffff; letter-spacing: 0.5px;">
+                    Strut<span style="color: #DC143C; font-size: 40px; line-height: 0; position: relative; top: -8px;">.</span><span style="margin-left: 4px;">AI</span>
+                </span>
+            </a>
+        </div>
+
+        <nav class="nav-items">
+            <a href="#studio" onclick="showStudioProjects(); return false;">Pro Studio</a>
+            <a href="#book-models" onclick="showBookModelsModal(); return false;">Book Twin</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#projects" onclick="showProjectsPage(); return false;">My Projects</a>
+            <button class="login-btn" onclick="showAuthModal()">Login / Sign Up</button>
+        </nav>
+
+        <button class="menu-btn" onclick="toggleMenu()">☰</button>
+    </header>
+
+    <!-- Side Menu -->
+    <div class="side-menu" id="sideMenu">
+        <div class="menu-content">
+            <!-- Support & Help Section -->
+            <div class="menu-section">
+                <h3>Support & Help</h3>
+                <div class="menu-link" onclick="openLiveChat()">
+                    <span class="menu-icon">💬</span>
+                    <span>Live Chat Support</span>
+                </div>
+                <div class="menu-link" onclick="openEmailSupport()">
+                    <span class="menu-icon">📧</span>
+                    <span>Email Support</span>
+                </div>
+                <div class="menu-link" onclick="window.open('https://docs.strutai.com', '_blank')">
+                    <span class="menu-icon">📚</span>
+                    <span>Documentation</span>
+                </div>
+                <div class="menu-link" onclick="window.open('https://help.strutai.com', '_blank')">
+                    <span class="menu-icon">❓</span>
+                    <span>Help Center</span>
+                </div>
+                <div class="menu-link" onclick="openTutorials()">
+                    <span class="menu-icon">🎥</span>
+                    <span>Video Tutorials</span>
+                </div>
+            </div>
+
+            <!-- Agency Portal Section - NEW -->
+            <div class="menu-section">
+                <h3>For Agencies</h3>
+                <div class="menu-link" onclick="openAgencyPortal()">
+                    <span class="menu-icon">🏢</span>
+                    <span>Agency Portal</span>
+                </div>
+                <div class="menu-link" onclick="showToast('Partner program coming soon!', 'info')">
+                    <span class="menu-icon">🤝</span>
+                    <span>Become a Partner</span>
+                </div>
+            </div>
+
+            <!-- About Section -->
+            <div class="menu-section">
+                <h3>About</h3>
+                <div class="menu-link" onclick="showAboutPage()">
+                    <span class="menu-icon">ℹ️</span>
+                    <span>About Strut AI</span>
+                </div>
+                <div class="menu-link" onclick="window.open('https://blog.strutai.com', '_blank')">
+                    <span class="menu-icon">📝</span>
+                    <span>Blog</span>
+                </div>
+                <div class="menu-link" onclick="showWhatsNew()">
+                    <span class="menu-icon">✨</span>
+                    <span>What's New</span>
+                </div>
+                <div class="menu-link" onclick="window.open('https://careers.strutai.com', '_blank')">
+                    <span class="menu-icon">💼</span>
+                    <span>Careers</span>
+                </div>
+                <div class="menu-link" onclick="contactUs()">
+                    <span class="menu-icon">📞</span>
+                    <span>Contact Us</span>
+                </div>
+            </div>
+
+            <!-- Settings Section -->
+            <div class="menu-section">
+                <h3>Settings</h3>
+                <div class="menu-link" onclick="showSettingsModal()">
+                    <span class="menu-icon">⚙️</span>
+                    <span>User Preferences</span>
+                </div>
+                <div class="menu-link" onclick="showAccountSettings()">
+                    <span class="menu-icon">👤</span>
+                    <span>Account Settings</span>
+                </div>
+                <div class="menu-link" onclick="showNotificationSettings()">
+                    <span class="menu-icon">🔔</span>
+                    <span>Notifications</span>
+                </div>
+                <div class="menu-link" onclick="showBilling()">
+                    <span class="menu-icon">💳</span>
+                    <span>Billing & Subscription</span>
+                </div>
+                <div class="menu-link" onclick="showTerms()">
+                    <span class="menu-icon">📄</span>
+                    <span>Terms of Service</span>
+                </div>
+                <div class="menu-link" onclick="showPrivacy()">
+                    <span class="menu-icon">🔒</span>
+                    <span>Privacy Policy</span>
+                </div>
+            </div>
+
+            <div class="menu-footer">
+                <div class="app-version">Strut AI v1.0.0</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="heroSection">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                The Future of
+                <span class="highlight"> Fashion Visualization</span>
+            </h1>
+            <p class="hero-description">
+                Book real models or create with their AI-powered digital twins. Professional-grade renders for agencies and brands worldwide.
+            </p>
+            <div class="hero-cta">
+                <button class="cta-primary" onclick="startCreating()">
+                    ✨ Start Creating
+                </button>
+                <button class="cta-secondary" onclick="scrollToPricing()">
+                    View Pricing
+                </button>
+            </div>
+        </div>
+        
+        <div class="hero-visual">
+            <div class="visual-card card-1">
+                <div class="video-container">
+                    <img src="https://i.imgur.com/Qd94gG7.gif" alt="500+ Models Showcase" id="modelsGif">
+                </div>
+                <div class="card-title">500+ MODELS</div>
+            </div>
+            <div class="visual-card card-2">
+                <div class="twin-container">
+                    <img src="https://i.imgur.com/Qsmbfpr.gif" alt="AI Digital Twin Transformation" style="width: 100%; height: auto; border-radius: 10px; border: 2px solid rgba(220, 20, 60, 0.3);">
+                </div>
+                <div class="card-title">AI DIGITAL TWINS</div>
+            </div>
+            <div class="visual-card card-3">
+                <div class="render-showcase">
+                    <div class="render-box">
+                        <div class="render-visual render-2d-image">
+                            <img src="https://i.imgur.com/rbrE0zf.jpeg" alt="2D Render" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+                        </div>
+                        <div class="render-label">2D</div>
+                    </div>
+                    <div class="render-box">
+                        <div class="render-visual render-3d-image">
+                            <img src="https://i.imgur.com/soUISDp.jpeg" alt="3D Render" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+                        </div>
+                        <div class="render-label">3D</div>
+                    </div>
+                </div>
+                <div class="card-title">2D & 3D RENDERS</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Subscription Section -->
+    <section class="subscription-section" id="pricing">
+        <h2 class="section-title">Token-Based Subscriptions</h2>
+        <p class="section-subtitle">Choose the plan that scales with your creative needs</p>
+        
+        <div class="tier-grid">
+            <div class="tier-card">
+                <h3 class="tier-name">Starter</h3>
+                <div class="tier-price">$49<span>/month</span></div>
+                <div class="tier-tokens">100 tokens/month</div>
+                <div style="padding: 10px; background: rgba(255, 255, 255, 0.05); border-radius: 8px; margin: 15px 0; font-size: 12px; font-weight: 700; color: #DC143C; text-align: center;">BASIC STUDIO ACCESS</div>
+                <ul class="tier-features">
+                    <li>2D renders only</li>
+                    <li>5 digital twins</li>
+                    <li>Basic prompting</li>
+                    <li>6 preset colors</li>
+                    <li>3 fabric options</li>
+                    <li>Standard poses</li>
+                    <li>Email support</li>
+                    <li>4K exports</li>
+                </ul>
+                <button class="tier-btn">Get Started</button>
+            </div>
+
+            <div class="tier-card popular">
+                <div class="popular-badge">Most Popular</div>
+                <h3 class="tier-name">Professional</h3>
+                <div class="tier-price">$149<span>/month</span></div>
+                <div class="tier-tokens">500 tokens/month</div>
+                <div style="padding: 10px; background: rgba(255, 255, 255, 0.05); border-radius: 8px; margin: 15px 0; font-size: 12px; font-weight: 700; color: #DC143C; text-align: center;">BASIC STUDIO ACCESS</div>
+                <ul class="tier-features">
+                    <li>2D & 3D renders</li>
+                    <li>20 digital twins</li>
+                    <li>Advanced prompting</li>
+                    <li>Custom colors</li>
+                    <li>6 fabric options</li>
+                    <li>More poses</li>
+                    <li>Priority support</li>
+                    <li>4K & 8K exports</li>
+                    <li>Collaboration (3 users)</li>
+                </ul>
+                <button class="tier-btn">Get Started</button>
+            </div>
+
+            <div class="tier-card">
+                <h3 class="tier-name">Enterprise</h3>
+                <div class="tier-price">$499<span>/month</span></div>
+                <div class="tier-tokens">Unlimited tokens</div>
+                <div style="padding: 10px; background: linear-gradient(135deg, #DC143C, #8B0000); border-radius: 8px; margin: 15px 0; font-size: 12px; font-weight: 900; color: #ffffff; text-align: center; letter-spacing: 1px;">⭐ PRO STUDIO ACCESS ⭐</div>
+                <ul class="tier-features">
+                    <li><strong>Full Professional Studio</strong></li>
+                    <li>Advanced garment editor</li>
+                    <li>Full body customization</li>
+                    <li>30+ poses & animations</li>
+                    <li>Professional lighting</li>
+                    <li>Batch export tools</li>
+                    <li>Team collaboration</li>
+                    <li>Unlimited renders & twins</li>
+                    <li>API access</li>
+                    <li>24/7 support</li>
+                    <li>16K exports</li>
+                </ul>
+                <button class="tier-btn">Get Started</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Progress Steps -->
+    <div class="progress-container" id="progressContainer">
+        <div class="progress-steps">
+            <div class="progress-step active" onclick="goToStep(0)">
+                <div class="step-icon">👤</div>
+                <div class="step-info">
+                    <h4>Select Model</h4>
+                    <p>Choose from our roster or use digital twin</p>
+                </div>
+            </div>
+            <div class="progress-step" onclick="goToStep(1)">
+                <div class="step-icon">📤</div>
+                <div class="step-info">
+                    <h4>Add Clothing</h4>
+                    <p>Upload garments and accessories</p>
+                </div>
+            </div>
+            <div class="progress-step" onclick="goToStep(2)">
+                <div class="step-icon">🎨</div>
+                <div class="step-info">
+                    <h4>Configure Scene</h4>
+                    <p>Set environment and prompts</p>
+                </div>
+            </div>
+            <div class="progress-step" onclick="goToStep(3)">
+                <div class="step-icon">👁️</div>
+                <div class="step-info">
+                    <h4>Preview & Export</h4>
+                    <p>Review and finalize your creation</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Step 1: Select Model -->
+        <div class="step-content active" id="step0">
+            <h2 class="step-title">Select Your Model</h2>
+            <p class="step-subtitle">Choose from available models or book their digital twin</p>
+            
+            <div class="model-grid">
+                <div class="model-card" onclick="selectModel(1)">
+                    <div class="model-image">
+                        <img src="https://i.imgur.com/zCukqmO.png" alt="Aria Thompson" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+                    </div>
+                    <h3 class="model-name">Aria Thompson</h3>
+                    <p class="model-agency">Elite Model Management</p>
+                    <div class="model-stats">
+                        <span>height: 5'10"</span>
+                        <span>bust: 34"</span>
+                        <span>waist: 24"</span>
+                        <span>hips: 35"</span>
+                    </div>
+                    <div class="model-availability">
+                        <span class="available">Available for booking</span>
+                    </div>
+                </div>
+
+                <div class="model-card" onclick="selectModel(2)">
+                    <div class="model-image">👤</div>
+                    <h3 class="model-name">Marcus Chen</h3>
+                    <p class="model-agency">IMG Models</p>
+                    <div class="model-stats">
+                        <span>height: 6'2"</span>
+                        <span>chest: 40"</span>
+                        <span>waist: 32"</span>
+                        <span>shoe: 11</span>
+                    </div>
+                    <div class="model-availability">
+                        <span class="unavailable">Digital Twin Available</span>
+                    </div>
+                </div>
+
+                <div class="model-card" onclick="selectModel(3)">
+                    <div class="model-image">👤</div>
+                    <h3 class="model-name">Sofia Rodriguez</h3>
+                    <p class="model-agency">The Society Management</p>
+                    <div class="model-stats">
+                        <span>height: 5'9"</span>
+                        <span>bust: 32"</span>
+                        <span>waist: 23"</span>
+                        <span>hips: 34"</span>
+                    </div>
+                    <div class="model-availability">
+                        <span class="available">Available for booking</span>
+                    </div>
+                </div>
+
+                <div class="model-card" onclick="selectModel(4)">
+                    <div class="model-image">👤</div>
+                    <h3 class="model-name">Jamal Williams</h3>
+                    <p class="model-agency">Women Management</p>
+                    <div class="model-stats">
+                        <span>height: 6'1"</span>
+                        <span>chest: 42"</span>
+                        <span>waist: 33"</span>
+                        <span>shoe: 12</span>
+                    </div>
+                    <div class="model-availability">
+                        <span class="available">Available for booking</span>
+                    </div>
+                </div>
+
+                <div class="model-card" onclick="selectModel(5)">
+                    <div class="model-image">👤</div>
+                    <h3 class="model-name">Isabella Laurent</h3>
+                    <p class="model-agency">Caribbean Talent Agency</p>
+                    <div class="model-stats">
+                        <span>height: 5'11"</span>
+                        <span>bust: 35"</span>
+                        <span>waist: 25"</span>
+                        <span>hips: 36"</span>
+                    </div>
+                    <div class="model-availability">
+                        <span class="unavailable">Digital Twin Available</span>
+                    </div>
+                </div>
+
+                <div class="model-card" onclick="selectModel(6)">
+                    <div class="model-image">👤</div>
+                    <h3 class="model-name">Dante Morrison</h3>
+                    <p class="model-agency">Elite Model Management</p>
+                    <div class="model-stats">
+                        <span>height: 6'0"</span>
+                        <span>chest: 39"</span>
+                        <span>waist: 31"</span>
+                        <span>shoe: 10.5</span>
+                    </div>
+                    <div class="model-availability">
+                        <span class="available">Available for booking</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="continue-btn" id="continueBtn0" style="display:none;" onclick="nextStep()">
+                Continue to Clothing →
+            </button>
+        </div>
+
+        <!-- Step 2: Add Clothing -->
+        <div class="step-content" id="step1">
+            <h2 class="step-title">Add Clothing & Accessories</h2>
+            <p class="step-subtitle">Upload garment files or select from our catalog</p>
+            
+            <div class="upload-section">
+                <div class="upload-zone">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#DC143C" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    <h3>Drag & Drop Files</h3>
+                    <p>Support for .obj, .fbx, .gltf, .png, .jpg</p>
+                    <input type="file" id="fileInput" multiple accept=".obj,.fbx,.gltf,.png,.jpg,.jpeg" style="display: none;">
+                    <button class="upload-btn" onclick="document.getElementById('fileInput').click()">Browse Files</button>
+                </div>
+
+                <div class="catalog-preview">
+                    <h3>Recent Uploads</h3>
+                    <div class="upload-items">
+                        <div class="upload-item">
+                            <div class="item-icon">👔</div>
+                            <span>Black_Blazer_v2.obj</span>
+                        </div>
+                        <div class="upload-item">
+                            <div class="item-icon">👗</div>
+                            <span>Summer_Dress.gltf</span>
+                        </div>
+                        <div class="upload-item">
+                            <div class="item-icon">👠</div>
+                            <span>Heels_Collection.fbx</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="continue-btn" onclick="nextStep()">
+                Continue to Scene Setup →
+            </button>
+        </div>
+
+        <!-- Step 3: Configure Scene -->
+        <div class="step-content" id="step2">
+            <h2 class="step-title">Configure Your Scene</h2>
+            <p class="step-subtitle">Choose your environment and define the creative direction</p>
+
+            <div class="scene-config">
+                <div class="environment-selector">
+                    <h3>Environment</h3>
+                    <div class="env-buttons">
+                        <button class="active" onclick="setEnvironment('2D')">2D Render</button>
+                        <button onclick="setEnvironment('3D')">3D Interactive</button>
+                    </div>
+                </div>
+
+                <div class="animation-controls">
+                    <h3>Model Actions</h3>
+                    <div class="action-buttons">
+                        <button>▶️ Walk</button>
+                        <button>⚡ Runway</button>
+                        <button>🔄 Turn 360°</button>
+                    </div>
+                </div>
+
+                <div class="prompt-selector">
+                    <h3>Prompting Mode</h3>
+                    <div class="prompt-modes">
+                        <button class="active" onclick="setPromptMode('advanced')">Advanced Prompt</button>
+                        <button onclick="setPromptMode('questionnaire')">Questionnaire</button>
+                    </div>
+                </div>
+
+                <div class="advanced-prompt active" id="advancedPrompt">
+                    <textarea placeholder="Describe your scene in natural language... Example: 'Model walking down a modern urban runway with dramatic lighting, wearing a black blazer, confident expression, hands in pockets, city skyline in background'" rows="6"></textarea>
+                </div>
+
+                <div class="questionnaire" id="questionnairePrompt">
+                    <div class="question-group">
+                        <label>Background Setting</label>
+                        <input type="text" placeholder="e.g., Studio white, Urban street, Beach sunset">
+                    </div>
+                    <div class="question-group">
+                        <label>Pose & Stance</label>
+                        <select>
+                            <option value="">Select pose...</option>
+                            <option value="standing">Standing - Neutral</option>
+                            <option value="walking">Walking - Dynamic</option>
+                            <option value="seated">Seated - Relaxed</option>
+                            <option value="runway">Runway - Confident</option>
+                            <option value="editorial">Editorial - Dramatic</option>
+                        </select>
+                    </div>
+                    <div class="question-group">
+                        <label>Facial Expression</label>
+                        <select>
+                            <option value="">Select expression...</option>
+                            <option value="neutral">Neutral - Professional</option>
+                            <option value="smiling">Smiling - Warm</option>
+                            <option value="serious">Serious - Intense</option>
+                            <option value="confident">Confident - Strong</option>
+                        </select>
+                    </div>
+                    <div class="question-group">
+                        <label>Accessories in Hands</label>
+                        <input type="text" placeholder="e.g., Handbag, Sunglasses, Phone, None">
+                    </div>
+                    <div class="question-group">
+                        <label>Hand Position</label>
+                        <select>
+                            <option value="">Select position...</option>
+                            <option value="sides">At sides - Natural</option>
+                            <option value="pockets">In pockets - Casual</option>
+                            <option value="hips">On hips - Confident</option>
+                            <option value="crossed">Arms crossed - Strong</option>
+                            <option value="gesturing">Gesturing - Dynamic</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <button class="continue-btn" onclick="nextStep()">
+                Preview Creation →
+            </button>
+        </div>
+
+        <!-- Step 4: Preview & Export -->
+        <div class="step-content" id="step3">
+            <h2 class="step-title">Preview & Export</h2>
+            <p class="step-subtitle">Review your creation before finalizing</p>
+
+            <div class="preview-container">
+                <div class="preview-viewport">
+                    <div class="preview-placeholder">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="rgba(220, 20, 60, 0.3)" stroke-width="2">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                            <circle cx="12" cy="13" r="4"></circle>
+                        </svg>
+                        <p>Your 2D render will appear here</p>
+                        <p class="preview-details">Model: Selected Model | Environment: 2D | Mode: advanced</p>
+                    </div>
+                </div>
+
+                <div class="preview-controls">
+                    <h3>Collaboration</h3>
+                    <div class="collab-section">
+                        <div class="collab-users">
+                            <div class="user-avatar">JD</div>
+                            <div class="user-avatar">SM</div>
+                            <div class="user-avatar add-user">+</div>
+                        </div>
+                        <button class="invite-btn">
+                            📤 Invite Team
+                        </button>
+                    </div>
+
+                    <h3>Actions</h3>
+                    <div class="action-list">
+                        <button class="action-item">
+                            📥 Export (4K)
+                        </button>
+                        <button class="action-item">
+                            💬 Add Comment
+                        </button>
+                        <button class="action-item secondary">
+                            🔄 Start Over
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <button class="continue-btn finalize">
+                ✨ Generate Final Render
+            </button>
+        </div>
+    </main>
+
+    <!-- Studio Project Selection -->
+    <section class="studio-selection" id="studioSelection">
+        <div class="studio-header">
+            <h1>Pro Studio Editor</h1>
+            <p>Choose project to edit</p>
+        </div>
+
+        <div class="studio-options">
+            <h2 class="studio-section-title">Choose Project</h2>
+            
+            <div class="project-selection-grid">
+                <!-- Saved Projects -->
+                <div class="studio-project-card" onclick="editProject(1)">
+                    <div class="studio-project-thumb">
+                        <img src="https://i.imgur.com/Qd94gG7.gif" alt="Project">
+                    </div>
+                    <div class="studio-project-info">
+                        <div class="studio-project-name">Summer Collection 2026</div>
+                        <div class="studio-project-meta">Model: Aria Thompson • 2D</div>
+                    </div>
+                </div>
+
+                <div class="studio-project-card" onclick="editProject(2)">
+                    <div class="studio-project-thumb">
+                        <img src="https://i.imgur.com/Qsmbfpr.gif" alt="Project">
+                    </div>
+                    <div class="studio-project-info">
+                        <div class="studio-project-name">Digital Twin - Marcus</div>
+                        <div class="studio-project-meta">Model: Marcus Chen • AI Twin</div>
+                    </div>
+                </div>
+
+                <div class="studio-project-card" onclick="editProject(3)">
+                    <div class="studio-project-thumb">
+                        <img src="https://i.imgur.com/rbrE0zf.jpeg" alt="Project">
+                    </div>
+                    <div class="studio-project-info">
+                        <div class="studio-project-name">Autumn Runway Preview</div>
+                        <div class="studio-project-meta">Model: Sofia Rodriguez • 2D</div>
+                    </div>
+                </div>
+
+                <div class="studio-project-card" onclick="editProject(4)">
+                    <div class="studio-project-thumb">
+                        <img src="https://i.imgur.com/soUISDp.jpeg" alt="Project">
+                    </div>
+                    <div class="studio-project-info">
+                        <div class="studio-project-name">Winter Elegance Series</div>
+                        <div class="studio-project-meta">Model: Isabella Laurent • 3D</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- My Projects Page -->
+    <section class="projects-page" id="projectsPage">
+        <div class="breadcrumbs">
+            <a href="#" class="breadcrumb-link" onclick="showStudioProjects(); return false;">Home</a>
+            <span class="breadcrumb-separator">›</span>
+            <span>My Projects</span>
+        </div>
+        
+        <div class="projects-header">
+            <h1>My Projects</h1>
+            <p>Manage and access all your fashion visualization projects</p>
+        </div>
+
+        <div class="projects-controls">
+            <div class="project-filters">
+                <button class="filter-btn active" onclick="filterProjects('all')">
+                    All Projects <span class="category-count" id="countAll">12</span>
+                </button>
+                <button class="filter-btn" onclick="filterProjects('completed')">
+                    Completed <span class="category-count" id="countCompleted">5</span>
+                </button>
+                <button class="filter-btn" onclick="filterProjects('draft')">
+                    Drafts <span class="category-count" id="countDrafts">4</span>
+                </button>
+                <button class="filter-btn" onclick="filterProjects('rendering')">
+                    Rendering <span class="category-count" id="countRendering">3</span>
+                </button>
+            </div>
+            <button class="new-project-btn" onclick="startNewProject()">
+                ✨ New Project
+            </button>
+        </div>
+
+        <div class="projects-grid" id="projectsGrid">
+            <!-- Completed Projects -->
+            <div class="project-card" data-status="completed" onclick="openProject(1)">
+                <div class="project-thumbnail">
+                    <img src="https://i.imgur.com/Qd94gG7.gif" alt="Project">
+                    <span class="project-status status-completed">Completed</span>
+                </div>
+                <div class="project-info">
+                    <h3 class="project-name">Summer Collection 2026</h3>
+                    <p class="project-details">Model: Aria Thompson • 2D Render • 4K</p>
+                    <div class="project-meta">
+                        <span class="project-date">Updated 2 days ago</span>
+                        <div class="project-actions">
+                            <button class="action-icon" onclick="event.stopPropagation(); downloadProject(1)" title="Download">📥</button>
+                            <button class="action-icon" onclick="event.stopPropagation(); shareProject(1)" title="Share">📤</button>
+                            <button class="action-icon" onclick="event.stopPropagation(); deleteProject(1)" title="Delete">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rendering Projects -->
+            <div class="project-card" data-status="rendering" onclick="continueRendering(2)">
+                <div class="project-thumbnail">
+                    <img src="https://i.imgur.com/Qsmbfpr.gif" alt="Project">
+                    <span class="project-status status-rendering">Rendering</span>
+                </div>
+                <div class="project-info">
+                    <h3 class="project-name">Digital Twin - Marcus</h3>
+                    <p class="project-details">Model: Marcus Chen • AI Twin • 3D</p>
+                    <div class="rendering-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 65%"></div>
+                        </div>
+                        <div class="progress-text">Rendering: 65% complete</div>
+                    </div>
+                    <div class="project-meta" style="margin-top: 10px;">
+                        <span class="project-date">Started 5 hours ago</span>
+                        <div class="project-actions">
+                            <button class="action-icon" onclick="event.stopPropagation(); cancelRender(2)" title="Cancel">🛑</button>
+                            <button class="action-icon" onclick="event.stopPropagation(); shareProject(2)" title="Share">📤</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Draft Projects -->
+            <div class="project-card" data-status="draft" onclick="openProject(3)">
+                <div class="project-thumbnail">
+                    <img src="https://i.imgur.com/rbrE0zf.jpeg" alt="Project">
+                    <span class="project-status status-draft">Draft</span>
+                </div>
+                <div class="project-info">
+                    <h3 class="project-name">Autumn Runway Preview</h3>
+                    <p class="project-details">Model: Sofia Rodriguez • 2D & 3D • 8K</p>
+                    <div class="project-meta">
+                        <span class="project-date">Updated 1 week ago</span>
+                        <div class="project-actions">
+                            <button class="action-icon" onclick="event.stopPropagation(); continueEditing(3)" title="Continue">✏️</button>
+                            <button class="action-icon" onclick="event.stopPropagation(); shareProject(3)" title="Share">📤</button>
+                            <button class="action-icon" onclick="event.stopPropagation(); deleteProject(3)" title="Delete">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Completed Project -->
+            <div class="project-card" data-status="completed" onclick="openProject(4)">
+                <div class="project-thumbnail">
+                    <img src="https://i.imgur.com/soUISDp.jpeg" alt="Project">
+                    <span class="project-status status-completed">Completed</span>
+                </div>
+                <div class="project-info">
+                    <h3 class="project-name">Winter Elegance Series</h3>
+                    <p class="project-details">Model: Isabella Laurent • 3D Render • 4K</p>
+                    <div class="project-meta">
+                        <span class="project-date">Updated 3 weeks ago</span>
+                        <div class="project-actions">
+                            <button class="action-icon" onclick="event.stopPropagation(); downloadProject(4)" title="Download">📥</button>
+                            <button class="action-icon" onclick="event.stopPropagation(); shareProject(4)" title="Share">📤</button>
+                            <button class="action-icon" onclick="event.stopPropagation(); deleteProject(4)" title="Delete">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Draft Project -->
+            <div class="project-card" data-status="draft" onclick="openProject(5)">
+                <div class="project-thumbnail">
+                    🎨
+                    <span class="project-status status-draft">Draft</span>
+                </div>
+                <div class="project-info">
+                    <h3 class="project-name">Street Style Campaign</h3>
+                    <p class="project-details">No model assigned • In Progress</p>
+                    <div class="project-meta">
+                        <span class="project-date">Updated yesterday</span>
+                        <div class="project-actions">
+                            <button class="action-icon" onclick="event.stopPropagation(); continueEditing(5)" title="Continue">✏️</button>
+                            <button class="action-icon" onclick="event.stopPropagation(); deleteProject(5)" title="Delete">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rendering Project -->
+            <div class="project-card" data-status="rendering" onclick="continueRendering(6)">
+                <div class="project-thumbnail">
+                    <img src="https://i.imgur.com/zCukqmO.png" alt="Project">
+                    <span class="project-status status-rendering">Rendering</span>
+                </div>
+                <div class="project-info">
+                    <h3 class="project-name">Urban Fashion Lookbook</h3>
+                    <p class="project-details">Model: Maya Patel • 4K Export</p>
+                    <div class="rendering-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 35%"></div>
+                        </div>
+                        <div class="progress-text">Rendering: 35% complete</div>
+                    </div>
+                    <div class="project-meta" style="margin-top: 10px;">
+                        <span class="project-date">Started 2 hours ago</span>
+                        <div class="project-actions">
+                            <button class="action-icon" onclick="event.stopPropagation(); cancelRender(6)" title="Cancel">🛑</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Completed Project -->
+            <div class="project-card" data-status="completed" onclick="openProject(7)">
+                <div class="project-thumbnail">
+                    ✨
+                    <span class="project-status status-completed">Completed</span>
+                </div>
+                <div class="project-info">
+                    <h3 class="project-name">Spring Fashion Week</h3>
+                    <p class="project-details">Model: Emma Wilson • Full Collection</p>
+                    <div class="project-meta">
+                        <span class="project-date">Updated 1 month ago</span>
+                        <div class="project-actions">
+                            <button class="action-icon" onclick="event.stopPropagation(); downloadProject(7)" title="Download">📥</button>
+                            <button class="action-icon" onclick="event.stopPropagation(); shareProject(7)" title="Share">📤</button>
+                            <button class="action-icon" onclick="event.stopPropagation(); deleteProject(7)" title="Delete">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Draft Project -->
+            <div class="project-card" data-status="draft" onclick="openProject(8)">
+                <div class="project-thumbnail">
+                    📸
+                    <span class="project-status status-draft">Draft</span>
+                </div>
+                <div class="project-info">
+                    <h3 class="project-name">Editorial Concept</h3>
+                    <p class="project-details">Model: TBD • Early Stage</p>
+                    <div class="project-meta">
+                        <span class="project-date">Created today</span>
+                        <div class="project-actions">
+                            <button class="action-icon" onclick="event.stopPropagation(); continueEditing(8)" title="Continue">✏️</button>
+                            <button class="action-icon" onclick="event.stopPropagation(); deleteProject(8)" title="Delete">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rendering Project -->
+            <div class="project-card" data-status="rendering" onclick="continueRendering(9)">
+                <div class="project-thumbnail">
+                    <img src="https://i.imgur.com/Qd94gG7.gif" alt="Project">
+                    <span class="project-status status-rendering">Rendering</span>
+                </div>
+                <div class="project-info">
+                    <h3 class="project-name">Resort Wear Collection</h3>
+                    <p class="project-details">Model: Luna Kim • 8K Quality</p>
+                    <div class="rendering-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 90%"></div>
+                        </div>
+                        <div class="progress-text">Rendering: 90% complete</div>
+                    </div>
+                    <div class="project-meta" style="margin-top: 10px;">
+                        <span class="project-date">Almost done!</span>
+                        <div class="project-actions">
+                            <button class="action-icon" onclick="event.stopPropagation(); cancelRender(9)" title="Cancel">🛑</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Completed Projects (more examples) -->
+            <div class="project-card" data-status="completed" onclick="openProject(10)">
+                <div class="project-thumbnail">
+                    💎
+                    <span class="project-status status-completed">Completed</span>
+                </div>
+                <div class="project-info">
+                    <h3 class="project-name">Luxury Brand Campaign</h3>
+                    <p class="project-details">Model: Victoria Stone • Premium</p>
+                    <div class="project-meta">
+                        <span class="project-date">Updated 2 months ago</span>
+                        <div class="project-actions">
+                            <button class="action-icon" onclick="event.stopPropagation(); downloadProject(10)" title="Download">📥</button>
+                            <button class="action-icon" onclick="event.stopPropagation(); shareProject(10)" title="Share">📤</button>
+                            <button class="action-icon" onclick="event.stopPropagation(); deleteProject(10)" title="Delete">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card" data-status="completed" onclick="openProject(11)">
+                <div class="project-thumbnail">
+                    👗
+                    <span class="project-status status-completed">Completed</span>
+                </div>
+                <div class="project-info">
+                    <h3 class="project-name">Evening Wear Showcase</h3>
+                    <p class="project-details">Model: Sienna Brown • High Fashion</p>
+                    <div class="project-meta">
+                        <span class="project-date">Updated 6 weeks ago</span>
+                        <div class="project-actions">
+                            <button class="action-icon" onclick="event.stopPropagation(); downloadProject(11)" title="Download">📥</button>
+                            <button class="action-icon" onclick="event.stopPropagation(); shareProject(11)" title="Share">📤</button>
+                            <button class="action-icon" onclick="event.stopPropagation(); deleteProject(11)" title="Delete">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card" data-status="draft" onclick="openProject(12)">
+                <div class="project-thumbnail">
+                    🌟
+                    <span class="project-status status-draft">Draft</span>
+                </div>
+                <div class="project-info">
+                    <h3 class="project-name">Holiday Collection 2026</h3>
+                    <p class="project-details">Planning Phase</p>
+                    <div class="project-meta">
+                        <span class="project-date">Created 3 days ago</span>
+                        <div class="project-actions">
+                            <button class="action-icon" onclick="event.stopPropagation(); continueEditing(12)" title="Continue">✏️</button>
+                            <button class="action-icon" onclick="event.stopPropagation(); deleteProject(12)" title="Delete">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State (hidden by default) - IMPROVED -->
+        <div class="empty-projects" id="emptyProjects" style="display: none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <h3>Your studio is ready</h3>
+            <p>Start creating professional fashion visuals with AI models.<br>Try filtering by a different status or create your first project.</p>
+            <button class="new-project-btn" onclick="startNewProject()">
+                ✨ Create Your First Project
+            </button>
+            <p style="margin-top: 20px; font-size: 13px; color: rgba(255,255,255,0.4);">
+                💡 Tip: Press <kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">Ctrl+N</kbd> to quickly start a new project
+            </p>
+        </div>
+    </section>
+
+    <!-- Book Twin Modal -->
+    <div class="book-models-modal" id="bookModelsModal">
+        <div class="book-models-container">
+            <button class="book-models-close" onclick="hideBookModelsModal()">×</button>
+            
+            <!-- Agencies List View -->
+            <div id="agenciesView">
+                <h2 class="book-models-title">Book Twin</h2>
+                <p class="book-models-subtitle">Select an agency to view their represented models</p>
+
+                <div class="agencies-grid">
+                    <div class="agency-card" onclick="showAgencyModels('elite')">
+                        <div class="agency-icon">👑</div>
+                        <div class="agency-name">Elite Model Management</div>
+                        <div class="agency-models-count">12 Models Available</div>
+                    </div>
+
+                    <div class="agency-card" onclick="showAgencyModels('img')">
+                        <div class="agency-icon">⭐</div>
+                        <div class="agency-name">IMG Models</div>
+                        <div class="agency-models-count">15 Models Available</div>
+                    </div>
+
+                    <div class="agency-card" onclick="showAgencyModels('wilhelmina')">
+                        <div class="agency-icon">💎</div>
+                        <div class="agency-name">Wilhelmina Models</div>
+                        <div class="agency-models-count">10 Models Available</div>
+                    </div>
+
+                    <div class="agency-card" onclick="showAgencyModels('ford')">
+                        <div class="agency-icon">🌟</div>
+                        <div class="agency-name">Ford Models</div>
+                        <div class="agency-models-count">8 Models Available</div>
+                    </div>
+
+                    <div class="agency-card" onclick="showAgencyModels('next')">
+                        <div class="agency-icon">✨</div>
+                        <div class="agency-name">Next Management</div>
+                        <div class="agency-models-count">11 Models Available</div>
+                    </div>
+
+                    <div class="agency-card" onclick="showAgencyModels('marilyn')">
+                        <div class="agency-icon">💫</div>
+                        <div class="agency-name">Marilyn Agency</div>
+                        <div class="agency-models-count">9 Models Available</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agency Models View -->
+            <div class="agency-models-view" id="agencyModelsView">
+                <button class="back-to-agencies" onclick="backToAgencies()">← Back to Agencies</button>
+                
+                <h2 class="agency-models-title" id="agencyModelsTitle">Elite Model Management</h2>
+                <p class="agency-models-subtitle" id="agencyModelsSubtitle">Select a model to book for your project</p>
+
+                <!-- Helpful Tip -->
+                <div style="background: rgba(30, 136, 229, 0.1); border: 1px solid rgba(30, 136, 229, 0.3); border-radius: 8px; padding: 12px 16px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+                    <svg style="width: 20px; height: 20px; color: #1E88E5; flex-shrink: 0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+                    </svg>
+                    <span style="font-size: 13px; color: rgba(255, 255, 255, 0.8);">
+                        💡 <strong>Pro Tip:</strong> Browse multiple agencies to find the perfect model for your project. Each model has unique specialties and pricing.
+                    </span>
+                </div>
+
+                <div class="models-grid" id="modelsGrid">
+                    <!-- Models will be dynamically loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Authentication Modal -->
+    <div class="auth-modal" id="authModal">
+        <div class="auth-container">
+            <button class="auth-close" onclick="hideAuthModal()">×</button>
+            
+            <h2 class="auth-title">Welcome to Strut AI</h2>
+            <p class="auth-subtitle">Create stunning fashion visualizations</p>
+
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchAuthTab('login')">Login</button>
+                <button class="auth-tab" onclick="switchAuthTab('signup')">Sign Up</button>
+            </div>
+
+            <!-- Agency Portal Login Section - Moved to top -->
+            <div style="margin-bottom: 30px; text-align: center; padding-bottom: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                <div style="font-size: 13px; color: rgba(255, 255, 255, 0.6); margin-bottom: 12px;">
+                    Are you a model agency?
+                </div>
+                <button type="button" class="agency-login-btn" onclick="redirectToAgencyPortal()">
+                    🏢 Agency Portal Login
+                </button>
+            </div>
+
+            <!-- Login Form -->
+            <form class="auth-form active" id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" placeholder="Enter your password" required>
+                </div>
+                <div class="forgot-password">
+                    <a href="#" onclick="alert('Password reset coming soon!'); return false;">Forgot Password?</a>
+                </div>
+                <button type="submit" class="auth-submit">Login</button>
+                
+                <div class="auth-divider">or</div>
+                
+                <div class="social-login">
+                    <button type="button" class="social-btn" onclick="alert('Google login coming soon!')">Google</button>
+                    <button type="button" class="social-btn" onclick="alert('Apple login coming soon!')">Apple</button>
+                </div>
+            </form>
+
+            <!-- Sign Up Form -->
+            <form class="auth-form" id="signupForm" onsubmit="handleSignup(event)">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Company (Optional)</label>
+                    <input type="text" placeholder="Your company name">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" placeholder="Create a password" required>
+                </div>
+                <div class="form-group">
+                    <label>Confirm Password</label>
+                    <input type="password" placeholder="Confirm your password" required>
+                </div>
+                <button type="submit" class="auth-submit">Create Account</button>
+                
+                <div class="auth-divider">or</div>
+                
+                <div class="social-login">
+                    <button type="button" class="social-btn" onclick="alert('Google signup coming soon!')">Google</button>
+                    <button type="button" class="social-btn" onclick="alert('Apple signup coming soon!')">Apple</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="settings-modal" id="settingsModal">
+        <div class="settings-container">
+            <button class="settings-close" onclick="hideSettingsModal()">×</button>
+            
+            <h2 class="settings-title">User Preferences</h2>
+            <p class="settings-subtitle">Customize your Strut AI experience</p>
+
+            <div class="settings-content">
+                <!-- General Preferences -->
+                <div class="settings-section">
+                    <h3 class="settings-section-title">General</h3>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label class="setting-label">Theme</label>
+                            <span class="setting-description">Choose your preferred color theme</span>
+                        </div>
+                        <select class="setting-select" id="themeSelect">
+                            <option value="dark">Dark Mode</option>
+                            <option value="light">Light Mode</option>
+                            <option value="auto">Auto (System)</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label class="setting-label">Language</label>
+                            <span class="setting-description">Interface language</span>
+                        </div>
+                        <select class="setting-select" id="languageSelect">
+                            <option value="en">English</option>
+                            <option value="es">Español</option>
+                            <option value="fr">Français</option>
+                            <option value="it">Italiano</option>
+                            <option value="pt">Português</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label class="setting-label">Auto-Save</label>
+                            <span class="setting-description">Automatically save your work every 2 minutes</span>
+                        </div>
+                        <label class="setting-toggle">
+                            <input type="checkbox" id="autoSave" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Editor Preferences -->
+                <div class="settings-section">
+                    <h3 class="settings-section-title">Editor</h3>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label class="setting-label">Default Resolution</label>
+                            <span class="setting-description">Default render resolution for new projects</span>
+                        </div>
+                        <select class="setting-select" id="defaultResolution">
+                            <option value="1080">1080p (Full HD)</option>
+                            <option value="1440">1440p (2K)</option>
+                            <option value="2160" selected>2160p (4K)</option>
+                            <option value="4320">4320p (8K)</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label class="setting-label">Default Export Format</label>
+                            <span class="setting-description">Preferred format for exports</span>
+                        </div>
+                        <select class="setting-select" id="exportFormat">
+                            <option value="png">PNG (Transparent)</option>
+                            <option value="jpg" selected>JPG (High Quality)</option>
+                            <option value="webp">WebP (Smaller Size)</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label class="setting-label">Grid Overlay</label>
+                            <span class="setting-description">Show alignment grid in editor</span>
+                        </div>
+                        <label class="setting-toggle">
+                            <input type="checkbox" id="gridOverlay">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label class="setting-label">Snap to Grid</label>
+                            <span class="setting-description">Snap elements to grid when moving</span>
+                        </div>
+                        <label class="setting-toggle">
+                            <input type="checkbox" id="snapToGrid">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Notifications -->
+                <div class="settings-section">
+                    <h3 class="settings-section-title">Notifications</h3>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label class="setting-label">Email Notifications</label>
+                            <span class="setting-description">Receive updates via email</span>
+                        </div>
+                        <label class="setting-toggle">
+                            <input type="checkbox" id="emailNotifications" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label class="setting-label">Render Complete</label>
+                            <span class="setting-description">Notify when renders finish</span>
+                        </div>
+                        <label class="setting-toggle">
+                            <input type="checkbox" id="renderNotifications" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label class="setting-label">Project Shared</label>
+                            <span class="setting-description">Notify when someone shares a project with you</span>
+                        </div>
+                        <label class="setting-toggle">
+                            <input type="checkbox" id="shareNotifications" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label class="setting-label">Marketing Emails</label>
+                            <span class="setting-description">Product updates and tips</span>
+                        </div>
+                        <label class="setting-toggle">
+                            <input type="checkbox" id="marketingEmails">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Privacy & Data -->
+                <div class="settings-section">
+                    <h3 class="settings-section-title">Privacy & Data</h3>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label class="setting-label">Analytics</label>
+                            <span class="setting-description">Help improve Strut AI by sharing usage data</span>
+                        </div>
+                        <label class="setting-toggle">
+                            <input type="checkbox" id="analytics" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label class="setting-label">Crash Reports</label>
+                            <span class="setting-description">Automatically send error reports</span>
+                        </div>
+                        <label class="setting-toggle">
+                            <input type="checkbox" id="crashReports" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Account Actions -->
+                <div class="settings-section">
+                    <h3 class="settings-section-title">Account</h3>
+                    
+                    <button class="settings-action-btn" onclick="exportUserData()">
+                        📦 Export My Data
+                    </button>
+                    <button class="settings-action-btn danger" onclick="deleteAccount()">
+                        🗑️ Delete Account
+                    </button>
+                </div>
+            </div>
+
+            <div class="settings-footer">
+                <button class="settings-btn secondary" onclick="hideSettingsModal()">Cancel</button>
+                <button class="settings-btn primary" onclick="saveSettings()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 0;
+        let selectedModelId = null;
+
+        // Authentication Modal Functions
+        function showAuthModal() {
+            document.getElementById('authModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideAuthModal() {
+            document.getElementById('authModal').classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+
+        function switchAuthTab(tab) {
+            // Update tabs
+            const tabs = document.querySelectorAll('.auth-tab');
+            tabs.forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update forms
+            const forms = document.querySelectorAll('.auth-form');
+            forms.forEach(f => f.classList.remove('active'));
+            
+            if (tab === 'login') {
+                document.getElementById('loginForm').classList.add('active');
+            } else {
+                document.getElementById('signupForm').classList.add('active');
+            }
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const submitBtn = event.target.querySelector('.auth-submit');
+            setButtonLoading(submitBtn, true);
+            
+            setTimeout(() => {
+                hideAuthModal();
+                showToast('Welcome back! You\'re now logged in 🎉', 'success');
+                setButtonLoading(submitBtn, false);
+            }, 1000);
+        }
+
+        function handleSignup(event) {
+            event.preventDefault();
+            const submitBtn = event.target.querySelector('.auth-submit');
+            setButtonLoading(submitBtn, true);
+            
+            setTimeout(() => {
+                hideAuthModal();
+                showToast('Account created successfully! Welcome to Strut AI 🎉', 'success');
+                setButtonLoading(submitBtn, false);
+            }, 1000);
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('authModal');
+            if (event.target === modal) {
+                hideAuthModal();
+            }
+        });
+
+        // Book Twin Functions
+        function showBookModelsModal() {
+            document.getElementById('bookModelsModal').classList.add('show');
+            document.getElementById('agenciesView').style.display = 'block';
+            document.getElementById('agencyModelsView').classList.remove('show');
+        }
+
+        function hideBookModelsModal() {
+            document.getElementById('bookModelsModal').classList.remove('show');
+        }
+
+        function backToAgencies() {
+            document.getElementById('agenciesView').style.display = 'block';
+            document.getElementById('agencyModelsView').classList.remove('show');
+        }
+
+        function showAgencyModels(agencyId) {
+            document.getElementById('agenciesView').style.display = 'none';
+            document.getElementById('agencyModelsView').classList.add('show');
+
+            // Agency data
+            const agencies = {
+                'elite': {
+                    name: 'Elite Model Management',
+                    models: [
+                        { name: 'Aria Thompson', stats: '5\'10" • 34-24-35', image: 'https://i.imgur.com/zCukqmO.png' },
+                        { name: 'Isabella Rose', stats: '5\'11" • 32-24-36', image: '' },
+                        { name: 'Sophia Martinez', stats: '5\'9" • 34-25-35', image: '' },
+                        { name: 'Emma Wilson', stats: '5\'10" • 33-24-35', image: '' },
+                        { name: 'Olivia Chen', stats: '5\'11" • 32-23-34', image: '' },
+                        { name: 'Ava Johnson', stats: '5\'10" • 34-25-36', image: '' }
+                    ]
+                },
+                'img': {
+                    name: 'IMG Models',
+                    models: [
+                        { name: 'Marcus Chen', stats: '6\'2" • 40-32-15', image: '' },
+                        { name: 'Sofia Rodriguez', stats: '5\'10" • 34-24-35', image: '' },
+                        { name: 'James Parker', stats: '6\'1" • 42-33-16', image: '' },
+                        { name: 'Luna Kim', stats: '5\'9" • 33-24-34', image: '' },
+                        { name: 'Diego Santos', stats: '6\'0" • 40-31-15', image: '' },
+                        { name: 'Maya Patel', stats: '5\'11" • 34-25-35', image: '' }
+                    ]
+                },
+                'wilhelmina': {
+                    name: 'Wilhelmina Models',
+                    models: [
+                        { name: 'Isabella Laurent', stats: '5\'10" • 34-24-36', image: '' },
+                        { name: 'Alexander Storm', stats: '6\'2" • 41-32-16', image: '' },
+                        { name: 'Zara Ahmed', stats: '5\'11" • 33-24-35', image: '' },
+                        { name: 'Kai Anderson', stats: '6\'1" • 40-32-15', image: '' },
+                        { name: 'Nova Garcia', stats: '5\'9" • 34-25-35', image: '' }
+                    ]
+                },
+                'ford': {
+                    name: 'Ford Models',
+                    models: [
+                        { name: 'Victoria Stone', stats: '5\'10" • 34-24-35', image: '' },
+                        { name: 'Ryan Mitchell', stats: '6\'0" • 40-31-15', image: '' },
+                        { name: 'Jade Williams', stats: '5\'11" • 33-24-34', image: '' },
+                        { name: 'Ethan Brooks', stats: '6\'2" • 42-33-16', image: '' }
+                    ]
+                },
+                'next': {
+                    name: 'Next Management',
+                    models: [
+                        { name: 'Mia Taylor', stats: '5\'10" • 34-25-35', image: '' },
+                        { name: 'Lucas White', stats: '6\'1" • 41-32-15', image: '' },
+                        { name: 'Nia Jackson', stats: '5\'9" • 33-24-35', image: '' },
+                        { name: 'Phoenix Lee', stats: '6\'0" • 40-31-15', image: '' },
+                        { name: 'Sienna Brown', stats: '5\'11" • 34-24-36', image: '' }
+                    ]
+                },
+                'marilyn': {
+                    name: 'Marilyn Agency',
+                    models: [
+                        { name: 'Lily Harper', stats: '5\'10" • 34-24-35', image: '' },
+                        { name: 'Noah Davis', stats: '6\'2" • 41-32-16', image: '' },
+                        { name: 'Aurora Smith', stats: '5\'11" • 33-24-34', image: '' },
+                        { name: 'Kai Thompson', stats: '6\'0" • 40-31-15', image: '' }
+                    ]
+                }
+            };
+
+            const agency = agencies[agencyId];
+            document.getElementById('agencyModelsTitle').textContent = agency.name;
+            document.getElementById('agencyModelsSubtitle').textContent = `${agency.models.length} models available for booking`;
+
+            // Generate models grid
+            const modelsGrid = document.getElementById('modelsGrid');
+            modelsGrid.innerHTML = '';
+
+            agency.models.forEach((model, index) => {
+                const modelCard = document.createElement('div');
+                modelCard.className = 'book-model-card';
+                modelCard.onclick = () => bookModel(model.name, agency.name);
+                
+                const imageHtml = model.image 
+                    ? `<img src="${model.image}" alt="${model.name}">`
+                    : `<div style="font-size: 64px;">👤</div>`;
+
+                modelCard.innerHTML = `
+                    <div class="book-model-image">${imageHtml}</div>
+                    <div class="book-model-info">
+                        <div class="book-model-name">${model.name}</div>
+                        <div class="book-model-stats">${model.stats}</div>
+                        <button class="book-model-btn">Book Model</button>
+                    </div>
+                `;
+                modelsGrid.appendChild(modelCard);
+            });
+        }
+
+        function bookModel(modelName, agencyName) {
+            hideBookModelsModal();
+            showToast(`✅ ${modelName} from ${agencyName} has been booked for your project!`, 'success');
+            // In production, this would add the model to the current project
+        }
+
+        // Close book twin modal on outside click
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('bookModelsModal');
+            if (event.target === modal) {
+                hideBookModelsModal();
+            }
+        });
+
+        // My Projects Functions
+        function showProjectsPage() {
+            // Hide hero and other sections
+            document.getElementById('heroSection').classList.add('hidden');
+            document.querySelector('.subscription-section').classList.add('hidden');
+            document.getElementById('progressContainer').classList.remove('show');
+            document.getElementById('mainContent').classList.remove('show');
+            document.getElementById('studioSelection').classList.remove('show');
+            
+            // Show projects page
+            document.getElementById('projectsPage').classList.add('show');
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Studio Functions
+        function showStudioProjects() {
+            // Hide all other sections
+            document.getElementById('heroSection').classList.add('hidden');
+            document.querySelector('.subscription-section').classList.add('hidden');
+            document.getElementById('progressContainer').classList.remove('show');
+            document.getElementById('mainContent').classList.remove('show');
+            document.getElementById('projectsPage').classList.remove('show');
+            
+            // Show studio selection
+            document.getElementById('studioSelection').classList.add('show');
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function startFromScratch() {
+            // Hide studio selection and start from beginning
+            document.getElementById('studioSelection').classList.remove('show');
+            document.getElementById('heroSection').classList.remove('hidden');
+            document.querySelector('.subscription-section').classList.remove('hidden');
+            
+            // Start the creation workflow
+            startCreating();
+        }
+
+        function editProject(projectId) {
+            // Open Professional Studio with this project
+            window.location.href = 'strut-ai-pro-studio.html?project=' + projectId;
+        }
+
+        function filterProjects(filter) {
+            // Update active filter button
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            filterBtns.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Get all project cards
+            const projectCards = document.querySelectorAll('.project-card');
+            const emptyState = document.getElementById('emptyProjects');
+            let visibleCount = 0;
+            
+            // Filter projects based on status
+            projectCards.forEach(card => {
+                const status = card.getAttribute('data-status');
+                
+                if (filter === 'all') {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else if (status === filter) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Show/hide empty state
+            if (visibleCount === 0) {
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+            }
+            
+            console.log(`Filtered by ${filter}: ${visibleCount} projects visible`);
+        }
+
+        function continueEditing(projectId) {
+            // Open Professional Studio to continue editing this draft
+            window.location.href = 'strut-ai-pro-studio.html?project=' + projectId + '&mode=edit';
+        }
+
+        function continueRendering(projectId) {
+            // Return to generation/preview step to watch rendering progress
+            document.getElementById('projectsPage').classList.remove('show');
+            document.getElementById('heroSection').classList.add('hidden');
+            document.querySelector('.subscription-section').classList.add('hidden');
+            document.getElementById('studioSelection').classList.remove('show');
+            
+            // Show the generation workflow at preview step (step 3)
+            document.getElementById('progressContainer').classList.add('show');
+            document.getElementById('mainContent').classList.add('show');
+            
+            // Set to preview/rendering step
+            currentStep = 3;
+            updateSteps();
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            console.log('Continuing rendering for project:', projectId);
+        }
+
+        function cancelRender(projectId) {
+            if (confirm('Are you sure you want to cancel this render?')) {
+                alert(`Render cancelled for project ${projectId}`);
+                // Would cancel the render job
+            }
+        }
+
+        function startNewProject() {
+            // Hide projects page and start creating
+            document.getElementById('projectsPage').classList.remove('show');
+            showToast('Starting new project...', 'info');
+            setTimeout(() => {
+                startCreating();
+            }, 300);
+        }
+
+        function openProject(projectId) {
+            // Open Professional Studio with this project
+            window.location.href = 'strut-ai-pro-studio.html?project=' + projectId;
+        }
+
+        function downloadProject(projectId) {
+            alert(`Downloading project ${projectId}. Files will be prepared...`);
+            // In production: trigger download of rendered files
+        }
+
+        function shareProject(projectId) {
+            alert(`Share link copied for project ${projectId}!`);
+            // In production: copy share link to clipboard
+        }
+
+        function deleteProject(projectId) {
+            if (confirm('Are you sure you want to delete this project? This cannot be undone.')) {
+                alert(`Project ${projectId} deleted`);
+                // In production: API call to delete project
+                // Then remove card from DOM
+            }
+        }
+
+        // File upload handler
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('fileInput');
+            if (fileInput) {
+                fileInput.addEventListener('change', function(e) {
+                    const files = e.target.files;
+                    if (files.length > 0) {
+                        console.log('Files selected:', files.length);
+                        displayUploadedFiles(files);
+                    }
+                });
+            }
+        });
+
+        function displayUploadedFiles(files) {
+            const uploadItemsContainer = document.querySelector('.upload-items');
+            if (!uploadItemsContainer) return;
+
+            // Clear existing items
+            uploadItemsContainer.innerHTML = '';
+
+            // Add each file to the display
+            Array.from(files).forEach(file => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'upload-item';
+                
+                // Determine icon based on file type
+                let icon = '📄';
+                const fileName = file.name.toLowerCase();
+                if (fileName.endsWith('.obj') || fileName.endsWith('.fbx') || fileName.endsWith('.gltf')) {
+                    if (fileName.includes('blazer') || fileName.includes('jacket') || fileName.includes('shirt')) {
+                        icon = '👔';
+                    } else if (fileName.includes('dress') || fileName.includes('skirt')) {
+                        icon = '👗';
+                    } else if (fileName.includes('shoe') || fileName.includes('heel') || fileName.includes('boot')) {
+                        icon = '👠';
+                    } else if (fileName.includes('pant') || fileName.includes('jean')) {
+                        icon = '👖';
+                    } else {
+                        icon = '👕';
+                    }
+                } else if (fileName.endsWith('.png') || fileName.endsWith('.jpg') || fileName.endsWith('.jpeg')) {
+                    icon = '🖼️';
+                }
+
+                fileItem.innerHTML = `
+                    <div class="item-icon">${icon}</div>
+                    <span>${file.name}</span>
+                `;
+                
+                uploadItemsContainer.appendChild(fileItem);
+            });
+        }
+
+        function goToHome() {
+            // Hide all sections and show home
+            document.getElementById('heroSection').classList.remove('hidden');
+            document.querySelector('.subscription-section').classList.remove('hidden');
+            document.getElementById('progressContainer').classList.remove('show');
+            document.getElementById('mainContent').classList.remove('show');
+            document.getElementById('projectsPage').classList.remove('show');
+            document.getElementById('studioSelection').classList.remove('show');
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            // Show hero and hide all other sections
+            document.getElementById('heroSection').classList.remove('hidden');
+            document.querySelector('.subscription-section').classList.remove('hidden');
+            document.getElementById('progressContainer').classList.remove('show');
+            document.getElementById('mainContent').classList.remove('show');
+            document.getElementById('projectsPage').classList.remove('show');
+            document.getElementById('studioSelection').classList.remove('show');
+        }
+
+        function toggleMenu() {
+            const menu = document.getElementById('sideMenu');
+            menu.classList.toggle('open');
+        }
+
+        function startCreating() {
+            document.getElementById('heroSection').classList.add('hidden');
+            document.querySelector('.subscription-section').classList.add('hidden');
+            document.getElementById('progressContainer').classList.add('show');
+            document.getElementById('mainContent').classList.add('show');
+        }
+
+        function scrollToPricing() {
+            document.getElementById('pricing').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Support & Help Functions
+        function openLiveChat() {
+            toggleMenu();
+            alert('💬 Live Chat coming soon! For now, email us at support@strutai.com');
+            // In production: Open live chat widget (Intercom, Zendesk, etc.)
+        }
+
+        function openEmailSupport() {
+            toggleMenu();
+            window.open('mailto:support@strutai.com?subject=Support Request from Strut AI', '_blank');
+        }
+
+        function openTutorials() {
+            toggleMenu();
+            window.open('https://youtube.com/@strutai', '_blank');
+        }
+
+        // About Functions
+        function showAboutPage() {
+            toggleMenu();
+            alert('📱 About Strut AI\n\nStrut AI is revolutionizing fashion visualization with AI-powered digital modeling and rendering.\n\nVisit strutai.com/about for more info.');
+        }
+
+        function showWhatsNew() {
+            toggleMenu();
+            alert('✨ What\'s New in v1.0.0\n\n• AI Background Removal\n• Professional Studio\n• Model Booking System\n• Scene Library\n• Project Management\n• Team Collaboration\n\nMore updates coming soon!');
+        }
+
+        function contactUs() {
+            toggleMenu();
+            window.open('mailto:hello@strutai.com?subject=Contact Strut AI', '_blank');
+        }
+
+        // Agency Portal Function
+        function openAgencyPortal() {
+            toggleMenu();
+            // Open agency portal in new tab
+            window.open('agency-portal.html', '_blank');
+            showToast('Opening Agency Portal...', 'info');
+        }
+
+        // Redirect to Agency Portal from login
+        function redirectToAgencyPortal() {
+            hideAuthModal();
+            showToast('Redirecting to Agency Portal...', 'info');
+            setTimeout(() => {
+                window.open('agency-portal-v2.html', '_blank');
+            }, 500);
+        }
+
+        // Settings Functions
+        function showTerms() {
+            toggleMenu();
+            window.open('https://strutai.com/terms', '_blank');
+        }
+
+        function showPrivacy() {
+            toggleMenu();
+            window.open('https://strutai.com/privacy', '_blank');
+        }
+
+        // Settings Modal Functions
+        function showSettingsModal() {
+            toggleMenu(); // Close side menu
+            document.getElementById('settingsModal').classList.add('show');
+        }
+
+        function hideSettingsModal() {
+            document.getElementById('settingsModal').classList.remove('show');
+        }
+
+        function showAccountSettings() {
+            toggleMenu();
+            alert('👤 Account Settings\n\nManage your profile, email, password, and account details.\n\nComing soon to Settings!');
+        }
+
+        function showNotificationSettings() {
+            toggleMenu();
+            alert('🔔 Notification settings are available in User Preferences.\n\nOpening User Preferences...');
+            setTimeout(() => {
+                showSettingsModal();
+            }, 500);
+        }
+
+        function showBilling() {
+            toggleMenu();
+            alert('💳 Billing & Subscription\n\nManage your plan, payment methods, and invoices.\n\nComing soon!');
+        }
+
+        function saveSettings() {
+            // Get all settings values
+            const settings = {
+                theme: document.getElementById('themeSelect').value,
+                language: document.getElementById('languageSelect').value,
+                autoSave: document.getElementById('autoSave').checked,
+                defaultResolution: document.getElementById('defaultResolution').value,
+                exportFormat: document.getElementById('exportFormat').value,
+                gridOverlay: document.getElementById('gridOverlay').checked,
+                snapToGrid: document.getElementById('snapToGrid').checked,
+                emailNotifications: document.getElementById('emailNotifications').checked,
+                renderNotifications: document.getElementById('renderNotifications').checked,
+                shareNotifications: document.getElementById('shareNotifications').checked,
+                marketingEmails: document.getElementById('marketingEmails').checked,
+                analytics: document.getElementById('analytics').checked,
+                crashReports: document.getElementById('crashReports').checked
+            };
+
+            // Save to localStorage (in production, save to backend)
+            localStorage.setItem('strutai_settings', JSON.stringify(settings));
+
+            // Apply theme
+            if (settings.theme === 'light') {
+                document.body.style.background = '#ffffff';
+                // Apply light theme styles
+            } else if (settings.theme === 'dark') {
+                document.body.style.background = '#000000';
+                // Apply dark theme styles
+            }
+
+            // Show success message
+            alert('✅ Settings saved successfully!');
+            hideSettingsModal();
+
+            console.log('Settings saved:', settings);
+        }
+
+        function exportUserData() {
+            if (confirm('Export all your data? This will download a JSON file with all your projects, settings, and activity.')) {
+                const userData = {
+                    settings: JSON.parse(localStorage.getItem('strutai_settings') || '{}'),
+                    projects: [], // In production: fetch from backend
+                    exportDate: new Date().toISOString(),
+                    version: '1.0.0'
+                };
+
+                const dataStr = JSON.stringify(userData, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `strutai-data-${Date.now()}.json`;
+                link.click();
+
+                alert('✅ Your data has been exported!');
+            }
+        }
+
+        function deleteAccount() {
+            const confirmation = prompt('⚠️ WARNING: This will permanently delete your account and all data.\n\nType "DELETE" to confirm:');
+            
+            if (confirmation === 'DELETE') {
+                alert('Account deletion request received. Our team will process this within 48 hours. You will receive a confirmation email.');
+                // In production: API call to initiate account deletion
+                console.log('Account deletion requested');
+            } else if (confirmation !== null) {
+                alert('Deletion cancelled. Confirmation text did not match.');
+            }
+        }
+
+        // Close settings modal on outside click
+        document.getElementById('settingsModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideSettingsModal();
+            }
+        });
+
+        // Load saved settings on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            const savedSettings = localStorage.getItem('strutai_settings');
+            if (savedSettings) {
+                const settings = JSON.parse(savedSettings);
+                
+                // Apply saved settings to form
+                if (settings.theme) document.getElementById('themeSelect').value = settings.theme;
+                if (settings.language) document.getElementById('languageSelect').value = settings.language;
+                if (settings.autoSave !== undefined) document.getElementById('autoSave').checked = settings.autoSave;
+                if (settings.defaultResolution) document.getElementById('defaultResolution').value = settings.defaultResolution;
+                if (settings.exportFormat) document.getElementById('exportFormat').value = settings.exportFormat;
+                if (settings.gridOverlay !== undefined) document.getElementById('gridOverlay').checked = settings.gridOverlay;
+                if (settings.snapToGrid !== undefined) document.getElementById('snapToGrid').checked = settings.snapToGrid;
+                if (settings.emailNotifications !== undefined) document.getElementById('emailNotifications').checked = settings.emailNotifications;
+                if (settings.renderNotifications !== undefined) document.getElementById('renderNotifications').checked = settings.renderNotifications;
+                if (settings.shareNotifications !== undefined) document.getElementById('shareNotifications').checked = settings.shareNotifications;
+                if (settings.marketingEmails !== undefined) document.getElementById('marketingEmails').checked = settings.marketingEmails;
+                if (settings.analytics !== undefined) document.getElementById('analytics').checked = settings.analytics;
+                if (settings.crashReports !== undefined) document.getElementById('crashReports').checked = settings.crashReports;
+
+                console.log('Settings loaded:', settings);
+            }
+        });
+
+        function selectModel(id) {
+            selectedModelId = id;
+            const cards = document.querySelectorAll('.model-card');
+            cards.forEach((card, index) => {
+                if (index + 1 === id) {
+                    card.classList.add('selected');
+                } else {
+                    card.classList.remove('selected');
+                }
+            });
+            document.getElementById('continueBtn0').style.display = 'flex';
+        }
+
+        function nextStep() {
+            if (currentStep < 3) {
+                currentStep++;
+                updateSteps();
+            }
+        }
+
+        function goToStep(step) {
+            if (step <= currentStep) {
+                currentStep = step;
+                updateSteps();
+            }
+        }
+
+        function updateSteps() {
+            // Update step content visibility
+            document.querySelectorAll('.step-content').forEach((content, index) => {
+                content.classList.toggle('active', index === currentStep);
+            });
+
+            // Update progress steps
+            document.querySelectorAll('.progress-step').forEach((step, index) => {
+                step.classList.toggle('active', index === currentStep);
+                step.classList.toggle('completed', index < currentStep);
+            });
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function setEnvironment(env) {
+            const buttons = document.querySelectorAll('.env-buttons button');
+            buttons.forEach(btn => {
+                btn.classList.toggle('active', btn.textContent.includes(env));
+            });
+        }
+
+        function setPromptMode(mode) {
+            const buttons = document.querySelectorAll('.prompt-modes button');
+            buttons.forEach(btn => {
+                btn.classList.toggle('active', btn.textContent.toLowerCase().includes(mode));
+            });
+
+            document.getElementById('advancedPrompt').classList.toggle('active', mode === 'advanced');
+            document.getElementById('questionnairePrompt').classList.toggle('active', mode === 'questionnaire');
+        }
+
+        // =====================
+        // TOAST NOTIFICATION SYSTEM
+        // =====================
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            
+            const icons = {
+                success: `<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>`,
+                error: `<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+                info: `<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`
+            };
+            
+            toast.innerHTML = `
+                ${icons[type] || icons.info}
+                <div class="toast-content">
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+            `;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+
+        // =====================
+        // KEYBOARD SHORTCUTS
+        // =====================
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + K for search (placeholder - you can implement later)
+            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                e.preventDefault();
+                showToast('Search feature coming soon! (Ctrl+K)', 'info');
+            }
+            
+            // Ctrl/Cmd + N for new project
+            if ((e.metaKey || e.ctrlKey) && e.key === 'n') {
+                e.preventDefault();
+                showBookModelsModal();
+                showToast('Quick Action: Create New Project (Ctrl+N)', 'info');
+            }
+            
+            // Escape to close modals
+            if (e.key === 'Escape') {
+                // Close any open modals
+                hideAuthModal();
+                hideBookModelsModal();
+                hideSettingsModal();
+                if (document.getElementById('sideMenu').classList.contains('show')) {
+                    toggleMenu();
+                }
+            }
+            
+            // Show keyboard shortcuts help with ?
+            if (e.key === '?' && !e.shiftKey) {
+                showToast('Keyboard Shortcuts:<br>Ctrl+K: Search<br>Ctrl+N: New Project<br>Esc: Close', 'info');
+            }
+        });
+
+        // Add keyboard navigation class on Tab
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                document.body.classList.add('keyboard-nav');
+            }
+        });
+
+        document.addEventListener('mousedown', function() {
+            document.body.classList.remove('keyboard-nav');
+        });
+
+        // =====================
+        // ENHANCED ALERT REPLACEMENT
+        // =====================
+        // Override window.alert to use toasts for better UX
+        const originalAlert = window.alert;
+        window.alert = function(message) {
+            // Check if it's an error or success message
+            if (message.includes('success') || message.includes('✅') || message.includes('completed')) {
+                showToast(message, 'success');
+            } else if (message.includes('error') || message.includes('⚠️') || message.includes('warning')) {
+                showToast(message, 'error');
+            } else {
+                showToast(message, 'info');
+            }
+        };
+
+        // =====================
+        // LOADING STATE HELPERS
+        // =====================
+        function setButtonLoading(buttonElement, isLoading) {
+            if (isLoading) {
+                buttonElement.classList.add('btn-loading');
+                buttonElement.disabled = true;
+            } else {
+                buttonElement.classList.remove('btn-loading');
+                buttonElement.disabled = false;
+            }
+        }
+
+        // =====================
+        // WELCOME MESSAGE ON FIRST VISIT
+        // =====================
+        window.addEventListener('DOMContentLoaded', function() {
+            // Check if first visit
+            const hasVisited = localStorage.getItem('hasVisitedStrutAI');
+            if (!hasVisited) {
+                setTimeout(() => {
+                    showToast('Welcome to Strut AI! 🎉 Press ? to see keyboard shortcuts', 'success');
+                    localStorage.setItem('hasVisitedStrutAI', 'true');
+                }, 1000);
+            }
+        });
+    </script>
+
+    <script>
+        // Theme Switching Function (from Settings)
+        function changeTheme(theme) {
+            const body = document.body;
+            const themeStylesheet = document.getElementById("themeStylesheet");
+            
+            if (theme === 'dark') {
+                body.classList.remove("light-mode");
+                themeStylesheet.href = "strut-dark.css";
+                localStorage.setItem("theme", "dark");
+            } else if (theme === 'light') {
+                body.classList.add("light-mode");
+                themeStylesheet.href = "strut-light.css";
+                localStorage.setItem("theme", "light");
+            } else if (theme === 'auto') {
+                // Auto detect system preference
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (prefersDark) {
+                    body.classList.remove("light-mode");
+                    themeStylesheet.href = "strut-dark.css";
+                } else {
+                    body.classList.add("light-mode");
+                    themeStylesheet.href = "strut-light.css";
+                }
+                localStorage.setItem("theme", "auto");
+            }
+        }
+
+        // Load saved theme on page load
+        window.addEventListener("DOMContentLoaded", function() {
+            const savedTheme = localStorage.getItem("theme") || "dark";
+            const themeSelect = document.getElementById("themeSelect");
+            
+            // Set the dropdown to saved value
+            if (themeSelect) {
+                themeSelect.value = savedTheme;
+            }
+            
+            // Apply the theme
+            changeTheme(savedTheme);
+            
+            // Add event listener to theme selector
+            if (themeSelect) {
+                themeSelect.addEventListener('change', function() {
+                    changeTheme(this.value);
+                    showToast('Theme changed to ' + this.options[this.selectedIndex].text, 'success');
+                });
+            }
+        });
+
+        // Listen for system theme changes when in auto mode
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+            const savedTheme = localStorage.getItem("theme");
+            if (savedTheme === 'auto') {
+                changeTheme('auto');
+            }
+        });
+    </script>
+</body>
+</html>
