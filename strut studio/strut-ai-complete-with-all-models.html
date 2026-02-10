@@ -1,0 +1,3490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strut AI - Digital Fashion Studio</title>
+    
+    <!-- External CSS - Dark Mode by default -->
+    <link rel="stylesheet" href="strut-dark.css" id="themeStylesheet">
+    
+    <style>
+        /* Booking Flow Styles */
+        .booking-flow-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 3000;
+            overflow-y: auto;
+        }
+
+        .booking-flow-modal.show {
+            display: block;
+        }
+
+        .booking-close {
+            position: fixed;
+            top: 30px;
+            right: 40px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            font-size: 30px;
+            cursor: pointer;
+            z-index: 3001;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .booking-close:hover {
+            background: rgba(220, 20, 60, 0.8);
+            border-color: #DC143C;
+            transform: scale(1.1);
+        }
+
+        .booking-progress-bar {
+            padding: 40px 80px;
+            background: rgba(0, 0, 0, 0.5);
+            margin-top: 60px;
+        }
+
+        .booking-progress-steps {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .booking-progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 30px;
+            left: 60px;
+            right: 60px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 0;
+        }
+
+        .booking-progress-line {
+            position: absolute;
+            top: 30px;
+            left: 60px;
+            height: 2px;
+            background: #DC143C;
+            transition: width 0.5s ease;
+            z-index: 0;
+        }
+
+        .booking-step {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .booking-step-circle {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 24px;
+            font-weight: 900;
+            transition: all 0.3s ease;
+        }
+
+        .booking-step.active .booking-step-circle {
+            background: #DC143C;
+            border-color: #DC143C;
+            box-shadow: 0 0 30px rgba(220, 20, 60, 0.6);
+        }
+
+        .booking-step.completed .booking-step-circle {
+            background: #00aa00;
+            border-color: #00aa00;
+        }
+
+        .booking-step-label {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .booking-step.active .booking-step-label {
+            color: #DC143C;
+        }
+
+        .booking-container {
+            padding: 60px 80px 100px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .booking-step-content {
+            display: none;
+            animation: bookingFadeIn 0.5s ease-out;
+        }
+
+        .booking-step-content.active {
+            display: block;
+        }
+
+        @keyframes bookingFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .booking-step-title {
+            font-size: 42px;
+            font-weight: 900;
+            margin-bottom: 15px;
+        }
+
+        .booking-step-subtitle {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 50px;
+        }
+
+        .booking-form-section {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+
+        .booking-form-section h3 {
+            font-size: 20px;
+            margin-bottom: 25px;
+            color: #DC143C;
+        }
+
+        .booking-radio-group {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .booking-radio-option {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .booking-radio-option:hover {
+            background: rgba(220, 20, 60, 0.1);
+            border-color: rgba(220, 20, 60, 0.5);
+        }
+
+        .booking-radio-option.selected {
+            background: rgba(220, 20, 60, 0.2);
+            border-color: #DC143C;
+        }
+
+        .booking-radio-option input {
+            display: none;
+        }
+
+        .booking-radio-label {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .booking-radio-desc {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .booking-summary-box {
+            background: rgba(220, 20, 60, 0.1);
+            border: 2px solid rgba(220, 20, 60, 0.3);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .booking-summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .booking-summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .booking-summary-label {
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .booking-summary-value {
+            font-weight: 700;
+            color: #DC143C;
+        }
+
+        .booking-total-row {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid rgba(220, 20, 60, 0.5);
+            display: flex;
+            justify-content: space-between;
+            font-size: 20px;
+        }
+
+        .booking-action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+        }
+
+        .booking-confirmation-card {
+            text-align: center;
+            padding: 60px;
+            background: rgba(0, 255, 0, 0.05);
+            border: 2px solid rgba(0, 255, 0, 0.3);
+            border-radius: 20px;
+        }
+
+        .booking-confirmation-icon {
+            font-size: 100px;
+            margin-bottom: 30px;
+        }
+
+        .booking-confirmation-card h2 {
+            font-size: 36px;
+            margin-bottom: 15px;
+            color: #00ff00;
+        }
+
+        .booking-confirmation-card p {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 30px;
+        }
+
+        .booking-timeline {
+            max-width: 600px;
+            margin: 40px auto;
+            text-align: left;
+        }
+
+        .booking-timeline-item {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .booking-timeline-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(220, 20, 60, 0.2);
+            border: 2px solid #DC143C;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .booking-timeline-content h4 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .booking-timeline-content p {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Slideshow -->
+    <div class="background-slideshow" id="bgSlideshow">
+        <!-- Slide 1 -->
+        <div class="bg-slide active" style="background-image: url('https://i.imgur.com/GNIkjRd.gif');"></div>
+        
+        <!-- Slide 2 -->
+        <div class="bg-slide" style="background-image: url('https://i.imgur.com/0srWHMW.gif');"></div>
+        
+        <!-- Slide 3 -->
+        <div class="bg-slide" style="background-image: url('https://i.imgur.com/gVm2cCG.gif');"></div>
+    </div>
+
+    <!-- Slideshow Controls -->
+    <div class="slideshow-dots" id="slideshowDots">
+        <div class="slideshow-dot active" onclick="goToSlide(0)"></div>
+        <div class="slideshow-dot" onclick="goToSlide(1)"></div>
+        <div class="slideshow-dot" onclick="goToSlide(2)"></div>
+    </div>
+
+    <!-- Navigation Arrows -->
+    <div class="slideshow-nav prev" onclick="previousSlide()">‹</div>
+    <div class="slideshow-nav next" onclick="nextSlide()">›</div>
+
+    <!-- Pause Indicator -->
+    <div class="slideshow-paused" id="pausedIndicator">Paused</div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <a href="#" onclick="goToHome(); return false;" style="display: flex; align-items: center; text-decoration: none; cursor: pointer;">
+                <span style="font-family: 'Georgia', 'Times New Roman', serif; font-size: 32px; font-weight: 400; color: #ffffff; letter-spacing: 0.5px;">
+                    Strut<span style="color: #DC143C; font-size: 40px; line-height: 0; position: relative; top: -8px;">.</span><span style="margin-left: 4px;">AI</span>
+                </span>
+            </a>
+        </div>
+
+        <nav class="nav-items">
+            <a href="#studio" onclick="showStudioProjects(); return false;">Pro Studio</a>
+            <a href="#book-models" onclick="showBookModelsModal(); return false;">Book Twin</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#projects" onclick="showProjectsPage(); return false;">My Projects</a>
+            <button class="login-btn" onclick="showAuthModal()">Login / Sign Up</button>
+        </nav>
+
+        <button class="menu-btn" onclick="toggleMenu()">☰</button>
+    </header>
+
+    <!-- Side Menu -->
+    <div class="side-menu" id="sideMenu">
+        <div class="menu-content">
+            <!-- Support & Help Section -->
+            <div class="menu-section">
+                <h3>Support & Help</h3>
+                <div class="menu-link" onclick="openLiveChat()">
+                    <span class="menu-icon">💬</span>
+                    <span>Live Chat Support</span>
+                </div>
+                <div class="menu-link" onclick="openEmailSupport()">
+                    <span class="menu-icon">📧</span>
+                    <span>Email Support</span>
+                </div>
+                <div class="menu-link" onclick="window.open('https://docs.strutai.com', '_blank')">
+                    <span class="menu-icon">📚</span>
+                    <span>Documentation</span>
+                </div>
+                <div class="menu-link" onclick="window.open('https://help.strutai.com', '_blank')">
+                    <span class="menu-icon">❓</span>
+                    <span>Help Center</span>
+                </div>
+                <div class="menu-link" onclick="openTutorials()">
+                    <span class="menu-icon">🎥</span>
+                    <span>Video Tutorials</span>
+                </div>
+            </div>
+
+            <!-- Agency Portal Section - NEW -->
+            <div class="menu-section">
+                <h3>For Agencies</h3>
+                <div class="menu-link" onclick="openAgencyPortal()">
+                    <span class="menu-icon">🏢</span>
+                    <span>Agency Portal</span>
+                </div>
+                <div class="menu-link" onclick="showToast('Partner program coming soon!', 'info')">
+                    <span class="menu-icon">🤝</span>
+                    <span>Become a Partner</span>
+                </div>
+            </div>
+
+            <!-- About Section -->
+            <div class="menu-section">
+                <h3>About</h3>
+                <div class="menu-link" onclick="showAboutPage()">
+                    <span class="menu-icon">ℹ️</span>
+                    <span>About Strut AI</span>
+                </div>
+                <div class="menu-link" onclick="window.open('https://blog.strutai.com', '_blank')">
+                    <span class="menu-icon">📝</span>
+                    <span>Blog</span>
+                </div>
+                <div class="menu-link" onclick="showWhatsNew()">
+                    <span class="menu-icon">✨</span>
+                    <span>What's New</span>
+                </div>
+                <div class="menu-link" onclick="window.open('https://careers.strutai.com', '_blank')">
+                    <span class="menu-icon">💼</span>
+                    <span>Careers</span>
+                </div>
+                <div class="menu-link" onclick="contactUs()">
+                    <span class="menu-icon">📞</span>
+                    <span>Contact Us</span>
+                </div>
+            </div>
+
+            <!-- Settings Section -->
+            <div class="menu-section">
+                <h3>Settings</h3>
+                <div class="menu-link" onclick="showSettingsModal()">
+                    <span class="menu-icon">⚙️</span>
+                    <span>User Preferences</span>
+                </div>
+                <div class="menu-link" onclick="showAccountSettings()">
+                    <span class="menu-icon">👤</span>
+                    <span>Account Settings</span>
+                </div>
+                <div class="menu-link" onclick="showNotificationSettings()">
+                    <span class="menu-icon">🔔</span>
+                    <span>Notifications</span>
+                </div>
+                <div class="menu-link" onclick="showBilling()">
+                    <span class="menu-icon">💳</span>
+                    <span>Billing & Subscription</span>
+                </div>
+                <div class="menu-link" onclick="showTerms()">
+                    <span class="menu-icon">📄</span>
+                    <span>Terms of Service</span>
+                </div>
+                <div class="menu-link" onclick="showPrivacy()">
+                    <span class="menu-icon">🔒</span>
+                    <span>Privacy Policy</span>
+                </div>
+            </div>
+
+            <div class="menu-footer">
+                <div class="app-version">Strut AI v1.0.0</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="heroSection">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                The Future of
+                <span class="highlight"> Fashion Visualization</span>
+            </h1>
+            <p class="hero-description">
+                Book real models or create with their AI-powered digital twins. Professional-grade renders for agencies and brands worldwide.
+            </p>
+            <div class="hero-cta">
+                <button class="cta-primary" onclick="startCreating()">
+                    ✨ Start Creating
+                </button>
+                <button class="cta-secondary" onclick="scrollToPricing()">
+                    View Pricing
+                </button>
+            </div>
+        </div>
+        
+        <div class="hero-visual">
+            <div class="visual-card card-1">
+                <div class="video-container">
+                    <img src="https://i.imgur.com/Qd94gG7.gif" alt="500+ Models Showcase" id="modelsGif">
+                </div>
+                <div class="card-title">500+ MODELS</div>
+            </div>
+            <div class="visual-card card-2">
+                <div class="twin-container">
+                    <img src="https://i.imgur.com/Qsmbfpr.gif" alt="AI Digital Twin Transformation" style="width: 100%; height: auto; border-radius: 10px; border: 2px solid rgba(220, 20, 60, 0.3);">
+                </div>
+                <div class="card-title">AI DIGITAL TWINS</div>
+            </div>
+            <div class="visual-card card-3">
+                <div class="render-showcase">
+                    <div class="render-box">
+                        <div class="render-visual render-2d-image">
+                            <img src="https://i.imgur.com/rbrE0zf.jpeg" alt="2D Render" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+                        </div>
+                        <div class="render-label">2D</div>
+                    </div>
+                    <div class="render-box">
+                        <div class="render-visual render-3d-image">
+                            <img src="https://i.imgur.com/soUISDp.jpeg" alt="3D Render" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+                        </div>
+                        <div class="render-label">3D</div>
+                    </div>
+                </div>
+                <div class="card-title">2D & 3D RENDERS</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Subscription Section -->
+    <section class="subscription-section" id="pricing">
+        <h2 class="section-title">Token-Based Subscriptions</h2>
+        <p class="section-subtitle">Choose the plan that scales with your creative needs</p>
+        
+        <div class="tier-grid">
+            <div class="tier-card">
+                <h3 class="tier-name">Starter</h3>
+                <div class="tier-price">$49<span>/month</span></div>
+                <div class="tier-tokens">100 tokens/month</div>
+                <div style="padding: 10px; background: rgba(255, 255, 255, 0.05); border-radius: 8px; margin: 15px 0; font-size: 12px; font-weight: 700; color: #DC143C; text-align: center;">BASIC STUDIO ACCESS</div>
+                <ul class="tier-features">
+                    <li>2D renders only</li>
+                    <li>5 digital twins</li>
+                    <li>Basic prompting</li>
+                    <li>6 preset colors</li>
+                    <li>3 fabric options</li>
+                    <li>Standard poses</li>
+                    <li>Email support</li>
+                    <li>4K exports</li>
+                </ul>
+                <button class="tier-btn">Get Started</button>
+            </div>
+
+            <div class="tier-card popular">
+                <div class="popular-badge">Most Popular</div>
+                <h3 class="tier-name">Professional</h3>
+                <div class="tier-price">$149<span>/month</span></div>
+                <div class="tier-tokens">500 tokens/month</div>
+                <div style="padding: 10px; background: rgba(255, 255, 255, 0.05); border-radius: 8px; margin: 15px 0; font-size: 12px; font-weight: 700; color: #DC143C; text-align: center;">BASIC STUDIO ACCESS</div>
+                <ul class="tier-features">
+                    <li>2D & 3D renders</li>
+                    <li>20 digital twins</li>
+                    <li>Advanced prompting</li>
+                    <li>Custom colors</li>
+                    <li>6 fabric options</li>
+                    <li>More poses</li>
+                    <li>Priority support</li>
+                    <li>4K & 8K exports</li>
+                    <li>Collaboration (3 users)</li>
+                </ul>
+                <button class="tier-btn">Get Started</button>
+            </div>
+
+            <div class="tier-card">
+                <h3 class="tier-name">Enterprise</h3>
+                <div class="tier-price">$499<span>/month</span></div>
+                <div class="tier-tokens">Unlimited tokens</div>
+                <div style="padding: 10px; background: linear-gradient(135deg, #DC143C, #8B0000); border-radius: 8px; margin: 15px 0; font-size: 12px; font-weight: 900; color: #ffffff; text-align: center; letter-spacing: 1px;">⭐ PRO STUDIO ACCESS ⭐</div>
+                <ul class="tier-features">
+                    <li><strong>Full Professional Studio</strong></li>
+                    <li>Advanced garment editor</li>
+                    <li>Full body customization</li>
+                    <li>30+ poses & animations</li>
+                    <li>Professional lighting</li>
+                    <li>Batch export tools</li>
+                    <li>Team collaboration</li>
+                    <li>Unlimited renders & twins</li>
+                    <li>API access</li>
+                    <li>24/7 support</li>
+                    <li>16K exports</li>
+                </ul>
+                <button class="tier-btn">Get Started</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Progress Steps -->
+    <div class="progress-container" id="progressContainer">
+        <div class="progress-steps">
+            <div class="progress-step active" onclick="goToStep(0)">
+                <div class="step-icon">👤</div>
+                <div class="step-info">
+                    <h4>Select Model</h4>
+                    <p>Choose from our roster or use digital twin</p>
+                </div>
+            </div>
+            <div class="progress-step" onclick="goToStep(1)">
+                <div class="step-icon">📤</div>
+                <div class="step-info">
+                    <h4>Add Clothing</h4>
+                    <p>Upload garments and accessories</p>
+                </div>
+            </div>
+            <div class="progress-step" onclick="goToStep(2)">
+                <div class="step-icon">🎨</div>
+                <div class="step-info">
+                    <h4>Configure Scene</h4>
+                    <p>Set environment and prompts</p>
+                </div>
+            </div>
+            <div class="progress-step" onclick="goToStep(3)">
+                <div class="step-icon">👁️</div>
+                <div class="step-info">
+                    <h4>Preview & Export</h4>
+                    <p>Review and finalize your creation</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Step 1: Select Model -->
+        <div class="step-content active" id="step0">
+            <h2 class="step-title">Select Your Model</h2>
+            <p class="step-subtitle">Choose from available models or book their digital twin</p>
+            
+            <div class="model-grid">
+                <div class="model-card" onclick="selectModel(1)">
+                    <div class="model-image">
+                        <img src="https://i.imgur.com/zCukqmO.png" alt="Aria Thompson" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+                    </div>
+                    <h3 class="model-name">Aria Thompson</h3>
+                    <p class="model-agency">Elite Model Management</p>
+                    <div class="model-stats">
+                        <span>height: 5'10"</span>
+                        <span>bust: 34"</span>
+                        <span>waist: 24"</span>
+                        <span>hips: 35"</span>
+                    </div>
+                    <div class="model-availability">
+                        <span class="available">Available for booking</span>
+                    </div>
+                </div>
+
+                <div class="model-card" onclick="selectModel(2)">
+                    <div class="model-image">👤</div>
+                    <h3 class="model-name">Marcus Chen</h3>
+                    <p class="model-agency">IMG Models</p>
+                    <div class="model-stats">
+                        <span>height: 6'2"</span>
+                        <span>chest: 40"</span>
+                        <span>waist: 32"</span>
+                        <span>shoe: 11</span>
+                    </div>
+                    <div class="model-availability">
+                        <span class="unavailable">Digital Twin Available</span>
+                    </div>
+                </div>
+
+                <div class="model-card" onclick="selectModel(3)">
+                    <div class="model-image">👤</div>
+                    <h3 class="model-name">Sofia Rodriguez</h3>
+                    <p class="model-agency">The Society Management</p>
+                    <div class="model-stats">
+                        <span>height: 5'9"</span>
+                        <span>bust: 32"</span>
+                        <span>waist: 23"</span>
+                        <span>hips: 34"</span>
+                    </div>
+                    <div class="model-availability">
+                        <span class="available">Available for booking</span>
+                    </div>
+                </div>
+
+                <div class="model-card" onclick="selectModel(4)">
+                    <div class="model-image">👤</div>
+                    <h3 class="model-name">Jamal Williams</h3>
+                    <p class="model-agency">Women Management</p>
+                    <div class="model-stats">
+                        <span>height: 6'1"</span>
+                        <span>chest: 42"</span>
+                        <span>waist: 33"</span>
+                        <span>shoe: 12</span>
+                    </div>
+                    <div class="model-availability">
+                        <span class="available">Available for booking</span>
+                    </div>
+                </div>
+
+                <div class="model-card" onclick="selectModel(5)">
+                    <div class="model-image">👤</div>
+                    <h3 class="model-name">Isabella Laurent</h3>
+                    <p class="model-agency">Caribbean Talent Agency</p>
+                    <div class="model-stats">
+                        <span>height: 5'11"</span>
+                        <span>bust: 35"</span>
+                        <span>waist: 25"</span>
+                        <span>hips: 36"</span>
+                    </div>
+                    <div class="model-availability">
+                        <span class="unavailable">Digital Twin Available</span>
+                    </div>
+                </div>
+
+                <div class="model-card" onclick="selectModel(6)">
+                    <div class="model-image">👤</div>
+                    <h3 class="model-name">Dante Morrison</h3>
+                    <p class="model-agency">Elite Model Management</p>
+                    <div class="model-stats">
+                        <span>height: 6'0"</span>
+                        <span>chest: 39"</span>
+                        <span>waist: 31"</span>
+                        <span>shoe: 10.5</span>
+                    </div>
+                    <div class="model-availability">
+                        <span class="available">Available for booking</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="continue-btn" id="continueBtn0" style="display:none;" onclick="nextStep()">
+                Continue to Clothing →
+            </button>
+        </div>
+
+        <!-- Step 2: Add Clothing -->
+        <div class="step-content" id="step1">
+            <h2 class="step-title">Add Clothing & Accessories</h2>
+            <p class="step-subtitle">Upload garment files or select from our catalog</p>
+            
+            <div class="upload-section">
+                <div class="upload-zone">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#DC143C" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    <h3>Drag & Drop Files</h3>
+                    <p>Support for .obj, .fbx, .gltf, .png, .jpg</p>
+                    <input type="file" id="fileInput" multiple accept=".obj,.fbx,.gltf,.png,.jpg,.jpeg" style="display: none;">
+                    <button class="upload-btn" onclick="document.getElementById('fileInput').click()">Browse Files</button>
+                </div>
+
+                <div class="catalog-preview">
+                    <h3>Recent Uploads</h3>
+                    <div class="upload-items">
+                        <div class="upload-item">
+                            <div class="item-icon">👔</div>
+                            <span>Black_Blazer_v2.obj</span>
+                        </div>
+                        <div class="upload-item">
+                            <div class="item-icon">👗</div>
+                            <span>Summer_Dress.gltf</span>
+                        </div>
+                        <div class="upload-item">
+                            <div class="item-icon">👠</div>
+                            <span>Heels_Collection.fbx</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="continue-btn" onclick="nextStep()">
+                Continue to Scene Setup →
+            </button>
+        </div>
+
+        <!-- Step 3: Configure Scene -->
+        <div class="step-content" id="step2">
+            <h2 class="step-title">Configure Your Scene</h2>
+            <p class="step-subtitle">Choose your environment and define the creative direction</p>
+
+            <div class="scene-config">
+                <div class="environment-selector">
+                    <h3>Environment</h3>
+                    <div class="env-buttons">
+                        <button class="active" onclick="setEnvironment('2D')">2D Render</button>
+                        <button onclick="setEnvironment('3D')">3D Interactive</button>
+                    </div>
+                </div>
+
+                <div class="animation-controls">
+                    <h3>Model Actions</h3>
+                    <div class="action-buttons">
+                        <button>▶️ Walk</button>
+                        <button>⚡ Runway</button>
+                        <button>🔄 Turn 360°</button>
+                    </div>
+                </div>
+
+                <div class="prompt-selector">
+                    <h3>Prompting Mode</h3>
+                    <div class="prompt-modes">
+                        <button class="active" onclick="setPromptMode('advanced')">Advanced Prompt</button>
+                        <button onclick="setPromptMode('questionnaire')">Questionnaire</button>
+                    </div>
+                </div>
+
+                <div class="advanced-prompt active" id="advancedPrompt">
+                    <textarea placeholder="Describe your scene in natural language... Example: 'Model walking down a modern urban runway with dramatic lighting, wearing a black blazer, confident expression, hands in pockets, city skyline in background'" rows="6"></textarea>
+                </div>
+
+                <div class="questionnaire" id="questionnairePrompt">
+                    <div class="question-group">
+                        <label>Background Setting</label>
+                        <input type="text" placeholder="e.g., Studio white, Urban street, Beach sunset">
+                    </div>
+                    <div class="question-group">
+                        <label>Pose & Stance</label>
+                        <select>
+                            <option value="">Select pose...</option>
+                            <option value="standing">Standing - Neutral</option>
+                            <option value="walking">Walking - Dynamic</option>
+                            <option value="seated">Seated - Relaxed</option>
+                            <option value="runway">Runway - Confident</option>
+                            <option value="editorial">Editorial - Dramatic</option>
+                        </select>
+                    </div>
+                    <div class="question-group">
+                        <label>Facial Expression</label>
+                        <select>
+                            <option value="">Select expression...</option>
+                            <option value="neutral">Neutral - Professional</option>
+                            <option value="smiling">Smiling - Warm</option>
+                            <option value="serious">Serious - Intense</option>
+                            <option value="confident">Confident - Strong</option>
+                        </select>
+                    </div>
+                    <div class="question-group">
+                        <label>Accessories in Hands</label>
+                        <input type="text" placeholder="e.g., Handbag, Sunglasses, Phone, None">
+                    </div>
+                    <div class="question-group">
+                        <label>Hand Position</label>
+                        <select>
+                            <option value="">Select position...</option>
+                            <option value="sides">At sides - Natural</option>
+                            <option value="pockets">In pockets - Casual</option>
+                            <option value="hips">On hips - Confident</option>
+                            <option value="crossed">Arms crossed - Strong</option>
+                            <option value="gesturing">Gesturing - Dynamic</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <button class="continue-btn" onclick="nextStep()">
+                Preview Creation →
+            </button>
+        </div>
+
+        <!-- Step 4: Preview & Export -->
+        <div class="step-content" id="step3">
+            <h2 class="step-title">Preview & Export</h2>
+            <p class="step-subtitle">Review your creation before finalizing</p>
+
+            <div class="preview-container">
+                <div class="preview-viewport">
+                    <div class="preview-placeholder">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="rgba(220, 20, 60, 0.3)" stroke-width="2">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                            <circle cx="12" cy="13" r="4"></circle>
+                        </svg>
+                        <p>Your 2D render will appear here</p>
+                        <p class="preview-details">Model: Selected Model | Environment: 2D | Mode: advanced</p>
+                    </div>
+                </div>
+
+                <div class="preview-controls">
+                    <h3>Collaboration</h3>
+                    <div class="collab-section">
+                        <div class="collab-users">
+                            <div class="user-avatar">JD</div>
+                            <div class="user-avatar">SM</div>
+                            <div class="user-avatar add-user">+</div>
+                        </div>
+                        <button class="invite-btn">
+                            📤 Invite Team
+                        </button>
+                    </div>
+
+                    <h3>Actions</h3>
+                    <div class="action-list">
+                        <button class="action-item">
+                            📥 Export (4K)
+                        </button>
+                        <button class="action-item">
+                            💬 Add Comment
+                        </button>
+                        <button class="action-item secondary">
+                            🔄 Start Over
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <button class="continue-btn finalize">
+                ✨ Generate Final Render
+            </button>
+        </div>
+    </main>
+
+    <!-- Studio Project Selection -->
+    <section class="studio-selection" id="studioSelection">
+        <div class="studio-header">
+            <h1>Pro Studio Editor</h1>
+            <p>Choose project to edit</p>
+        </div>
+
+        <div class="studio-options">
+            <h2 class="studio-section-title">Choose Project</h2>
+            
+            <div class="project-selection-grid">
+                <!-- Saved Projects -->
+                <div class="studio-project-card" onclick="editProject(1)">
+                    <div class="studio-project-thumb">
+                        <img src="https://i.imgur.com/Qd94gG7.gif" alt="Project">
+                    </div>
+                    <div class="studio-project-info">
+                        <div class="studio-project-name">Summer Collection 2026</div>
+                        <div class="studio-project-meta">Model: Aria Thompson • 2D</div>
+                    </div>
+                </div>
+
+                <div class="studio-project-card" onclick="editProject(2)">
+                    <div class="studio-project-thumb">
+                        <img src="https://i.imgur.com/Qsmbfpr.gif" alt="Project">
+                    </div>
+                    <div class="studio-project-info">
+                        <div class="studio-project-name">Digital Twin - Marcus</div>
+                        <div class="studio-project-meta">Model: Marcus Chen • AI Twin</div>
+                    </div>
+                </div>
+
+                <div class="studio-project-card" onclick="editProject(3)">
+                    <div class="studio-project-thumb">
+                        <img src="https://i.imgur.com/rbrE0zf.jpeg" alt="Project">
+                    </div>
+                    <div class="studio-project-info">
+                        <div class="studio-project-name">Autumn Runway Preview</div>
+                        <div class="studio-project-meta">Model: Sofia Rodriguez • 2D</div>
+                    </div>
+                </div>
+
+                <div class="studio-project-card" onclick="editProject(4)">
+                    <div class="studio-project-thumb">
+                        <img src="https://i.imgur.com/soUISDp.jpeg" alt="Project">
+                    </div>
+                    <div class="studio-project-info">
+                        <div class="studio-project-name">Winter Elegance Series</div>
+                        <div class="studio-project-meta">Model: Isabella Laurent • 3D</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- My Projects Page -->
+    <section class="projects-page" id="projectsPage">
+        <div class="breadcrumbs">
+            <a href="#" class="breadcrumb-link" onclick="showStudioProjects(); return false;">Home</a>
+            <span class="breadcrumb-separator">›</span>
+            <span>My Projects</span>
+        </div>
+        
+        <div class="projects-header">
+            <h1>My Projects</h1>
+            <p>Manage and access all your fashion visualization projects</p>
+        </div>
+
+        <div class="projects-controls">
+            <div class="project-filters">
+                <button class="filter-btn active" onclick="filterProjects('all')">
+                    All Projects <span class="category-count" id="countAll">12</span>
+                </button>
+                <button class="filter-btn" onclick="filterProjects('completed')">
+                    Completed <span class="category-count" id="countCompleted">5</span>
+                </button>
+                <button class="filter-btn" onclick="filterProjects('draft')">
+                    Drafts <span class="category-count" id="countDrafts">4</span>
+                </button>
+                <button class="filter-btn" onclick="filterProjects('rendering')">
+                    Rendering <span class="category-count" id="countRendering">3</span>
+                </button>
+            </div>
+            <button class="new-project-btn" onclick="startNewProject()">
+                ✨ New Project
+            </button>
+        </div>
+
+        <div class="projects-grid" id="projectsGrid">
+            <!-- Completed Projects -->
+            <div class="project-card" data-status="completed" onclick="openProject(1)">
+                <div class="project-thumbnail">
+                    <img src="https://i.imgur.com/Qd94gG7.gif" alt="Project">
+                    <span class="project-status status-completed">Completed</span>
+                </div>
+                <div class="project-info">
+                    <h3 class="project-name">Summer Collection 2026</h3>
+                    <p class="project-details">Model: Aria Thompson • 2D Render • 4K</p>
+                    <div class="project-meta">
+                        <span class="project-date">Updated 2 days ago</span>
+                        <div class="project-actions">
+                            <button class="action-icon" onclick="event.stopPropagation(); downloadProject(1)" title="Download">📥</button>
+                            <button class="action-icon" onclick="event.stopPropagation(); shareProject(1)" title="Share">📤</button>
+                            <button class="action-icon" onclick="event.stopPropagation(); deleteProject(1)" title="Delete">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rendering Projects -->
+            <div class="project-card" data-status="rendering" onclick="continueRendering(2)">
+                <div class="project-thumbnail">
+                    <img src="https://i.imgur.com/Qsmbfpr.gif" alt="Project">
+                    <span class="project-status status-rendering">Rendering</span>
+                </div>
+                <div class="project-info">
+                    <h3 class="project-name">Digital Twin - Marcus</h3>
+                    <p class="project-details">Model: Marcus Chen • AI Twin • 3D</p>
+                    <div class="rendering-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 65%"></div>
+                        </div>
+                        <div class="progress-text">Rendering: 65% complete</div>
+                    </div>
+                    <div class="project-meta" style="margin-top: 10px;">
+                        <span class="project-date">Started 5 hours ago</span>
+                        <div class="project-actions">
+                            <button class="action-icon" onclick="event.stopPropagation(); cancelRender(2)" title="Cancel">🛑</button>
+                            <button class="action-icon" onclick="event.stopPropagation(); shareProject(2)" title="Share">📤</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Draft Projects -->
+            <div class="project-card" data-status="draft" onclick="openProject(3)">
+                <div class="project-thumbnail">
+                    <img src="https://i.imgur.com/rbrE0zf.jpeg" alt="Project">
+                    <span class="project-status status-draft">Draft</span>
+                </div>
+                <div class="project-info">
+                    <h3 class="project-name">Autumn Runway Preview</h3>
+                    <p class="project-details">Model: Sofia Rodriguez • 2D & 3D • 8K</p>
+                    <div class="project-meta">
+                        <span class="project-date">Updated 1 week ago</span>
+                        <div class="project-actions">
+                            <button class="action-icon" onclick="event.stopPropagation(); continueEditing(3)" title="Continue">✏️</button>
+                            <button class="action-icon" onclick="event.stopPropagation(); shareProject(3)" title="Share">📤</button>
+                            <button class="action-icon" onclick="event.stopPropagation(); deleteProject(3)" title="Delete">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Completed Project -->
+            <div class="project-card" data-status="completed" onclick="openProject(4)">
+                <div class="project-thumbnail">
+                    <img src="https://i.imgur.com/soUISDp.jpeg" alt="Project">
+                    <span class="project-status status-completed">Completed</span>
+                </div>
+                <div class="project-info">
+                    <h3 class="project-name">Winter Elegance Series</h3>
+                    <p class="project-details">Model: Isabella Laurent • 3D Render • 4K</p>
+                    <div class="project-meta">
+                        <span class="project-date">Updated 3 weeks ago</span>
+                        <div class="project-actions">
+                            <button class="action-icon" onclick="event.stopPropagation(); downloadProject(4)" title="Download">📥</button>
+                            <button class="action-icon" onclick="event.stopPropagation(); shareProject(4)" title="Share">📤</button>
+                            <button class="action-icon" onclick="event.stopPropagation(); deleteProject(4)" title="Delete">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Draft Project -->
+            <div class="project-card" data-status="draft" onclick="openProject(5)">
+                <div class="project-thumbnail">
+                    🎨
+                    <span class="project-status status-draft">Draft</span>
+                </div>
+                <div class="project-info">
+                    <h3 class="project-name">Street Style Campaign</h3>
+                    <p class="project-details">No model assigned • In Progress</p>
+                    <div class="project-meta">
+                        <span class="project-date">Updated yesterday</span>
+                        <div class="project-actions">
+                            <button class="action-icon" onclick="event.stopPropagation(); continueEditing(5)" title="Continue">✏️</button>
+                            <button class="action-icon" onclick="event.stopPropagation(); deleteProject(5)" title="Delete">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rendering Project -->
+            <div class="project-card" data-status="rendering" onclick="continueRendering(6)">
+                <div class="project-thumbnail">
+                    <img src="https://i.imgur.com/zCukqmO.png" alt="Project">
+                    <span class="project-status status-rendering">Rendering</span>
+                </div>
+                <div class="project-info">
+                    <h3 class="project-name">Urban Fashion Lookbook</h3>
+                    <p class="project-details">Model: Maya Patel • 4K Export</p>
+                    <div class="rendering-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 35%"></div>
+                        </div>
+                        <div class="progress-text">Rendering: 35% complete</div>
+                    </div>
+                    <div class="project-meta" style="margin-top: 10px;">
+                        <span class="project-date">Started 2 hours ago</span>
+                        <div class="project-actions">
+                            <button class="action-icon" onclick="event.stopPropagation(); cancelRender(6)" title="Cancel">🛑</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Completed Project -->
+            <div class="project-card" data-status="completed" onclick="openProject(7)">
+                <div class="project-thumbnail">
+                    ✨
+                    <span class="project-status status-completed">Completed</span>
+                </div>
+                <div class="project-info">
+                    <h3 class="project-name">Spring Fashion Week</h3>
+                    <p class="project-details">Model: Emma Wilson • Full Collection</p>
+                    <div class="project-meta">
+                        <span class="project-date">Updated 1 month ago</span>
+                        <div class="project-actions">
+                            <button class="action-icon" onclick="event.stopPropagation(); downloadProject(7)" title="Download">📥</button>
+                            <button class="action-icon" onclick="event.stopPropagation(); shareProject(7)" title="Share">📤</button>
+                            <button class="action-icon" onclick="event.stopPropagation(); deleteProject(7)" title="Delete">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Draft Project -->
+            <div class="project-card" data-status="draft" onclick="openProject(8)">
+                <div class="project-thumbnail">
+                    📸
+                    <span class="project-status status-draft">Draft</span>
+                </div>
+                <div class="project-info">
+                    <h3 class="project-name">Editorial Concept</h3>
+                    <p class="project-details">Model: TBD • Early Stage</p>
+                    <div class="project-meta">
+                        <span class="project-date">Created today</span>
+                        <div class="project-actions">
+                            <button class="action-icon" onclick="event.stopPropagation(); continueEditing(8)" title="Continue">✏️</button>
+                            <button class="action-icon" onclick="event.stopPropagation(); deleteProject(8)" title="Delete">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rendering Project -->
+            <div class="project-card" data-status="rendering" onclick="continueRendering(9)">
+                <div class="project-thumbnail">
+                    <img src="https://i.imgur.com/Qd94gG7.gif" alt="Project">
+                    <span class="project-status status-rendering">Rendering</span>
+                </div>
+                <div class="project-info">
+                    <h3 class="project-name">Resort Wear Collection</h3>
+                    <p class="project-details">Model: Luna Kim • 8K Quality</p>
+                    <div class="rendering-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 90%"></div>
+                        </div>
+                        <div class="progress-text">Rendering: 90% complete</div>
+                    </div>
+                    <div class="project-meta" style="margin-top: 10px;">
+                        <span class="project-date">Almost done!</span>
+                        <div class="project-actions">
+                            <button class="action-icon" onclick="event.stopPropagation(); cancelRender(9)" title="Cancel">🛑</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Completed Projects (more examples) -->
+            <div class="project-card" data-status="completed" onclick="openProject(10)">
+                <div class="project-thumbnail">
+                    💎
+                    <span class="project-status status-completed">Completed</span>
+                </div>
+                <div class="project-info">
+                    <h3 class="project-name">Luxury Brand Campaign</h3>
+                    <p class="project-details">Model: Victoria Stone • Premium</p>
+                    <div class="project-meta">
+                        <span class="project-date">Updated 2 months ago</span>
+                        <div class="project-actions">
+                            <button class="action-icon" onclick="event.stopPropagation(); downloadProject(10)" title="Download">📥</button>
+                            <button class="action-icon" onclick="event.stopPropagation(); shareProject(10)" title="Share">📤</button>
+                            <button class="action-icon" onclick="event.stopPropagation(); deleteProject(10)" title="Delete">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card" data-status="completed" onclick="openProject(11)">
+                <div class="project-thumbnail">
+                    👗
+                    <span class="project-status status-completed">Completed</span>
+                </div>
+                <div class="project-info">
+                    <h3 class="project-name">Evening Wear Showcase</h3>
+                    <p class="project-details">Model: Sienna Brown • High Fashion</p>
+                    <div class="project-meta">
+                        <span class="project-date">Updated 6 weeks ago</span>
+                        <div class="project-actions">
+                            <button class="action-icon" onclick="event.stopPropagation(); downloadProject(11)" title="Download">📥</button>
+                            <button class="action-icon" onclick="event.stopPropagation(); shareProject(11)" title="Share">📤</button>
+                            <button class="action-icon" onclick="event.stopPropagation(); deleteProject(11)" title="Delete">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card" data-status="draft" onclick="openProject(12)">
+                <div class="project-thumbnail">
+                    🌟
+                    <span class="project-status status-draft">Draft</span>
+                </div>
+                <div class="project-info">
+                    <h3 class="project-name">Holiday Collection 2026</h3>
+                    <p class="project-details">Planning Phase</p>
+                    <div class="project-meta">
+                        <span class="project-date">Created 3 days ago</span>
+                        <div class="project-actions">
+                            <button class="action-icon" onclick="event.stopPropagation(); continueEditing(12)" title="Continue">✏️</button>
+                            <button class="action-icon" onclick="event.stopPropagation(); deleteProject(12)" title="Delete">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State (hidden by default) - IMPROVED -->
+        <div class="empty-projects" id="emptyProjects" style="display: none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <h3>Your studio is ready</h3>
+            <p>Start creating professional fashion visuals with AI models.<br>Try filtering by a different status or create your first project.</p>
+            <button class="new-project-btn" onclick="startNewProject()">
+                ✨ Create Your First Project
+            </button>
+            <p style="margin-top: 20px; font-size: 13px; color: rgba(255,255,255,0.4);">
+                💡 Tip: Press <kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">Ctrl+N</kbd> to quickly start a new project
+            </p>
+        </div>
+    </section>
+
+<!-- Book Twin Modal with Filtering & AI Search -->
+<div class="book-models-modal" id="bookModelsModal">
+    <div class="book-models-container">
+        <button class="book-models-close" onclick="hideBookModelsModal()">×</button>
+        
+        <h2 class="book-models-title">Book Twin</h2>
+        <p class="book-models-subtitle">Find the perfect digital model for your project</p>
+
+        <!-- Search Mode Toggle -->
+        <div class="search-mode-toggle">
+            <button class="mode-btn active" onclick="switchSearchMode('filter')" id="filterModeBtn">
+                🔍 Filter Search
+            </button>
+            <button class="mode-btn" onclick="switchSearchMode('ai')" id="aiModeBtn">
+                ✨ AI Search
+            </button>
+        </div>
+
+        <!-- Traditional Filter View -->
+        <div class="filter-view active" id="filterView">
+            <div class="filter-header">
+                <h3 class="filter-title">Find Model</h3>
+                <p class="filter-subtitle">Use filters to narrow down your search</p>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="search-bar-container">
+                <div class="search-bar">
+                    <input 
+                        type="text" 
+                        class="search-input" 
+                        id="modelSearchInput"
+                        placeholder="Search by name, agency, or specialty..." 
+                        oninput="filterModels()"
+                    >
+                    <span class="search-icon">🔍</span>
+                </div>
+            </div>
+
+            <!-- Filter Grid -->
+<!-- Filter Grid with Gender and Age Category -->
+<div class="filter-grid">
+    <div class="filter-group">
+        <label class="filter-label">Gender</label>
+        <select class="filter-select" id="filterGender" onchange="filterModels()">
+            <option value="">All Genders</option>
+            <option value="Female">Female</option>
+            <option value="Male">Male</option>
+        </select>
+    </div>
+
+    <div class="filter-group">
+        <label class="filter-label">Age Category</label>
+        <select class="filter-select" id="filterAgeCategory" onchange="filterModels()">
+            <option value="">All Ages</option>
+            <option value="Adult">Adult</option>
+            <option value="Teen (13-17)">Teen (13-17)</option>
+            <option value="Child (8-12)">Child (8-12)</option>
+        </select>
+    </div>
+
+    <div class="filter-group">
+        <label class="filter-label">Agency</label>
+        <select class="filter-select" id="filterAgency" onchange="filterModels()">
+            <option value="">All Agencies</option>
+            <option value="Elite Model Management">Elite Model Management</option>
+            <option value="IMG Models">IMG Models</option>
+            <option value="Wilhelmina Models">Wilhelmina Models</option>
+            <option value="Ford Models">Ford Models</option>
+            <option value="Next Management">Next Management</option>
+            <option value="Marilyn Agency">Marilyn Agency</option>
+        </select>
+    </div>
+
+    <div class="filter-group">
+        <label class="filter-label">Skin Tone</label>
+        <select class="filter-select" id="filterSkinTone" onchange="filterModels()">
+            <option value="">All Tones</option>
+            <option value="Fair">Fair</option>
+            <option value="Light">Light</option>
+            <option value="Medium">Medium</option>
+            <option value="Olive">Olive</option>
+            <option value="Tan">Tan</option>
+            <option value="Brown">Brown</option>
+            <option value="Deep">Deep</option>
+        </select>
+    </div>
+
+    <div class="filter-group">
+        <label class="filter-label">Height</label>
+        <select class="filter-select" id="filterHeight" onchange="filterModels()">
+            <option value="">Any Height</option>
+            <option value="4'6\"-4'8\"">4'6" - 4'8" (Children)</option>
+            <option value="5'3\"-5'5\"">5'3" - 5'5" (Teens)</option>
+            <option value="5'6\"-5'8\"">5'6" - 5'8"</option>
+            <option value="5'9\"-5'11\"">5'9" - 5'11"</option>
+            <option value="6'0\"+">6'0"+</option>
+            <option value="6'2\"+">6'2"+</option>
+        </select>
+    </div>
+
+    <div class="filter-group">
+        <label class="filter-label">Build</label>
+        <select class="filter-select" id="filterBuild" onchange="filterModels()">
+            <option value="">All Builds</option>
+            <option value="Petite">Petite</option>
+            <option value="Slim">Slim</option>
+            <option value="Athletic">Athletic</option>
+            <option value="Muscular">Muscular</option>
+            <option value="Curvy">Curvy</option>
+            <option value="Plus">Plus</option>
+        </select>
+    </div>
+
+    <div class="filter-group">
+        <label class="filter-label">Hair Color</label>
+        <select class="filter-select" id="filterHairColor" onchange="filterModels()">
+            <option value="">All Colors</option>
+            <option value="Blonde">Blonde</option>
+            <option value="Brunette">Brunette</option>
+            <option value="Black">Black</option>
+            <option value="Red">Red</option>
+            <option value="Auburn">Auburn</option>
+            <option value="Grey/Silver">Grey/Silver</option>
+        </select>
+    </div>
+
+    <div class="filter-group">
+        <label class="filter-label">Specialty</label>
+        <select class="filter-select" id="filterSpecialty" onchange="filterModels()">
+            <option value="">All Specialties</option>
+            <option value="High Fashion">High Fashion</option>
+            <option value="Commercial">Commercial</option>
+            <option value="Runway">Runway</option>
+            <option value="Editorial">Editorial</option>
+            <option value="Fitness">Fitness</option>
+            <option value="Beauty">Beauty</option>
+        </select>
+    </div>
+</div>
+
+            <!-- Filter Actions -->
+            <div class="filter-actions">
+                <span class="filter-count" id="filterResultCount">53 models found</span>
+                <button class="btn-clear-filters" onclick="clearAllFilters()">Clear All Filters</button>
+            </div>
+
+            <!-- Browse Models Section -->
+            <div class="browse-models-section">
+                <div class="browse-header">
+                    <h3 class="browse-title">Browse Models</h3>
+                    <span class="browse-count" id="browseCount">Showing 53 models</span>
+                </div>
+
+                <div class="models-grid" id="filteredModelsGrid">
+                    <!-- Models will be dynamically loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Search View -->
+        <div class="ai-search-view" id="aiSearchView">
+            <div class="ai-search-header">
+                <div class="ai-search-icon">🤖</div>
+                <h3 class="ai-search-title">AI-Powered Model Search</h3>
+                <p class="ai-search-subtitle">
+                    Describe your project in natural language and let AI find the perfect models for you. 
+                    The more details you provide, the better the results!
+                </p>
+            </div>
+
+            <div class="ai-search-input-container">
+                <textarea 
+                    class="ai-search-textarea" 
+                    id="aiSearchInput"
+                    placeholder="Example: I need a tall, athletic brunette model for a high-end activewear campaign. The shoot will be outdoors with natural lighting, focused on strength and confidence..."
+                ></textarea>
+                <button class="ai-search-button" onclick="performAISearch()">
+                    <span>✨</span>
+                    <span>Find Models with AI</span>
+                </button>
+            </div>
+
+            <!-- AI Search Examples -->
+            <div class="ai-search-examples">
+                <div class="examples-title">Try these examples:</div>
+                <div class="examples-grid">
+                    <div class="example-chip" onclick="useAIExample('lookbook')">
+                        📸 Seasonal Lookbook
+                    </div>
+                    <div class="example-chip" onclick="useAIExample('beauty')">
+                        💄 Beauty Campaign
+                    </div>
+                    <div class="example-chip" onclick="useAIExample('editorial')">
+                        📰 Editorial Shoot
+                    </div>
+                    <div class="example-chip" onclick="useAIExample('ecommerce')">
+                        🛍️ E-commerce Product
+                    </div>
+                    <div class="example-chip" onclick="useAIExample('fitness')">
+                        💪 Fitness/Athleisure
+                    </div>
+                    <div class="example-chip" onclick="useAIExample('luxury')">
+                        👗 Luxury Fashion
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Processing State -->
+            <div class="ai-processing" id="aiProcessing" style="display: none;">
+                <div class="ai-loader"></div>
+                <p class="ai-processing-text">AI is analyzing your request...</p>
+            </div>
+
+            <!-- AI Results -->
+            <div class="browse-models-section" id="aiResultsSection" style="display: none;">
+                <div class="browse-header">
+                    <h3 class="browse-title">AI Recommended Models</h3>
+                    <span class="browse-count" id="aiResultCount">Found 0 matches</span>
+                </div>
+
+                <div class="models-grid" id="aiModelsGrid">
+                    <!-- AI-filtered models will be shown here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- Booking Flow Modal -->
+    <div class="booking-flow-modal" id="bookingFlowModal">
+        <button class="booking-close" onclick="hideBookingFlow()">×</button>
+        
+        <!-- Progress Bar -->
+        <div class="booking-progress-bar">
+            <div class="booking-progress-steps">
+                <div class="booking-progress-line" id="bookingProgressLine" style="width: 0%"></div>
+                
+                <div class="booking-step active" data-step="1">
+                    <div class="booking-step-circle">1</div>
+                    <div class="booking-step-label">Booking Details</div>
+                </div>
+                
+                <div class="booking-step" data-step="2">
+                    <div class="booking-step-circle">2</div>
+                    <div class="booking-step-label">Usage Type</div>
+                </div>
+                
+                <div class="booking-step" data-step="3">
+                    <div class="booking-step-circle">3</div>
+                    <div class="booking-step-label">Review & Submit</div>
+                </div>
+                
+                <div class="booking-step" data-step="4">
+                    <div class="booking-step-circle">4</div>
+                    <div class="booking-step-label">Confirmation</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Booking Form -->
+        <div class="booking-container">
+            <!-- Step 1: Booking Details -->
+            <div class="booking-step-content active" data-step="1">
+                <h1 class="booking-step-title">Booking <span class="highlight">Details</span></h1>
+                <p class="booking-step-subtitle">Choose your booking duration and timeline</p>
+
+                <div class="booking-form-section">
+                    <h3>Model Information</h3>
+                    <div style="display: flex; gap: 20px; align-items: center; padding: 20px; background: rgba(220, 20, 60, 0.1); border-radius: 12px;">
+                        <div style="font-size: 60px;">👤</div>
+                        <div>
+                            <h4 style="font-size: 24px; margin-bottom: 5px;" id="bookingModelName">Aria Thompson</h4>
+                            <p style="font-size: 14px; color: rgba(255,255,255,0.6);" id="bookingModelAgency">Elite Model Management</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="booking-form-section">
+                    <h3>Duration</h3>
+                    <div class="booking-radio-group">
+                        <label class="booking-radio-option" onclick="selectBookingDuration(7, 100)">
+                            <input type="radio" name="bookingDuration" value="7">
+                            <div class="booking-radio-label">7 Days</div>
+                            <div class="booking-radio-desc">100 tokens</div>
+                        </label>
+                        <label class="booking-radio-option selected" onclick="selectBookingDuration(14, 180)">
+                            <input type="radio" name="bookingDuration" value="14" checked>
+                            <div class="booking-radio-label">14 Days</div>
+                            <div class="booking-radio-desc">180 tokens</div>
+                        </label>
+                        <label class="booking-radio-option" onclick="selectBookingDuration(30, 300)">
+                            <input type="radio" name="bookingDuration" value="30">
+                            <div class="booking-radio-label">30 Days</div>
+                            <div class="booking-radio-desc">300 tokens</div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="booking-form-section">
+                    <h3>Start Date</h3>
+                    <div class="form-group">
+                        <input type="date" id="bookingStartDate" style="width: 100%; padding: 14px 18px; background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: #ffffff; font-size: 14px; font-family: inherit;">
+                    </div>
+                </div>
+
+                <div class="booking-action-buttons">
+                    <button class="btn-secondary" onclick="hideBookingFlow()">Cancel</button>
+                    <button class="btn-primary" onclick="nextBookingStep()">Continue →</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Usage Type -->
+            <div class="booking-step-content" data-step="2">
+                <h1 class="booking-step-title">Usage <span class="highlight">Type</span></h1>
+                <p class="booking-step-subtitle">Define how you'll use the digital twin</p>
+
+                <div class="booking-form-section">
+                    <h3>Primary Usage</h3>
+                    <div class="booking-radio-group">
+                        <label class="booking-radio-option selected" onclick="selectBookingUsage('ecommerce')">
+                            <input type="radio" name="bookingUsage" value="ecommerce" checked>
+                            <div class="booking-radio-label">E-commerce</div>
+                            <div class="booking-radio-desc">Product shots & catalog</div>
+                        </label>
+                        <label class="booking-radio-option" onclick="selectBookingUsage('campaign')">
+                            <input type="radio" name="bookingUsage" value="campaign">
+                            <div class="booking-radio-label">Campaign</div>
+                            <div class="booking-radio-desc">Lifestyle & editorial</div>
+                        </label>
+                        <label class="booking-radio-option" onclick="selectBookingUsage('lookbook')">
+                            <input type="radio" name="bookingUsage" value="lookbook">
+                            <div class="booking-radio-label">Lookbook</div>
+                            <div class="booking-radio-desc">Seasonal collection</div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="booking-form-section">
+                    <h3>Estimated Looks</h3>
+                    <div class="form-group">
+                        <label style="font-size: 13px; font-weight: 600; text-transform: uppercase; color: rgba(255, 255, 255, 0.8); margin-bottom: 10px; display: block;">How many different garment combinations will you create?</label>
+                        <select id="bookingLooksCount" style="width: 100%; padding: 14px 18px; background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: #ffffff; font-size: 14px; font-family: inherit;">
+                            <option value="5">5 looks</option>
+                            <option value="10" selected>10 looks</option>
+                            <option value="20">20 looks</option>
+                            <option value="30">30 looks</option>
+                            <option value="50">50+ looks</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="booking-form-section">
+                    <h3>Additional Details</h3>
+                    <div class="form-group">
+                        <label style="font-size: 13px; font-weight: 600; text-transform: uppercase; color: rgba(255, 255, 255, 0.8); margin-bottom: 10px; display: block;">Campaign Brief (Optional)</label>
+                        <textarea id="bookingBrief" placeholder="Describe your project, target audience, and creative vision..." style="width: 100%; padding: 14px 18px; background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: #ffffff; font-size: 14px; font-family: inherit; resize: vertical; min-height: 100px;"></textarea>
+                    </div>
+                </div>
+
+                <div class="booking-action-buttons">
+                    <button class="btn-secondary" onclick="previousBookingStep()">← Back</button>
+                    <button class="btn-primary" onclick="nextBookingStep()">Continue →</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Review & Submit -->
+            <div class="booking-step-content" data-step="3">
+                <h1 class="booking-step-title">Review & <span class="highlight">Submit</span></h1>
+                <p class="booking-step-subtitle">Confirm your booking details before submission</p>
+
+                <div class="booking-summary-box">
+                    <h3 style="font-size: 24px; margin-bottom: 20px; color: #DC143C;">Booking Summary</h3>
+                    
+                    <div class="booking-summary-item">
+                        <span class="booking-summary-label">Model</span>
+                        <span class="booking-summary-value" id="bookingSummaryModel">Aria Thompson</span>
+                    </div>
+                    
+                    <div class="booking-summary-item">
+                        <span class="booking-summary-label">Agency</span>
+                        <span class="booking-summary-value" id="bookingSummaryAgency">Elite Model Management</span>
+                    </div>
+                    
+                    <div class="booking-summary-item">
+                        <span class="booking-summary-label">Duration</span>
+                        <span class="booking-summary-value" id="bookingSummaryDuration">14 days</span>
+                    </div>
+                    
+                    <div class="booking-summary-item">
+                        <span class="booking-summary-label">Start Date</span>
+                        <span class="booking-summary-value" id="bookingSummaryStartDate">Feb 15, 2026</span>
+                    </div>
+                    
+                    <div class="booking-summary-item">
+                        <span class="booking-summary-label">Usage Type</span>
+                        <span class="booking-summary-value" id="bookingSummaryUsage">E-commerce</span>
+                    </div>
+                    
+                    <div class="booking-summary-item">
+                        <span class="booking-summary-label">Estimated Looks</span>
+                        <span class="booking-summary-value" id="bookingSummaryLooks">10 looks</span>
+                    </div>
+
+                    <div class="booking-total-row">
+                        <span class="booking-summary-label">Total Token Cost</span>
+                        <span class="booking-summary-value" id="bookingSummaryTotal">180 tokens</span>
+                    </div>
+                </div>
+
+                <div class="booking-form-section" style="background: rgba(255, 170, 0, 0.1); border-color: rgba(255, 170, 0, 0.3);">
+                    <h3 style="color: #ffaa00;">⏱️ Next Steps</h3>
+                    <p style="font-size: 14px; line-height: 1.8; color: rgba(255,255,255,0.8);">
+                        After you submit this booking request:<br><br>
+                        1. <strong>Agency Review</strong> - <span id="bookingSummaryAgency2">Elite Model Management</span> will review your request (typically 24-48 hours)<br>
+                        2. <strong>Model Approval</strong> - <span id="bookingSummaryModel2">Aria Thompson</span> will confirm availability<br>
+                        3. <strong>Twin Activation</strong> - Once approved, your studio access will be granted immediately<br>
+                        4. <strong>Email Notification</strong> - You'll receive updates at each stage
+                    </p>
+                </div>
+
+                <div class="booking-action-buttons">
+                    <button class="btn-secondary" onclick="previousBookingStep()">← Back</button>
+                    <button class="btn-primary" onclick="submitBookingRequest()">Submit Booking Request</button>
+                </div>
+            </div>
+
+            <!-- Step 4: Confirmation -->
+            <div class="booking-step-content" data-step="4">
+                <div class="booking-confirmation-card">
+                    <div class="booking-confirmation-icon">✓</div>
+                    <h2>Booking Request Submitted!</h2>
+                    <p>Your request has been sent to <span id="bookingSummaryAgency3">Elite Model Management</span> for approval</p>
+
+                    <div class="booking-timeline">
+                        <div class="booking-timeline-item">
+                            <div class="booking-timeline-icon">📤</div>
+                            <div class="booking-timeline-content">
+                                <h4>Request Sent</h4>
+                                <p>Agency notified - awaiting review</p>
+                            </div>
+                        </div>
+
+                        <div class="booking-timeline-item">
+                            <div class="booking-timeline-icon">⏱️</div>
+                            <div class="booking-timeline-content">
+                                <h4>Approval Pending</h4>
+                                <p>Typically completed within 24-48 hours</p>
+                            </div>
+                        </div>
+
+                        <div class="booking-timeline-item">
+                            <div class="booking-timeline-icon">✨</div>
+                            <div class="booking-timeline-content">
+                                <h4>Twin Activation</h4>
+                                <p>Studio access granted upon approval</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 40px;">
+                        <button class="btn-primary" onclick="hideBookingFlow(); goToHome();" style="margin-right: 15px;">
+                            Return to Home
+                        </button>
+                        <button class="btn-secondary" onclick="hideBookingFlow(); showBookModelsModal();">
+                            Browse More Models
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Authentication Modal -->
+    <div class="auth-modal" id="authModal">
+        <div class="auth-container">
+            <button class="auth-close" onclick="hideAuthModal()">×</button>
+            
+            <h2 class="auth-title">Welcome to Strut AI</h2>
+            <p class="auth-subtitle">Create stunning fashion visualizations</p>
+
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchAuthTab('login')">Login</button>
+                <button class="auth-tab" onclick="switchAuthTab('signup')">Sign Up</button>
+            </div>
+
+            <!-- Agency Portal Login Section - Moved to top -->
+            <div style="margin-bottom: 30px; text-align: center; padding-bottom: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                <div style="font-size: 13px; color: rgba(255, 255, 255, 0.6); margin-bottom: 12px;">
+                    Are you a model agency?
+                </div>
+                <button type="button" class="agency-login-btn" onclick="redirectToAgencyPortal()">
+                    🏢 Agency Portal Login
+                </button>
+            </div>
+
+            <!-- Login Form -->
+            <form class="auth-form active" id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" placeholder="Enter your password" required>
+                </div>
+                <div class="forgot-password">
+                    <a href="#" onclick="alert('Password reset coming soon!'); return false;">Forgot Password?</a>
+                </div>
+                <button type="submit" class="auth-submit">Login</button>
+                
+                <div class="auth-divider">or</div>
+                
+                <div class="social-login">
+                    <button type="button" class="social-btn" onclick="alert('Google login coming soon!')">Google</button>
+                    <button type="button" class="social-btn" onclick="alert('Apple login coming soon!')">Apple</button>
+                </div>
+            </form>
+
+            <!-- Sign Up Form -->
+            <form class="auth-form" id="signupForm" onsubmit="handleSignup(event)">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Company (Optional)</label>
+                    <input type="text" placeholder="Your company name">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" placeholder="Create a password" required>
+                </div>
+                <div class="form-group">
+                    <label>Confirm Password</label>
+                    <input type="password" placeholder="Confirm your password" required>
+                </div>
+                <button type="submit" class="auth-submit">Create Account</button>
+                
+                <div class="auth-divider">or</div>
+                
+                <div class="social-login">
+                    <button type="button" class="social-btn" onclick="alert('Google signup coming soon!')">Google</button>
+                    <button type="button" class="social-btn" onclick="alert('Apple signup coming soon!')">Apple</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="settings-modal" id="settingsModal">
+        <div class="settings-container">
+            <button class="settings-close" onclick="hideSettingsModal()">×</button>
+            
+            <h2 class="settings-title">User Preferences</h2>
+            <p class="settings-subtitle">Customize your Strut AI experience</p>
+
+            <div class="settings-content">
+                <!-- General Preferences -->
+                <div class="settings-section">
+                    <h3 class="settings-section-title">General</h3>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label class="setting-label">Theme</label>
+                            <span class="setting-description">Choose your preferred color theme</span>
+                        </div>
+                        <select class="setting-select" id="themeSelect">
+                            <option value="dark">Dark Mode</option>
+                            <option value="light">Light Mode</option>
+                            <option value="auto">Auto (System)</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label class="setting-label">Language</label>
+                            <span class="setting-description">Interface language</span>
+                        </div>
+                        <select class="setting-select" id="languageSelect">
+                            <option value="en">English</option>
+                            <option value="es">Español</option>
+                            <option value="fr">Français</option>
+                            <option value="it">Italiano</option>
+                            <option value="pt">Português</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label class="setting-label">Auto-Save</label>
+                            <span class="setting-description">Automatically save your work every 2 minutes</span>
+                        </div>
+                        <label class="setting-toggle">
+                            <input type="checkbox" id="autoSave" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Editor Preferences -->
+                <div class="settings-section">
+                    <h3 class="settings-section-title">Editor</h3>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label class="setting-label">Default Resolution</label>
+                            <span class="setting-description">Default render resolution for new projects</span>
+                        </div>
+                        <select class="setting-select" id="defaultResolution">
+                            <option value="1080">1080p (Full HD)</option>
+                            <option value="1440">1440p (2K)</option>
+                            <option value="2160" selected>2160p (4K)</option>
+                            <option value="4320">4320p (8K)</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label class="setting-label">Default Export Format</label>
+                            <span class="setting-description">Preferred format for exports</span>
+                        </div>
+                        <select class="setting-select" id="exportFormat">
+                            <option value="png">PNG (Transparent)</option>
+                            <option value="jpg" selected>JPG (High Quality)</option>
+                            <option value="webp">WebP (Smaller Size)</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label class="setting-label">Grid Overlay</label>
+                            <span class="setting-description">Show alignment grid in editor</span>
+                        </div>
+                        <label class="setting-toggle">
+                            <input type="checkbox" id="gridOverlay">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label class="setting-label">Snap to Grid</label>
+                            <span class="setting-description">Snap elements to grid when moving</span>
+                        </div>
+                        <label class="setting-toggle">
+                            <input type="checkbox" id="snapToGrid">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Notifications -->
+                <div class="settings-section">
+                    <h3 class="settings-section-title">Notifications</h3>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label class="setting-label">Email Notifications</label>
+                            <span class="setting-description">Receive updates via email</span>
+                        </div>
+                        <label class="setting-toggle">
+                            <input type="checkbox" id="emailNotifications" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label class="setting-label">Render Complete</label>
+                            <span class="setting-description">Notify when renders finish</span>
+                        </div>
+                        <label class="setting-toggle">
+                            <input type="checkbox" id="renderNotifications" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label class="setting-label">Project Shared</label>
+                            <span class="setting-description">Notify when someone shares a project with you</span>
+                        </div>
+                        <label class="setting-toggle">
+                            <input type="checkbox" id="shareNotifications" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label class="setting-label">Marketing Emails</label>
+                            <span class="setting-description">Product updates and tips</span>
+                        </div>
+                        <label class="setting-toggle">
+                            <input type="checkbox" id="marketingEmails">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Privacy & Data -->
+                <div class="settings-section">
+                    <h3 class="settings-section-title">Privacy & Data</h3>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label class="setting-label">Analytics</label>
+                            <span class="setting-description">Help improve Strut AI by sharing usage data</span>
+                        </div>
+                        <label class="setting-toggle">
+                            <input type="checkbox" id="analytics" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label class="setting-label">Crash Reports</label>
+                            <span class="setting-description">Automatically send error reports</span>
+                        </div>
+                        <label class="setting-toggle">
+                            <input type="checkbox" id="crashReports" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Account Actions -->
+                <div class="settings-section">
+                    <h3 class="settings-section-title">Account</h3>
+                    
+                    <button class="settings-action-btn" onclick="exportUserData()">
+                        📦 Export My Data
+                    </button>
+                    <button class="settings-action-btn danger" onclick="deleteAccount()">
+                        🗑️ Delete Account
+                    </button>
+                </div>
+            </div>
+
+            <div class="settings-footer">
+                <button class="settings-btn secondary" onclick="hideSettingsModal()">Cancel</button>
+                <button class="settings-btn primary" onclick="saveSettings()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 0;
+        let selectedModelId = null;
+
+        // Authentication Modal Functions
+        function showAuthModal() {
+            document.getElementById('authModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideAuthModal() {
+            document.getElementById('authModal').classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+
+        function switchAuthTab(tab) {
+            // Update tabs
+            const tabs = document.querySelectorAll('.auth-tab');
+            tabs.forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update forms
+            const forms = document.querySelectorAll('.auth-form');
+            forms.forEach(f => f.classList.remove('active'));
+            
+            if (tab === 'login') {
+                document.getElementById('loginForm').classList.add('active');
+            } else {
+                document.getElementById('signupForm').classList.add('active');
+            }
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const submitBtn = event.target.querySelector('.auth-submit');
+            setButtonLoading(submitBtn, true);
+            
+            setTimeout(() => {
+                hideAuthModal();
+                showToast('Welcome back! You\'re now logged in 🎉', 'success');
+                setButtonLoading(submitBtn, false);
+            }, 1000);
+        }
+
+        function handleSignup(event) {
+            event.preventDefault();
+            const submitBtn = event.target.querySelector('.auth-submit');
+            setButtonLoading(submitBtn, true);
+            
+            setTimeout(() => {
+                hideAuthModal();
+                showToast('Account created successfully! Welcome to Strut AI 🎉', 'success');
+                setButtonLoading(submitBtn, false);
+            }, 1000);
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('authModal');
+            if (event.target === modal) {
+                hideAuthModal();
+            }
+        });
+
+        // Book Twin Functions
+// =====================
+// MODEL DATABASE
+// =====================
+
+// =====================
+// EXPANDED MODEL DATABASE - Female, Male, and Children
+// =====================
+
+const allModels = [
+    // ========== FEMALE MODELS ==========
+    
+    // Elite Model Management - Female
+    { name: 'Aria Thompson', gender: 'Female', ageCategory: 'Adult', agency: 'Elite Model Management', skinTone: 'Fair', height: '5\'9"-5\'11"', build: 'Slim', hairColor: 'Blonde', specialty: 'High Fashion', specialties: 'Runway, Editorial', image: 'https://i.imgur.com/Q6d94gG7.gif' },
+    { name: 'Sofia Martinez', gender: 'Female', ageCategory: 'Adult', agency: 'Elite Model Management', skinTone: 'Medium', height: '5\'9"-5\'11"', build: 'Athletic', hairColor: 'Brunette', specialty: 'Commercial', specialties: 'Commercial, Fitness', image: 'https://i.imgur.com/soUISDp.jpeg' },
+    { name: 'Zara Johnson', gender: 'Female', ageCategory: 'Adult', agency: 'Elite Model Management', skinTone: 'Deep', height: '6\'0"+', build: 'Slim', hairColor: 'Black', specialty: 'Runway', specialties: 'Runway, High Fashion', image: 'https://i.imgur.com/Qd94gG7.gif' },
+    { name: 'Emma Wilson', gender: 'Female', ageCategory: 'Adult', agency: 'Elite Model Management', skinTone: 'Light', height: '5\'9"-5\'11"', build: 'Slim', hairColor: 'Red', specialty: 'Editorial', specialties: 'Editorial, Beauty', image: 'https://i.imgur.com/Q6d94gG7.gif' },
+    
+    // IMG Models - Female
+    { name: 'Isabella Laurent', gender: 'Female', ageCategory: 'Adult', agency: 'IMG Models', skinTone: 'Olive', height: '5\'9"-5\'11"', build: 'Slim', hairColor: 'Brunette', specialty: 'High Fashion', specialties: 'High Fashion, Runway', image: 'https://i.imgur.com/soUISDp.jpeg' },
+    { name: 'Maya Patel', gender: 'Female', ageCategory: 'Adult', agency: 'IMG Models', skinTone: 'Tan', height: '5\'9"-5\'11"', build: 'Athletic', hairColor: 'Black', specialty: 'Fitness', specialties: 'Fitness, Athletic', image: 'https://i.imgur.com/Qd94gG7.gif' },
+    { name: 'Chloe Anderson', gender: 'Female', ageCategory: 'Adult', agency: 'IMG Models', skinTone: 'Fair', height: '5\'6"-5\'8"', build: 'Petite', hairColor: 'Blonde', specialty: 'Commercial', specialties: 'Commercial, Beauty', image: 'https://i.imgur.com/Q6d94gG7.gif' },
+    { name: 'Naomi Chen', gender: 'Female', ageCategory: 'Adult', agency: 'IMG Models', skinTone: 'Light', height: '5\'9"-5\'11"', build: 'Slim', hairColor: 'Black', specialty: 'Editorial', specialties: 'Editorial, High Fashion', image: 'https://i.imgur.com/soUISDp.jpeg' },
+    
+    // Wilhelmina Models - Female
+    { name: 'Victoria Stone', gender: 'Female', ageCategory: 'Adult', agency: 'Wilhelmina Models', skinTone: 'Fair', height: '6\'0"+', build: 'Slim', hairColor: 'Blonde', specialty: 'Runway', specialties: 'Runway, High Fashion', image: 'https://i.imgur.com/Qd94gG7.gif' },
+    { name: 'Luna Rodriguez', gender: 'Female', ageCategory: 'Adult', agency: 'Wilhelmina Models', skinTone: 'Medium', height: '5\'9"-5\'11"', build: 'Curvy', hairColor: 'Brunette', specialty: 'Commercial', specialties: 'Commercial, Plus Size', image: 'https://i.imgur.com/Q6d94gG7.gif' },
+    { name: 'Aaliyah Williams', gender: 'Female', ageCategory: 'Adult', agency: 'Wilhelmina Models', skinTone: 'Brown', height: '5\'9"-5\'11"', build: 'Athletic', hairColor: 'Black', specialty: 'Fitness', specialties: 'Fitness, Athletic', image: 'https://i.imgur.com/soUISDp.jpeg' },
+    { name: 'Grace Kim', gender: 'Female', ageCategory: 'Adult', agency: 'Wilhelmina Models', skinTone: 'Light', height: '5\'9"-5\'11"', build: 'Slim', hairColor: 'Black', specialty: 'Beauty', specialties: 'Beauty, Editorial', image: 'https://i.imgur.com/Qd94gG7.gif' },
+    
+    // Ford Models - Female
+    { name: 'Olivia Bennett', gender: 'Female', ageCategory: 'Adult', agency: 'Ford Models', skinTone: 'Fair', height: '5\'9"-5\'11"', build: 'Slim', hairColor: 'Auburn', specialty: 'Editorial', specialties: 'Editorial, High Fashion', image: 'https://i.imgur.com/Q6d94gG7.gif' },
+    { name: 'Jasmine Taylor', gender: 'Female', ageCategory: 'Adult', agency: 'Ford Models', skinTone: 'Deep', height: '6\'0"+', build: 'Athletic', hairColor: 'Black', specialty: 'Runway', specialties: 'Runway, High Fashion', image: 'https://i.imgur.com/soUISDp.jpeg' },
+    { name: 'Harper Smith', gender: 'Female', ageCategory: 'Adult', agency: 'Ford Models', skinTone: 'Medium', height: '5\'9"-5\'11"', build: 'Slim', hairColor: 'Blonde', specialty: 'Commercial', specialties: 'Commercial, Beauty', image: 'https://i.imgur.com/Qd94gG7.gif' },
+    
+    // Next Management - Female
+    { name: 'Scarlett Morgan', gender: 'Female', ageCategory: 'Adult', agency: 'Next Management', skinTone: 'Fair', height: '5\'9"-5\'11"', build: 'Slim', hairColor: 'Red', specialty: 'High Fashion', specialties: 'High Fashion, Editorial', image: 'https://i.imgur.com/Q6d94gG7.gif' },
+    { name: 'Mia Jackson', gender: 'Female', ageCategory: 'Adult', agency: 'Next Management', skinTone: 'Tan', height: '5\'9"-5\'11"', build: 'Athletic', hairColor: 'Brunette', specialty: 'Fitness', specialties: 'Fitness, Commercial', image: 'https://i.imgur.com/soUISDp.jpeg' },
+    { name: 'Ava Thompson', gender: 'Female', ageCategory: 'Adult', agency: 'Next Management', skinTone: 'Light', height: '5\'9"-5\'11"', build: 'Slim', hairColor: 'Blonde', specialty: 'Beauty', specialties: 'Beauty, Commercial', image: 'https://i.imgur.com/Qd94gG7.gif' },
+    
+    // Marilyn Agency - Female
+    { name: 'Sophia Martinez', gender: 'Female', ageCategory: 'Adult', agency: 'Marilyn Agency', skinTone: 'Olive', height: '5\'9"-5\'11"', build: 'Slim', hairColor: 'Brunette', specialty: 'Editorial', specialties: 'Editorial, Beauty', image: 'https://i.imgur.com/Q6d94gG7.gif' },
+    { name: 'Lily Evans', gender: 'Female', ageCategory: 'Adult', agency: 'Marilyn Agency', skinTone: 'Fair', height: '5\'6"-5\'8"', build: 'Petite', hairColor: 'Blonde', specialty: 'Commercial', specialties: 'Commercial, Beauty', image: 'https://i.imgur.com/soUISDp.jpeg' },
+    { name: 'Amara Davis', gender: 'Female', ageCategory: 'Adult', agency: 'Marilyn Agency', skinTone: 'Brown', height: '5\'9"-5\'11"', build: 'Athletic', hairColor: 'Black', specialty: 'Runway', specialties: 'Runway, High Fashion', image: 'https://i.imgur.com/Qd94gG7.gif' },
+    
+    // ========== MALE MODELS ==========
+    
+    // Elite Model Management - Male
+    { name: 'Marcus Chen', gender: 'Male', ageCategory: 'Adult', agency: 'Elite Model Management', skinTone: 'Light', height: '6\'0"+', build: 'Athletic', hairColor: 'Black', specialty: 'Commercial', specialties: 'Commercial, Fitness', image: 'https://i.imgur.com/Q6d94gG7.gif' },
+    { name: 'James Parker', gender: 'Male', ageCategory: 'Adult', agency: 'Elite Model Management', skinTone: 'Fair', height: '6\'0"+', build: 'Muscular', hairColor: 'Brunette', specialty: 'Fitness', specialties: 'Fitness, Athletic', image: 'https://i.imgur.com/soUISDp.jpeg' },
+    { name: 'Kai Thompson', gender: 'Male', ageCategory: 'Adult', agency: 'Elite Model Management', skinTone: 'Tan', height: '6\'0"+', build: 'Slim', hairColor: 'Blonde', specialty: 'High Fashion', specialties: 'Runway, Editorial', image: 'https://i.imgur.com/Qd94gG7.gif' },
+    
+    // IMG Models - Male
+    { name: 'Diego Santos', gender: 'Male', ageCategory: 'Adult', agency: 'IMG Models', skinTone: 'Medium', height: '6\'0"+', build: 'Athletic', hairColor: 'Black', specialty: 'Commercial', specialties: 'Commercial, Lifestyle', image: 'https://i.imgur.com/Q6d94gG7.gif' },
+    { name: 'Alexander Storm', gender: 'Male', ageCategory: 'Adult', agency: 'IMG Models', skinTone: 'Fair', height: '6\'2"+', build: 'Muscular', hairColor: 'Blonde', specialty: 'Fitness', specialties: 'Fitness, Athletic', image: 'https://i.imgur.com/soUISDp.jpeg' },
+    { name: 'Noah Williams', gender: 'Male', ageCategory: 'Adult', agency: 'IMG Models', skinTone: 'Deep', height: '6\'0"+', build: 'Athletic', hairColor: 'Black', specialty: 'Runway', specialties: 'Runway, High Fashion', image: 'https://i.imgur.com/Qd94gG7.gif' },
+    
+    // Wilhelmina Models - Male
+    { name: 'Ethan Brooks', gender: 'Male', ageCategory: 'Adult', agency: 'Wilhelmina Models', skinTone: 'Fair', height: '6\'2"+', build: 'Athletic', hairColor: 'Brunette', specialty: 'Editorial', specialties: 'Editorial, High Fashion', image: 'https://i.imgur.com/Q6d94gG7.gif' },
+    { name: 'Xavier Martinez', gender: 'Male', ageCategory: 'Adult', agency: 'Wilhelmina Models', skinTone: 'Olive', height: '6\'0"+', build: 'Slim', hairColor: 'Black', specialty: 'High Fashion', specialties: 'Runway, Editorial', image: 'https://i.imgur.com/soUISDp.jpeg' },
+    { name: 'Jackson Lee', gender: 'Male', ageCategory: 'Adult', agency: 'Wilhelmina Models', skinTone: 'Light', height: '6\'0"+', build: 'Athletic', hairColor: 'Black', specialty: 'Commercial', specialties: 'Commercial, Fitness', image: 'https://i.imgur.com/Qd94gG7.gif' },
+    
+    // Ford Models - Male
+    { name: 'Ryan Mitchell', gender: 'Male', ageCategory: 'Adult', agency: 'Ford Models', skinTone: 'Fair', height: '6\'0"+', build: 'Muscular', hairColor: 'Blonde', specialty: 'Fitness', specialties: 'Fitness, Athletic', image: 'https://i.imgur.com/Q6d94gG7.gif' },
+    { name: 'Andre Johnson', gender: 'Male', ageCategory: 'Adult', agency: 'Ford Models', skinTone: 'Brown', height: '6\'2"+', build: 'Athletic', hairColor: 'Black', specialty: 'Runway', specialties: 'Runway, High Fashion', image: 'https://i.imgur.com/soUISDp.jpeg' },
+    
+    // Next Management - Male
+    { name: 'Lucas White', gender: 'Male', ageCategory: 'Adult', agency: 'Next Management', skinTone: 'Fair', height: '6\'0"+', build: 'Slim', hairColor: 'Brunette', specialty: 'Editorial', specialties: 'Editorial, High Fashion', image: 'https://i.imgur.com/Q6d94gG7.gif' },
+    { name: 'Phoenix Lee', gender: 'Male', ageCategory: 'Adult', agency: 'Next Management', skinTone: 'Light', height: '6\'0"+', build: 'Athletic', hairColor: 'Black', specialty: 'Commercial', specialties: 'Commercial, Lifestyle', image: 'https://i.imgur.com/soUISDp.jpeg' },
+    
+    // Marilyn Agency - Male
+    { name: 'Noah Davis', gender: 'Male', ageCategory: 'Adult', agency: 'Marilyn Agency', skinTone: 'Fair', height: '6\'2"+', build: 'Muscular', hairColor: 'Blonde', specialty: 'Fitness', specialties: 'Fitness, Athletic', image: 'https://i.imgur.com/Q6d94gG7.gif' },
+    { name: 'Liam Rodriguez', gender: 'Male', ageCategory: 'Adult', agency: 'Marilyn Agency', skinTone: 'Tan', height: '6\'0"+', build: 'Athletic', hairColor: 'Brunette', specialty: 'Commercial', specialties: 'Commercial, Lifestyle', image: 'https://i.imgur.com/soUISDp.jpeg' },
+    
+    // ========== CHILDREN MODELS ==========
+    
+    // Elite Model Management - Children
+    { name: 'Emma Rose', gender: 'Female', ageCategory: 'Child (8-12)', agency: 'Elite Model Management', skinTone: 'Fair', height: '4\'6"-4\'8"', build: 'Slim', hairColor: 'Blonde', specialty: 'Commercial', specialties: 'Kids Commercial, Print', image: 'https://i.imgur.com/Q6d94gG7.gif' },
+    { name: 'Oliver Chen', gender: 'Male', ageCategory: 'Child (8-12)', agency: 'Elite Model Management', skinTone: 'Light', height: '4\'6"-4\'8"', build: 'Slim', hairColor: 'Black', specialty: 'Commercial', specialties: 'Kids Commercial, Print', image: 'https://i.imgur.com/soUISDp.jpeg' },
+    { name: 'Sofia Grace', gender: 'Female', ageCategory: 'Teen (13-17)', agency: 'Elite Model Management', skinTone: 'Medium', height: '5\'3"-5\'5"', build: 'Slim', hairColor: 'Brunette', specialty: 'Commercial', specialties: 'Teen Fashion, Commercial', image: 'https://i.imgur.com/Qd94gG7.gif' },
+    
+    // IMG Models - Children
+    { name: 'Mia Anderson', gender: 'Female', ageCategory: 'Child (8-12)', agency: 'IMG Models', skinTone: 'Fair', height: '4\'6"-4\'8"', build: 'Slim', hairColor: 'Red', specialty: 'Commercial', specialties: 'Kids Commercial, Print', image: 'https://i.imgur.com/Q6d94gG7.gif' },
+    { name: 'Jayden Smith', gender: 'Male', ageCategory: 'Child (8-12)', agency: 'IMG Models', skinTone: 'Brown', height: '4\'6"-4\'8"', build: 'Athletic', hairColor: 'Black', specialty: 'Commercial', specialties: 'Kids Sports, Commercial', image: 'https://i.imgur.com/soUISDp.jpeg' },
+    { name: 'Lily Martinez', gender: 'Female', ageCategory: 'Teen (13-17)', agency: 'IMG Models', skinTone: 'Tan', height: '5\'3"-5\'5"', build: 'Slim', hairColor: 'Brunette', specialty: 'Commercial', specialties: 'Teen Fashion, Commercial', image: 'https://i.imgur.com/Qd94gG7.gif' },
+    
+    // Wilhelmina Models - Children
+    { name: 'Isabella Kim', gender: 'Female', ageCategory: 'Child (8-12)', agency: 'Wilhelmina Models', skinTone: 'Light', height: '4\'6"-4\'8"', build: 'Slim', hairColor: 'Black', specialty: 'Commercial', specialties: 'Kids Commercial, Print', image: 'https://i.imgur.com/Q6d94gG7.gif' },
+    { name: 'Aiden Taylor', gender: 'Male', ageCategory: 'Teen (13-17)', agency: 'Wilhelmina Models', skinTone: 'Fair', height: '5\'6"-5\'8"', build: 'Athletic', hairColor: 'Blonde', specialty: 'Commercial', specialties: 'Teen Sports, Commercial', image: 'https://i.imgur.com/soUISDp.jpeg' },
+    
+    // Ford Models - Children
+    { name: 'Zoe Johnson', gender: 'Female', ageCategory: 'Child (8-12)', agency: 'Ford Models', skinTone: 'Deep', height: '4\'6"-4\'8"', build: 'Slim', hairColor: 'Black', specialty: 'Commercial', specialties: 'Kids Commercial, Print', image: 'https://i.imgur.com/Qd94gG7.gif' },
+    { name: 'Mason White', gender: 'Male', ageCategory: 'Teen (13-17)', agency: 'Ford Models', skinTone: 'Fair', height: '5\'6"-5\'8"', build: 'Slim', hairColor: 'Brunette', specialty: 'Commercial', specialties: 'Teen Fashion, Commercial', image: 'https://i.imgur.com/soUISDp.jpeg' },
+    
+    // Next Management - Children
+    { name: 'Harper Lee', gender: 'Female', ageCategory: 'Child (8-12)', agency: 'Next Management', skinTone: 'Fair', height: '4\'6"-4\'8"', build: 'Slim', hairColor: 'Blonde', specialty: 'Commercial', specialties: 'Kids Commercial, Print', image: 'https://i.imgur.com/Qd94gG7.gif' },
+    { name: 'Lucas Garcia', gender: 'Male', ageCategory: 'Teen (13-17)', agency: 'Next Management', skinTone: 'Olive', height: '5\'6"-5\'8"', build: 'Athletic', hairColor: 'Black', specialty: 'Commercial', specialties: 'Teen Sports, Commercial', image: 'https://i.imgur.com/soUISDp.jpeg' },
+    
+    // Marilyn Agency - Children
+    { name: 'Chloe Brown', gender: 'Female', ageCategory: 'Child (8-12)', agency: 'Marilyn Agency', skinTone: 'Medium', height: '4\'6"-4\'8"', build: 'Slim', hairColor: 'Brunette', specialty: 'Commercial', specialties: 'Kids Commercial, Print', image: 'https://i.imgur.com/Qd94gG7.gif' },
+    { name: 'Ethan Davis', gender: 'Male', ageCategory: 'Teen (13-17)', agency: 'Marilyn Agency', skinTone: 'Fair', height: '5\'6"-5\'8"', build: 'Slim', hairColor: 'Blonde', specialty: 'Commercial', specialties: 'Teen Fashion, Commercial', image: 'https://i.imgur.com/soUISDp.jpeg' },
+];
+
+// =====================
+// SEARCH MODE MANAGEMENT
+// =====================
+
+let currentSearchMode = 'filter';
+
+function switchSearchMode(mode) {
+    currentSearchMode = mode;
+    
+    // Update button states
+    const filterBtn = document.getElementById('filterModeBtn');
+    const aiBtn = document.getElementById('aiModeBtn');
+    
+    if (mode === 'filter') {
+        filterBtn.classList.add('active');
+        aiBtn.classList.remove('active');
+        document.getElementById('filterView').classList.add('active');
+        document.getElementById('aiSearchView').classList.remove('active');
+    } else {
+        aiBtn.classList.add('active');
+        filterBtn.classList.remove('active');
+        document.getElementById('aiSearchView').classList.add('active');
+        document.getElementById('filterView').classList.remove('active');
+    }
+}
+
+// =====================
+// TRADITIONAL FILTER SYSTEM
+// =====================
+
+// =====================
+// UPDATED FILTER SYSTEM WITH GENDER AND AGE
+// =====================
+
+function filterModels() {
+    const searchText = document.getElementById('modelSearchInput').value.toLowerCase();
+    const genderFilter = document.getElementById('filterGender').value;
+    const ageCategoryFilter = document.getElementById('filterAgeCategory').value;
+    const agencyFilter = document.getElementById('filterAgency').value;
+    const skinToneFilter = document.getElementById('filterSkinTone').value;
+    const heightFilter = document.getElementById('filterHeight').value;
+    const buildFilter = document.getElementById('filterBuild').value;
+    const hairColorFilter = document.getElementById('filterHairColor').value;
+    const specialtyFilter = document.getElementById('filterSpecialty').value;
+    
+    let filteredModels = allModels.filter(model => {
+        // Text search
+        const matchesSearch = !searchText || 
+            model.name.toLowerCase().includes(searchText) ||
+            model.agency.toLowerCase().includes(searchText) ||
+            model.specialties.toLowerCase().includes(searchText);
+        
+        // Filter criteria
+        const matchesGender = !genderFilter || model.gender === genderFilter;
+        const matchesAgeCategory = !ageCategoryFilter || model.ageCategory === ageCategoryFilter;
+        const matchesAgency = !agencyFilter || model.agency === agencyFilter;
+        const matchesSkinTone = !skinToneFilter || model.skinTone === skinToneFilter;
+        const matchesHeight = !heightFilter || model.height === heightFilter;
+        const matchesBuild = !buildFilter || model.build === buildFilter;
+        const matchesHairColor = !hairColorFilter || model.hairColor === hairColorFilter;
+        const matchesSpecialty = !specialtyFilter || model.specialty === specialtyFilter;
+        
+        return matchesSearch && matchesGender && matchesAgeCategory && 
+               matchesAgency && matchesSkinTone && matchesHeight && 
+               matchesBuild && matchesHairColor && matchesSpecialty;
+    });
+    
+    displayFilteredModels(filteredModels);
+    updateFilterCount(filteredModels.length);
+}
+
+function clearAllFilters() {
+    document.getElementById('modelSearchInput').value = '';
+    document.getElementById('filterGender').value = '';
+    document.getElementById('filterAgeCategory').value = '';
+    document.getElementById('filterAgency').value = '';
+    document.getElementById('filterSkinTone').value = '';
+    document.getElementById('filterHeight').value = '';
+    document.getElementById('filterBuild').value = '';
+    document.getElementById('filterHairColor').value = '';
+    document.getElementById('filterSpecialty').value = '';
+    
+    filterModels();
+}
+
+function displayFilteredModels(models) {
+    const grid = document.getElementById('filteredModelsGrid');
+    
+    if (models.length === 0) {
+        grid.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">🔍</div>
+                <h3 class="empty-title">No models found</h3>
+                <p class="empty-message">Try adjusting your filters or search terms to find more results.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    grid.innerHTML = models.map(model => `
+        <div class="model-card">
+            <img src="${model.image}" alt="${model.name}" class="model-image">
+            <div class="model-info">
+                <h4 class="model-name">${model.name}</h4>
+                <p class="model-agency">${model.agency}</p>
+                <div class="model-attributes">
+                    <span class="model-tag">${model.gender}</span>
+                    <span class="model-tag">${model.ageCategory}</span>
+                    <span class="model-tag">${model.skinTone}</span>
+                    <span class="model-tag">${model.height}</span>
+                    <span class="model-tag">${model.build}</span>
+                </div>
+                <p class="model-specialties">${model.specialties}</p>
+                <button class="book-model-btn" onclick="bookModel('${model.name}', '${model.agency}')">
+                    Book Model
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function updateFilterCount(count) {
+    document.getElementById('filterResultCount').textContent = `${count} model${count !== 1 ? 's' : ''} found`;
+    document.getElementById('browseCount').textContent = `Showing ${count} model${count !== 1 ? 's' : ''}`;
+}
+
+// =====================
+// UPDATED AI SEARCH WITH GENDER AND AGE
+// =====================
+
+function performAIFiltering(searchText) {
+    const lowerText = searchText.toLowerCase();
+    
+    // AI keyword matching
+    let scoredModels = allModels.map(model => {
+        let score = 0;
+        
+        // Gender matching
+        if (lowerText.includes('male model') && !lowerText.includes('female')) {
+            if (model.gender === 'Male') score += 5;
+        }
+        if (lowerText.includes('female model') || lowerText.includes('women')) {
+            if (model.gender === 'Female') score += 5;
+        }
+        if (lowerText.includes('man') || lowerText.includes('men\'s')) {
+            if (model.gender === 'Male') score += 3;
+        }
+        if (lowerText.includes('woman') || lowerText.includes('women\'s')) {
+            if (model.gender === 'Female') score += 3;
+        }
+        
+        // Age category matching
+        if (lowerText.includes('child') || lowerText.includes('kid') || lowerText.includes('children')) {
+            if (model.ageCategory.includes('Child')) score += 8;
+        }
+        if (lowerText.includes('teen') || lowerText.includes('teenager') || lowerText.includes('youth')) {
+            if (model.ageCategory.includes('Teen')) score += 8;
+        }
+        if (lowerText.includes('adult') || lowerText.includes('grown')) {
+            if (model.ageCategory === 'Adult') score += 5;
+        }
+        
+        // Specialty matching
+        if (lowerText.includes('runway') || lowerText.includes('high fashion') || lowerText.includes('luxury')) {
+            if (model.specialty === 'High Fashion' || model.specialty === 'Runway') score += 5;
+        }
+        if (lowerText.includes('commercial') || lowerText.includes('ecommerce') || lowerText.includes('product')) {
+            if (model.specialty === 'Commercial') score += 5;
+        }
+        if (lowerText.includes('editorial') || lowerText.includes('magazine') || lowerText.includes('avant')) {
+            if (model.specialty === 'Editorial') score += 5;
+        }
+        if (lowerText.includes('fitness') || lowerText.includes('athletic') || lowerText.includes('activewear') || lowerText.includes('sports')) {
+            if (model.specialty === 'Fitness') score += 5;
+        }
+        if (lowerText.includes('beauty') || lowerText.includes('cosmetic') || lowerText.includes('makeup')) {
+            if (model.specialty === 'Beauty') score += 5;
+        }
+        
+        // Build matching
+        if (lowerText.includes('athletic') || lowerText.includes('fit')) {
+            if (model.build === 'Athletic') score += 3;
+        }
+        if (lowerText.includes('muscular') || lowerText.includes('muscle') || lowerText.includes('strong')) {
+            if (model.build === 'Muscular') score += 3;
+        }
+        if (lowerText.includes('curvy') || lowerText.includes('plus')) {
+            if (model.build === 'Curvy' || model.build === 'Plus') score += 3;
+        }
+        if (lowerText.includes('slim') || lowerText.includes('lean')) {
+            if (model.build === 'Slim') score += 3;
+        }
+        
+        // Hair color matching
+        if (lowerText.includes('blonde')) {
+            if (model.hairColor === 'Blonde') score += 2;
+        }
+        if (lowerText.includes('brunette') || lowerText.includes('brown hair')) {
+            if (model.hairColor === 'Brunette') score += 2;
+        }
+        if (lowerText.includes('red hair') || lowerText.includes('auburn')) {
+            if (model.hairColor === 'Red' || model.hairColor === 'Auburn') score += 2;
+        }
+        if (lowerText.includes('black hair')) {
+            if (model.hairColor === 'Black') score += 2;
+        }
+        
+        // Skin tone diversity matching
+        if (lowerText.includes('diverse') || lowerText.includes('inclusive') || lowerText.includes('all skin tones')) {
+            score += 1;
+        }
+        
+        // Height matching
+        if (lowerText.includes('tall')) {
+            if (model.height.includes('6\'')) score += 2;
+        }
+        
+        return { ...model, aiScore: score };
+    });
+    
+    // Sort by AI score and return top results
+    scoredModels.sort((a, b) => b.aiScore - a.aiScore);
+    
+    // Return models with score > 0, or top 12 if no matches
+    const matches = scoredModels.filter(m => m.aiScore > 0);
+    return matches.length > 0 ? matches.slice(0, 15) : scoredModels.slice(0, 12);
+}
+
+// AI Search Examples
+const aiExamples = {
+    lookbook: 'I need models for a Fall/Winter 2026 lookbook featuring cozy sweaters and elegant outerwear. Looking for diverse models with a natural, approachable vibe for an upscale casual brand.',
+    beauty: 'Looking for models for a clean beauty campaign focusing on natural skin and minimal makeup. Need diverse skin tones to showcase our inclusive foundation range.',
+    editorial: 'Seeking high-fashion editorial models for a avant-garde fashion magazine spread. The theme is "Future Noir" - think sleek, dramatic, and bold.',
+    ecommerce: 'Need commercial models for e-commerce product photos for a contemporary clothing brand. Models should have a friendly, relatable look for everyday wear.',
+    fitness: 'Looking for athletic models for an activewear campaign. Need strong, fit physiques to showcase performance gear during intense workouts.',
+    luxury: 'Seeking models for a luxury fashion house campaign. Need sophisticated, elegant looks for high-end evening wear and accessories.'
+};
+
+function useAIExample(type) {
+    const textarea = document.getElementById('aiSearchInput');
+    textarea.value = aiExamples[type];
+    textarea.focus();
+}
+
+function performAISearch() {
+    const searchText = document.getElementById('aiSearchInput').value.trim();
+    
+    if (!searchText) {
+        showToast('Please describe your project first', 'error');
+        return;
+    }
+    
+    // Show processing state
+    document.getElementById('aiProcessing').style.display = 'block';
+    document.getElementById('aiResultsSection').style.display = 'none';
+    
+    // Simulate AI processing (in production, this would call an AI API)
+    setTimeout(() => {
+        const aiResults = performAIFiltering(searchText);
+        displayAIResults(aiResults);
+        
+        document.getElementById('aiProcessing').style.display = 'none';
+        document.getElementById('aiResultsSection').style.display = 'block';
+    }, 2000);
+}
+
+function displayAIResults(models) {
+    const grid = document.getElementById('aiModelsGrid');
+    const count = models.length;
+    
+    document.getElementById('aiResultCount').textContent = `Found ${count} match${count !== 1 ? 'es' : ''}`;
+    
+    grid.innerHTML = models.map(model => `
+        <div class="model-card">
+            <img src="${model.image}" alt="${model.name}" class="model-image">
+            <div class="model-info">
+                <h4 class="model-name">${model.name}</h4>
+                <p class="model-agency">${model.agency}</p>
+                <div class="model-attributes">
+                    <span class="model-tag">${model.gender}</span>
+                    <span class="model-tag">${model.ageCategory}</span>
+                    <span class="model-tag">${model.skinTone}</span>
+                    <span class="model-tag">${model.height}</span>
+                    <span class="model-tag">${model.build}</span>
+                </div>
+                <p class="model-specialties">${model.specialties}</p>
+                ${model.aiScore ? `<p style="font-size: 11px; color: #DC143C; font-weight: 600; margin-bottom: 12px;">🎯 ${Math.round(model.aiScore * 10)}% Match</p>` : ''}
+                <button class="book-model-btn" onclick="bookModel('${model.name}', '${model.agency}')">
+                    Book Model
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// =====================
+// INITIALIZATION
+// =====================
+
+// Initialize when Book Twin modal opens
+function showBookModelsModal() {
+    document.getElementById('bookModelsModal').classList.add('show');
+    
+    // Always load all models when opening
+    displayFilteredModels(allModels);
+    updateFilterCount(allModels.length);
+}
+
+function hideBookModelsModal() {
+    document.getElementById('bookModelsModal').classList.remove('show');
+}
+
+        function bookModel(modelName, agencyName) {
+            hideBookModelsModal();
+            showBookingFlow(modelName, agencyName);
+        }
+
+        // Close book twin modal on outside click
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('bookModelsModal');
+            if (event.target === modal) {
+                hideBookModelsModal();
+            }
+        });
+
+        // =====================
+        // BOOKING FLOW FUNCTIONS
+        // =====================
+
+        let currentBookingStep = 1;
+        let bookingFlowData = {
+            model: '',
+            agency: '',
+            duration: 14,
+            tokens: 180,
+            startDate: '',
+            usage: 'ecommerce',
+            looks: 10,
+            brief: ''
+        };
+
+        function showBookingFlow(modelName, agencyName) {
+            // Set model and agency data
+            bookingFlowData.model = modelName;
+            bookingFlowData.agency = agencyName;
+            
+            // Update UI
+            document.getElementById('bookingModelName').textContent = modelName;
+            document.getElementById('bookingModelAgency').textContent = agencyName;
+            
+            // Reset to step 1
+            currentBookingStep = 1;
+            updateBookingUI();
+            
+            // Show modal
+            document.getElementById('bookingFlowModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+            
+            // Set min date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('bookingStartDate').min = today;
+        }
+
+        function hideBookingFlow() {
+            document.getElementById('bookingFlowModal').classList.remove('show');
+            document.body.style.overflow = 'auto';
+            
+            // Reset form
+            currentBookingStep = 1;
+            bookingFlowData = {
+                model: '',
+                agency: '',
+                duration: 14,
+                tokens: 180,
+                startDate: '',
+                usage: 'ecommerce',
+                looks: 10,
+                brief: ''
+            };
+        }
+
+        function selectBookingDuration(days, tokens) {
+            bookingFlowData.duration = days;
+            bookingFlowData.tokens = tokens;
+            
+            document.querySelectorAll('.booking-radio-option').forEach(el => {
+                el.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+        }
+
+        function selectBookingUsage(type) {
+            bookingFlowData.usage = type;
+            
+            document.querySelectorAll('[name="bookingUsage"]').forEach(el => {
+                el.closest('.booking-radio-option').classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+        }
+
+        function nextBookingStep() {
+            // Validation
+            if (currentBookingStep === 1) {
+                const startDate = document.getElementById('bookingStartDate').value;
+                if (!startDate) {
+                    showToast('Please select a start date', 'error');
+                    return;
+                }
+                bookingFlowData.startDate = startDate;
+            }
+
+            if (currentBookingStep === 2) {
+                bookingFlowData.looks = document.getElementById('bookingLooksCount').value;
+                bookingFlowData.brief = document.getElementById('bookingBrief').value;
+            }
+
+            if (currentBookingStep < 4) {
+                currentBookingStep++;
+                updateBookingUI();
+                
+                // Scroll to top of modal
+                document.getElementById('bookingFlowModal').scrollTop = 0;
+            }
+        }
+
+        function previousBookingStep() {
+            if (currentBookingStep > 1) {
+                currentBookingStep--;
+                updateBookingUI();
+                
+                // Scroll to top of modal
+                document.getElementById('bookingFlowModal').scrollTop = 0;
+            }
+        }
+
+        function submitBookingRequest() {
+            // Log booking data (in production, send to backend)
+            console.log('Booking submitted:', bookingFlowData);
+            
+            // Move to confirmation step
+            nextBookingStep();
+            
+            // Show success toast
+            showToast('✅ Booking request submitted successfully!', 'success');
+        }
+
+        function updateBookingUI() {
+            // Update step indicators
+            document.querySelectorAll('.booking-step').forEach((step, index) => {
+                const stepNum = index + 1;
+                step.classList.remove('active', 'completed');
+                
+                if (stepNum === currentBookingStep) {
+                    step.classList.add('active');
+                } else if (stepNum < currentBookingStep) {
+                    step.classList.add('completed');
+                }
+            });
+
+            // Update progress line
+            const progressPercent = ((currentBookingStep - 1) / 3) * 100;
+            document.getElementById('bookingProgressLine').style.width = progressPercent + '%';
+
+            // Update step content
+            document.querySelectorAll('.booking-step-content').forEach((content, index) => {
+                content.classList.remove('active');
+                if (index + 1 === currentBookingStep) {
+                    content.classList.add('active');
+                }
+            });
+
+            // Update summary
+            if (currentBookingStep === 3) {
+                document.getElementById('bookingSummaryModel').textContent = bookingFlowData.model;
+                document.getElementById('bookingSummaryModel2').textContent = bookingFlowData.model;
+                document.getElementById('bookingSummaryAgency').textContent = bookingFlowData.agency;
+                document.getElementById('bookingSummaryAgency2').textContent = bookingFlowData.agency;
+                document.getElementById('bookingSummaryAgency3').textContent = bookingFlowData.agency;
+                document.getElementById('bookingSummaryDuration').textContent = bookingFlowData.duration + ' days';
+                document.getElementById('bookingSummaryStartDate').textContent = formatBookingDate(bookingFlowData.startDate);
+                document.getElementById('bookingSummaryUsage').textContent = capitalizeFirst(bookingFlowData.usage);
+                document.getElementById('bookingSummaryLooks').textContent = bookingFlowData.looks + ' looks';
+                document.getElementById('bookingSummaryTotal').textContent = bookingFlowData.tokens + ' tokens';
+            }
+        }
+
+        function formatBookingDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        function capitalizeFirst(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        // Close booking flow on outside click
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('bookingFlowModal');
+            if (event.target === modal) {
+                hideBookingFlow();
+            }
+        });
+
+        // Close booking flow on Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const bookingModal = document.getElementById('bookingFlowModal');
+                if (bookingModal && bookingModal.classList.contains('show')) {
+                    hideBookingFlow();
+                }
+            }
+        });
+
+        // =====================
+        // END BOOKING FLOW FUNCTIONS
+        // =====================
+
+        // My Projects Functions
+        function showProjectsPage() {
+            // Hide hero and other sections
+            document.getElementById('heroSection').classList.add('hidden');
+            document.querySelector('.subscription-section').classList.add('hidden');
+            document.getElementById('progressContainer').classList.remove('show');
+            document.getElementById('mainContent').classList.remove('show');
+            document.getElementById('studioSelection').classList.remove('show');
+            
+            // Show projects page
+            document.getElementById('projectsPage').classList.add('show');
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Studio Functions
+        function showStudioProjects() {
+            // Hide all other sections
+            document.getElementById('heroSection').classList.add('hidden');
+            document.querySelector('.subscription-section').classList.add('hidden');
+            document.getElementById('progressContainer').classList.remove('show');
+            document.getElementById('mainContent').classList.remove('show');
+            document.getElementById('projectsPage').classList.remove('show');
+            
+            // Show studio selection
+            document.getElementById('studioSelection').classList.add('show');
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function startFromScratch() {
+            // Hide studio selection and start from beginning
+            document.getElementById('studioSelection').classList.remove('show');
+            document.getElementById('heroSection').classList.remove('hidden');
+            document.querySelector('.subscription-section').classList.remove('hidden');
+            
+            // Start the creation workflow
+            startCreating();
+        }
+
+        function editProject(projectId) {
+            // Open Professional Studio with this project
+            window.location.href = 'strut-ai-pro-studio.html?project=' + projectId;
+        }
+
+        function filterProjects(filter) {
+            // Update active filter button
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            filterBtns.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Get all project cards
+            const projectCards = document.querySelectorAll('.project-card');
+            const emptyState = document.getElementById('emptyProjects');
+            let visibleCount = 0;
+            
+            // Filter projects based on status
+            projectCards.forEach(card => {
+                const status = card.getAttribute('data-status');
+                
+                if (filter === 'all') {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else if (status === filter) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Show/hide empty state
+            if (visibleCount === 0) {
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+            }
+            
+            console.log(`Filtered by ${filter}: ${visibleCount} projects visible`);
+        }
+
+        function continueEditing(projectId) {
+            // Open Professional Studio to continue editing this draft
+            window.location.href = 'strut-ai-pro-studio.html?project=' + projectId + '&mode=edit';
+        }
+
+        function continueRendering(projectId) {
+            // Return to generation/preview step to watch rendering progress
+            document.getElementById('projectsPage').classList.remove('show');
+            document.getElementById('heroSection').classList.add('hidden');
+            document.querySelector('.subscription-section').classList.add('hidden');
+            document.getElementById('studioSelection').classList.remove('show');
+            
+            // Show the generation workflow at preview step (step 3)
+            document.getElementById('progressContainer').classList.add('show');
+            document.getElementById('mainContent').classList.add('show');
+            
+            // Set to preview/rendering step
+            currentStep = 3;
+            updateSteps();
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            console.log('Continuing rendering for project:', projectId);
+        }
+
+        function cancelRender(projectId) {
+            if (confirm('Are you sure you want to cancel this render?')) {
+                alert(`Render cancelled for project ${projectId}`);
+                // Would cancel the render job
+            }
+        }
+
+        function startNewProject() {
+            // Hide projects page and start creating
+            document.getElementById('projectsPage').classList.remove('show');
+            showToast('Starting new project...', 'info');
+            setTimeout(() => {
+                startCreating();
+            }, 300);
+        }
+
+        function openProject(projectId) {
+            // Open Professional Studio with this project
+            window.location.href = 'strut-ai-pro-studio.html?project=' + projectId;
+        }
+
+        function downloadProject(projectId) {
+            alert(`Downloading project ${projectId}. Files will be prepared...`);
+            // In production: trigger download of rendered files
+        }
+
+        function shareProject(projectId) {
+            alert(`Share link copied for project ${projectId}!`);
+            // In production: copy share link to clipboard
+        }
+
+        function deleteProject(projectId) {
+            if (confirm('Are you sure you want to delete this project? This cannot be undone.')) {
+                alert(`Project ${projectId} deleted`);
+                // In production: API call to delete project
+                // Then remove card from DOM
+            }
+        }
+
+        // File upload handler
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('fileInput');
+            if (fileInput) {
+                fileInput.addEventListener('change', function(e) {
+                    const files = e.target.files;
+                    if (files.length > 0) {
+                        console.log('Files selected:', files.length);
+                        displayUploadedFiles(files);
+                    }
+                });
+            }
+        });
+
+        function displayUploadedFiles(files) {
+            const uploadItemsContainer = document.querySelector('.upload-items');
+            if (!uploadItemsContainer) return;
+
+            // Clear existing items
+            uploadItemsContainer.innerHTML = '';
+
+            // Add each file to the display
+            Array.from(files).forEach(file => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'upload-item';
+                
+                // Determine icon based on file type
+                let icon = '📄';
+                const fileName = file.name.toLowerCase();
+                if (fileName.endsWith('.obj') || fileName.endsWith('.fbx') || fileName.endsWith('.gltf')) {
+                    if (fileName.includes('blazer') || fileName.includes('jacket') || fileName.includes('shirt')) {
+                        icon = '👔';
+                    } else if (fileName.includes('dress') || fileName.includes('skirt')) {
+                        icon = '👗';
+                    } else if (fileName.includes('shoe') || fileName.includes('heel') || fileName.includes('boot')) {
+                        icon = '👠';
+                    } else if (fileName.includes('pant') || fileName.includes('jean')) {
+                        icon = '👖';
+                    } else {
+                        icon = '👕';
+                    }
+                } else if (fileName.endsWith('.png') || fileName.endsWith('.jpg') || fileName.endsWith('.jpeg')) {
+                    icon = '🖼️';
+                }
+
+                fileItem.innerHTML = `
+                    <div class="item-icon">${icon}</div>
+                    <span>${file.name}</span>
+                `;
+                
+                uploadItemsContainer.appendChild(fileItem);
+            });
+        }
+
+        function goToHome() {
+            // Hide all sections and show home
+            document.getElementById('heroSection').classList.remove('hidden');
+            document.querySelector('.subscription-section').classList.remove('hidden');
+            document.getElementById('progressContainer').classList.remove('show');
+            document.getElementById('mainContent').classList.remove('show');
+            document.getElementById('projectsPage').classList.remove('show');
+            document.getElementById('studioSelection').classList.remove('show');
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            // Show hero and hide all other sections
+            document.getElementById('heroSection').classList.remove('hidden');
+            document.querySelector('.subscription-section').classList.remove('hidden');
+            document.getElementById('progressContainer').classList.remove('show');
+            document.getElementById('mainContent').classList.remove('show');
+            document.getElementById('projectsPage').classList.remove('show');
+            document.getElementById('studioSelection').classList.remove('show');
+        }
+
+        function toggleMenu() {
+            const menu = document.getElementById('sideMenu');
+            menu.classList.toggle('open');
+        }
+
+        function startCreating() {
+            document.getElementById('heroSection').classList.add('hidden');
+            document.querySelector('.subscription-section').classList.add('hidden');
+            document.getElementById('progressContainer').classList.add('show');
+            document.getElementById('mainContent').classList.add('show');
+        }
+
+        function scrollToPricing() {
+            document.getElementById('pricing').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Support & Help Functions
+        function openLiveChat() {
+            toggleMenu();
+            alert('💬 Live Chat coming soon! For now, email us at support@strutai.com');
+            // In production: Open live chat widget (Intercom, Zendesk, etc.)
+        }
+
+        function openEmailSupport() {
+            toggleMenu();
+            window.open('mailto:support@strutai.com?subject=Support Request from Strut AI', '_blank');
+        }
+
+        function openTutorials() {
+            toggleMenu();
+            window.open('https://youtube.com/@strutai', '_blank');
+        }
+
+        // About Functions
+        function showAboutPage() {
+            toggleMenu();
+            alert('📱 About Strut AI\n\nStrut AI is revolutionizing fashion visualization with AI-powered digital modeling and rendering.\n\nVisit strutai.com/about for more info.');
+        }
+
+        function showWhatsNew() {
+            toggleMenu();
+            alert('✨ What\'s New in v1.0.0\n\n• AI Background Removal\n• Professional Studio\n• Model Booking System\n• Scene Library\n• Project Management\n• Team Collaboration\n\nMore updates coming soon!');
+        }
+
+        function contactUs() {
+            toggleMenu();
+            window.open('mailto:hello@strutai.com?subject=Contact Strut AI', '_blank');
+        }
+
+        // Agency Portal Function
+        function openAgencyPortal() {
+            toggleMenu();
+            // Open agency portal in new tab
+            window.open('agency-portal.html', '_blank');
+            showToast('Opening Agency Portal...', 'info');
+        }
+
+        // Redirect to Agency Portal from login
+        function redirectToAgencyPortal() {
+            hideAuthModal();
+            showToast('Redirecting to Agency Portal...', 'info');
+            setTimeout(() => {
+                window.open('agency-portal-v2.html', '_blank');
+            }, 500);
+        }
+
+        // Settings Functions
+        function showTerms() {
+            toggleMenu();
+            window.open('https://strutai.com/terms', '_blank');
+        }
+
+        function showPrivacy() {
+            toggleMenu();
+            window.open('https://strutai.com/privacy', '_blank');
+        }
+
+        // Settings Modal Functions
+        function showSettingsModal() {
+            toggleMenu(); // Close side menu
+            document.getElementById('settingsModal').classList.add('show');
+        }
+
+        function hideSettingsModal() {
+            document.getElementById('settingsModal').classList.remove('show');
+        }
+
+        function showAccountSettings() {
+            toggleMenu();
+            alert('👤 Account Settings\n\nManage your profile, email, password, and account details.\n\nComing soon to Settings!');
+        }
+
+        function showNotificationSettings() {
+            toggleMenu();
+            alert('🔔 Notification settings are available in User Preferences.\n\nOpening User Preferences...');
+            setTimeout(() => {
+                showSettingsModal();
+            }, 500);
+        }
+
+        function showBilling() {
+            toggleMenu();
+            alert('💳 Billing & Subscription\n\nManage your plan, payment methods, and invoices.\n\nComing soon!');
+        }
+
+        function saveSettings() {
+            // Get all settings values
+            const settings = {
+                theme: document.getElementById('themeSelect').value,
+                language: document.getElementById('languageSelect').value,
+                autoSave: document.getElementById('autoSave').checked,
+                defaultResolution: document.getElementById('defaultResolution').value,
+                exportFormat: document.getElementById('exportFormat').value,
+                gridOverlay: document.getElementById('gridOverlay').checked,
+                snapToGrid: document.getElementById('snapToGrid').checked,
+                emailNotifications: document.getElementById('emailNotifications').checked,
+                renderNotifications: document.getElementById('renderNotifications').checked,
+                shareNotifications: document.getElementById('shareNotifications').checked,
+                marketingEmails: document.getElementById('marketingEmails').checked,
+                analytics: document.getElementById('analytics').checked,
+                crashReports: document.getElementById('crashReports').checked
+            };
+
+            // Save to localStorage (in production, save to backend)
+            localStorage.setItem('strutai_settings', JSON.stringify(settings));
+
+            // Apply theme
+            if (settings.theme === 'light') {
+                document.body.style.background = '#ffffff';
+                // Apply light theme styles
+            } else if (settings.theme === 'dark') {
+                document.body.style.background = '#000000';
+                // Apply dark theme styles
+            }
+
+            // Show success message
+            alert('✅ Settings saved successfully!');
+            hideSettingsModal();
+
+            console.log('Settings saved:', settings);
+        }
+
+        function exportUserData() {
+            if (confirm('Export all your data? This will download a JSON file with all your projects, settings, and activity.')) {
+                const userData = {
+                    settings: JSON.parse(localStorage.getItem('strutai_settings') || '{}'),
+                    projects: [], // In production: fetch from backend
+                    exportDate: new Date().toISOString(),
+                    version: '1.0.0'
+                };
+
+                const dataStr = JSON.stringify(userData, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `strutai-data-${Date.now()}.json`;
+                link.click();
+
+                alert('✅ Your data has been exported!');
+            }
+        }
+
+        function deleteAccount() {
+            const confirmation = prompt('⚠️ WARNING: This will permanently delete your account and all data.\n\nType "DELETE" to confirm:');
+            
+            if (confirmation === 'DELETE') {
+                alert('Account deletion request received. Our team will process this within 48 hours. You will receive a confirmation email.');
+                // In production: API call to initiate account deletion
+                console.log('Account deletion requested');
+            } else if (confirmation !== null) {
+                alert('Deletion cancelled. Confirmation text did not match.');
+            }
+        }
+
+        // Close settings modal on outside click
+        document.getElementById('settingsModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideSettingsModal();
+            }
+        });
+
+        // Load saved settings on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            const savedSettings = localStorage.getItem('strutai_settings');
+            if (savedSettings) {
+                const settings = JSON.parse(savedSettings);
+                
+                // Apply saved settings to form
+                if (settings.theme) document.getElementById('themeSelect').value = settings.theme;
+                if (settings.language) document.getElementById('languageSelect').value = settings.language;
+                if (settings.autoSave !== undefined) document.getElementById('autoSave').checked = settings.autoSave;
+                if (settings.defaultResolution) document.getElementById('defaultResolution').value = settings.defaultResolution;
+                if (settings.exportFormat) document.getElementById('exportFormat').value = settings.exportFormat;
+                if (settings.gridOverlay !== undefined) document.getElementById('gridOverlay').checked = settings.gridOverlay;
+                if (settings.snapToGrid !== undefined) document.getElementById('snapToGrid').checked = settings.snapToGrid;
+                if (settings.emailNotifications !== undefined) document.getElementById('emailNotifications').checked = settings.emailNotifications;
+                if (settings.renderNotifications !== undefined) document.getElementById('renderNotifications').checked = settings.renderNotifications;
+                if (settings.shareNotifications !== undefined) document.getElementById('shareNotifications').checked = settings.shareNotifications;
+                if (settings.marketingEmails !== undefined) document.getElementById('marketingEmails').checked = settings.marketingEmails;
+                if (settings.analytics !== undefined) document.getElementById('analytics').checked = settings.analytics;
+                if (settings.crashReports !== undefined) document.getElementById('crashReports').checked = settings.crashReports;
+
+                console.log('Settings loaded:', settings);
+            }
+        });
+
+        function selectModel(id) {
+            selectedModelId = id;
+            const cards = document.querySelectorAll('.model-card');
+            cards.forEach((card, index) => {
+                if (index + 1 === id) {
+                    card.classList.add('selected');
+                } else {
+                    card.classList.remove('selected');
+                }
+            });
+            document.getElementById('continueBtn0').style.display = 'flex';
+        }
+
+        function nextStep() {
+            if (currentStep < 3) {
+                currentStep++;
+                updateSteps();
+            }
+        }
+
+        function goToStep(step) {
+            if (step <= currentStep) {
+                currentStep = step;
+                updateSteps();
+            }
+        }
+
+        function updateSteps() {
+            // Update step content visibility
+            document.querySelectorAll('.step-content').forEach((content, index) => {
+                content.classList.toggle('active', index === currentStep);
+            });
+
+            // Update progress steps
+            document.querySelectorAll('.progress-step').forEach((step, index) => {
+                step.classList.toggle('active', index === currentStep);
+                step.classList.toggle('completed', index < currentStep);
+            });
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function setEnvironment(env) {
+            const buttons = document.querySelectorAll('.env-buttons button');
+            buttons.forEach(btn => {
+                btn.classList.toggle('active', btn.textContent.includes(env));
+            });
+        }
+
+        function setPromptMode(mode) {
+            const buttons = document.querySelectorAll('.prompt-modes button');
+            buttons.forEach(btn => {
+                btn.classList.toggle('active', btn.textContent.toLowerCase().includes(mode));
+            });
+
+            document.getElementById('advancedPrompt').classList.toggle('active', mode === 'advanced');
+            document.getElementById('questionnairePrompt').classList.toggle('active', mode === 'questionnaire');
+        }
+
+        // =====================
+        // TOAST NOTIFICATION SYSTEM
+        // =====================
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            
+            const icons = {
+                success: `<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>`,
+                error: `<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+                info: `<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`
+            };
+            
+            toast.innerHTML = `
+                ${icons[type] || icons.info}
+                <div class="toast-content">
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+            `;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+
+        // =====================
+        // KEYBOARD SHORTCUTS
+        // =====================
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + K for search (placeholder - you can implement later)
+            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                e.preventDefault();
+                showToast('Search feature coming soon! (Ctrl+K)', 'info');
+            }
+            
+            // Ctrl/Cmd + N for new project
+            if ((e.metaKey || e.ctrlKey) && e.key === 'n') {
+                e.preventDefault();
+                showBookModelsModal();
+                showToast('Quick Action: Create New Project (Ctrl+N)', 'info');
+            }
+            
+            // Escape to close modals
+            if (e.key === 'Escape') {
+                // Close any open modals
+                hideAuthModal();
+                hideBookModelsModal();
+                hideSettingsModal();
+                if (document.getElementById('sideMenu').classList.contains('show')) {
+                    toggleMenu();
+                }
+            }
+            
+            // Show keyboard shortcuts help with ?
+            if (e.key === '?' && !e.shiftKey) {
+                showToast('Keyboard Shortcuts:<br>Ctrl+K: Search<br>Ctrl+N: New Project<br>Esc: Close', 'info');
+            }
+        });
+
+        // Add keyboard navigation class on Tab
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                document.body.classList.add('keyboard-nav');
+            }
+        });
+
+        document.addEventListener('mousedown', function() {
+            document.body.classList.remove('keyboard-nav');
+        });
+
+        // =====================
+        // ENHANCED ALERT REPLACEMENT
+        // =====================
+        // Override window.alert to use toasts for better UX
+        const originalAlert = window.alert;
+        window.alert = function(message) {
+            // Check if it's an error or success message
+            if (message.includes('success') || message.includes('✅') || message.includes('completed')) {
+                showToast(message, 'success');
+            } else if (message.includes('error') || message.includes('⚠️') || message.includes('warning')) {
+                showToast(message, 'error');
+            } else {
+                showToast(message, 'info');
+            }
+        };
+
+        // =====================
+        // LOADING STATE HELPERS
+        // =====================
+        function setButtonLoading(buttonElement, isLoading) {
+            if (isLoading) {
+                buttonElement.classList.add('btn-loading');
+                buttonElement.disabled = true;
+            } else {
+                buttonElement.classList.remove('btn-loading');
+                buttonElement.disabled = false;
+            }
+        }
+
+        // =====================
+        // WELCOME MESSAGE ON FIRST VISIT
+        // =====================
+        window.addEventListener('DOMContentLoaded', function() {
+            // Check if first visit
+            const hasVisited = localStorage.getItem('hasVisitedStrutAI');
+            if (!hasVisited) {
+                setTimeout(() => {
+                    showToast('Welcome to Strut AI! 🎉 Press ? to see keyboard shortcuts', 'success');
+                    localStorage.setItem('hasVisitedStrutAI', 'true');
+                }, 1000);
+            }
+        });
+    </script>
+
+    <script>
+        // Theme Switching Function (from Settings)
+        function changeTheme(theme) {
+            const body = document.body;
+            const themeStylesheet = document.getElementById("themeStylesheet");
+            
+            if (theme === 'dark') {
+                body.classList.remove("light-mode");
+                themeStylesheet.href = "strut-dark.css";
+                localStorage.setItem("theme", "dark");
+            } else if (theme === 'light') {
+                body.classList.add("light-mode");
+                themeStylesheet.href = "strut-light.css";
+                localStorage.setItem("theme", "light");
+            } else if (theme === 'auto') {
+                // Auto detect system preference
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (prefersDark) {
+                    body.classList.remove("light-mode");
+                    themeStylesheet.href = "strut-dark.css";
+                } else {
+                    body.classList.add("light-mode");
+                    themeStylesheet.href = "strut-light.css";
+                }
+                localStorage.setItem("theme", "auto");
+            }
+        }
+
+        // Load saved theme on page load
+        window.addEventListener("DOMContentLoaded", function() {
+            const savedTheme = localStorage.getItem("theme") || "dark";
+            const themeSelect = document.getElementById("themeSelect");
+            
+            // Set the dropdown to saved value
+            if (themeSelect) {
+                themeSelect.value = savedTheme;
+            }
+            
+            // Apply the theme
+            changeTheme(savedTheme);
+            
+            // Add event listener to theme selector
+            if (themeSelect) {
+                themeSelect.addEventListener('change', function() {
+                    changeTheme(this.value);
+                    showToast('Theme changed to ' + this.options[this.selectedIndex].text, 'success');
+                });
+            }
+        });
+
+        // Listen for system theme changes when in auto mode
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+            const savedTheme = localStorage.getItem("theme");
+            if (savedTheme === 'auto') {
+                changeTheme('auto');
+            }
+        });
+
+        // =====================================================
+        // BACKGROUND SLIDESHOW
+        // =====================================================
+
+        let currentSlide = 0;
+        let slideInterval;
+        let isPaused = false;
+        const slideCount = 3;
+        const slideDuration = 6000; // 6 seconds per slide
+
+        // Initialize slideshow
+        function initSlideshow() {
+            startSlideshow();
+            
+            // Pause on hover
+            const slideshow = document.getElementById('bgSlideshow');
+            if (slideshow) {
+                slideshow.addEventListener('mouseenter', pauseSlideshow);
+                slideshow.addEventListener('mouseleave', resumeSlideshow);
+            }
+        }
+
+        // Start automatic slideshow
+        function startSlideshow() {
+            slideInterval = setInterval(() => {
+                nextSlide();
+            }, slideDuration);
+        }
+
+        // Stop slideshow
+        function stopSlideshow() {
+            clearInterval(slideInterval);
+        }
+
+        // Pause slideshow
+        function pauseSlideshow() {
+            stopSlideshow();
+            isPaused = true;
+            const indicator = document.getElementById('pausedIndicator');
+            if (indicator) {
+                indicator.classList.add('show');
+            }
+        }
+
+        // Resume slideshow
+        function resumeSlideshow() {
+            if (isPaused) {
+                startSlideshow();
+                isPaused = false;
+                const indicator = document.getElementById('pausedIndicator');
+                if (indicator) {
+                    indicator.classList.remove('show');
+                }
+            }
+        }
+
+        // Go to next slide
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slideCount;
+            updateSlides();
+        }
+
+        // Go to previous slide
+        function previousSlide() {
+            currentSlide = (currentSlide - 1 + slideCount) % slideCount;
+            updateSlides();
+            
+            // Reset interval
+            stopSlideshow();
+            startSlideshow();
+        }
+
+        // Go to specific slide
+        function goToSlide(index) {
+            currentSlide = index;
+            updateSlides();
+            
+            // Reset interval
+            stopSlideshow();
+            startSlideshow();
+        }
+
+        // Update slide display
+        function updateSlides() {
+            // Update slides
+            const slides = document.querySelectorAll('.bg-slide');
+            slides.forEach((slide, index) => {
+                if (index === currentSlide) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+            
+            // Update dots
+            const dots = document.querySelectorAll('.slideshow-dot');
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        // Initialize slideshow when page loads
+        initSlideshow();
+    </script>
+</body>
+</html>
