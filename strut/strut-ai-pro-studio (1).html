@@ -1,0 +1,2420 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strut AI - Professional Studio</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        :root {
+            --primary-red: #DC143C;
+            --dark-red: #8B0000;
+            --bg-main: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-panel: rgba(10, 10, 10, 0.95);
+            --border-color: rgba(220, 20, 60, 0.3);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.5);
+        }
+
+
+        body {
+            background: var(--bg-main);
+            color: var(--text-primary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            overflow: hidden;
+        }
+
+
+        /* Professional Studio Layout */
+        .pro-studio {
+            display: flex;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+
+        /* Top Bar with Token System */
+        .studio-header {
+            height: 60px;
+            background: rgba(0, 0, 0, 0.95);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 1000;
+        }
+
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+
+        .studio-logo {
+            font-size: 18px;
+            font-weight: 900;
+            color: var(--primary-red);
+            cursor: pointer;
+            letter-spacing: -0.5px;
+        }
+
+
+        .pro-badge {
+            padding: 4px 12px;
+            background: linear-gradient(135deg, var(--primary-red), var(--dark-red));
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+
+        .studio-title {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+
+        /* Token Meter */
+        .token-meter {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 16px;
+            background: rgba(220, 20, 60, 0.1);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+
+        .token-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+
+        .token-label {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+
+        .token-count {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-red);
+        }
+
+
+        .token-bar-container {
+            width: 100px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+
+        .token-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-red), var(--dark-red));
+            transition: width 0.3s ease;
+        }
+
+
+        .session-timer {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+
+        .timer-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--primary-red);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+
+        .header-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+
+        .header-btn:hover {
+            background: rgba(220, 20, 60, 0.2);
+            border-color: rgba(220, 20, 60, 0.5);
+            transform: translateY(-1px);
+        }
+
+
+        .header-btn:active {
+            transform: translateY(0);
+        }
+
+
+        .header-btn.primary {
+            background: linear-gradient(135deg, var(--primary-red), var(--dark-red));
+            border: none;
+        }
+
+
+        .header-btn.primary:hover {
+            box-shadow: 0 4px 12px rgba(220, 20, 60, 0.4);
+        }
+
+
+        .collab-avatars {
+            display: flex;
+            margin-left: 8px;
+        }
+
+
+        .collab-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-red), var(--dark-red));
+            border: 2px solid var(--bg-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            margin-left: -10px;
+        }
+
+
+        .collab-avatar:first-child {
+            margin-left: 0;
+        }
+
+
+        /* Main Content Area */
+        .studio-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+
+        /* Left Panel - Creative Direction */
+        .left-panel {
+            flex: 0 0 280px;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-panel);
+            border-right: 1px solid rgba(220, 20, 60, 0.2);
+        }
+
+
+        .left-panel-tabs {
+            display: flex;
+            background: rgba(0, 0, 0, 0.5);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+
+        .left-tab {
+            flex: 1;
+            padding: 12px 8px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+
+
+        .left-tab:hover {
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+
+        .left-tab.active {
+            color: var(--primary-red);
+            border-bottom-color: var(--primary-red);
+            background: rgba(220, 20, 60, 0.05);
+        }
+
+
+        .left-panel-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: none;
+        }
+
+
+        .left-panel-content.active {
+            display: block;
+        }
+
+
+        /* Canvas Area */
+        .canvas-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(220, 20, 60, 0.2);
+        }
+
+
+        .canvas-toolbar {
+            height: 50px;
+            background: rgba(0, 0, 0, 0.5);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+
+
+        .toolbar-group {
+            display: flex;
+            gap: 5px;
+        }
+
+
+        .toolbar-btn {
+            width: 35px;
+            height: 35px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+
+        .toolbar-btn:hover {
+            background: rgba(220, 20, 60, 0.2);
+            transform: translateY(-1px);
+        }
+
+
+        .toolbar-btn.active {
+            background: var(--primary-red);
+            border-color: var(--primary-red);
+        }
+
+
+        .quality-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+
+        .quality-selector select {
+            padding: 6px 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+
+        .viewport-3d {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: var(--bg-secondary);
+        }
+
+
+        .model-preview {
+            max-width: 60%;
+            max-height: 80%;
+            transition: all 0.5s ease;
+        }
+
+
+        .model-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5));
+        }
+
+
+        /* Viewport Overlays */
+        .viewport-overlays {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+
+        .overlay-toggle {
+            padding: 6px 12px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+
+        .overlay-toggle.active {
+            background: rgba(220, 20, 60, 0.3);
+            border-color: var(--primary-red);
+            color: var(--text-primary);
+        }
+
+
+        .viewport-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+
+        .view-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+
+        .view-btn:hover {
+            background: rgba(220, 20, 60, 0.2);
+        }
+
+
+        .view-btn.active {
+            background: var(--primary-red);
+            border-color: var(--primary-red);
+            color: var(--text-primary);
+        }
+
+
+        .canvas-footer {
+            height: 50px;
+            background: rgba(0, 0, 0, 0.5);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+
+
+        /* Cost Estimator */
+        .cost-estimator {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+        }
+
+
+        .cost-label {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+
+        .cost-value {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primary-red);
+        }
+
+
+        .enhance-btn {
+            padding: 8px 20px;
+            background: linear-gradient(135deg, var(--primary-red), var(--dark-red));
+            border: none;
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+
+        .enhance-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(220, 20, 60, 0.5);
+        }
+
+
+        /* Right Control Panel */
+        .control-panel {
+            flex: 0 0 320px;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-panel);
+        }
+
+
+        .panel-tabs {
+            display: flex;
+            background: rgba(0, 0, 0, 0.5);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+
+        .panel-tab {
+            flex: 1;
+            padding: 15px 10px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+
+
+        .panel-tab:hover {
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+
+        .panel-tab.active {
+            color: var(--primary-red);
+            border-bottom-color: var(--primary-red);
+            background: rgba(220, 20, 60, 0.05);
+        }
+
+
+        .panel-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: none;
+        }
+
+
+        .panel-content.active {
+            display: block;
+        }
+
+
+        .panel-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+
+        .panel-content::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+
+        .panel-content::-webkit-scrollbar-thumb {
+            background: rgba(220, 20, 60, 0.5);
+            border-radius: 3px;
+        }
+
+
+        .control-section {
+            margin-bottom: 30px;
+        }
+
+
+        .control-section h3 {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--primary-red);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+
+        .token-cost-badge {
+            padding: 2px 6px;
+            background: rgba(220, 20, 60, 0.2);
+            border-radius: 4px;
+            font-size: 9px;
+            color: var(--primary-red);
+        }
+
+
+        /* Model Library */
+        .model-library {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+
+        .model-card {
+            aspect-ratio: 3/4;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+
+        .model-card:hover {
+            border-color: var(--primary-red);
+            transform: translateY(-2px);
+        }
+
+
+        .model-card.active {
+            border-color: var(--primary-red);
+            box-shadow: 0 0 20px rgba(220, 20, 60, 0.3);
+        }
+
+
+        .model-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+        }
+
+
+        .model-card-label {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            z-index: 1;
+        }
+
+
+        /* Enhanced Controls */
+        .slider-control {
+            margin-bottom: 20px;
+        }
+
+
+        .slider-control label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+
+
+        .slider-value {
+            color: var(--primary-red);
+            font-variant-numeric: tabular-nums;
+        }
+
+
+        .slider {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: linear-gradient(135deg, var(--primary-red), var(--dark-red));
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(220, 20, 60, 0.5);
+            transition: all 0.2s ease;
+        }
+
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+
+        .studio-select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+
+        .studio-select:hover {
+            border-color: rgba(220, 20, 60, 0.3);
+        }
+
+
+        .studio-select:focus {
+            outline: none;
+            border-color: var(--primary-red);
+        }
+
+
+        /* Button Grids */
+        .btn-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+
+        .btn-grid.three-col {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+
+        .grid-btn {
+            padding: 12px 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+
+        .grid-btn:hover {
+            background: rgba(220, 20, 60, 0.1);
+            border-color: rgba(220, 20, 60, 0.3);
+            transform: translateY(-1px);
+        }
+
+
+        .grid-btn.active {
+            background: rgba(220, 20, 60, 0.2);
+            border-color: var(--primary-red);
+            color: var(--text-primary);
+        }
+
+
+        /* Color Picker */
+        .color-picker-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+
+        .color-input {
+            width: 50px;
+            height: 40px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+
+        .color-presets {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+
+
+        .color-swatch {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+
+        .color-swatch:hover {
+            transform: scale(1.1);
+        }
+
+
+        .color-swatch.active {
+            border-color: var(--primary-red);
+            box-shadow: 0 0 12px rgba(220, 20, 60, 0.5);
+        }
+
+
+        /* Upload Button */
+        .upload-btn {
+            width: 100%;
+            padding: 14px;
+            background: rgba(220, 20, 60, 0.1);
+            border: 2px dashed rgba(220, 20, 60, 0.5);
+            border-radius: 8px;
+            color: var(--primary-red);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+
+        .upload-btn:hover {
+            background: rgba(220, 20, 60, 0.2);
+            border-color: var(--primary-red);
+        }
+
+
+        /* Checkbox Options */
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            cursor: pointer;
+        }
+
+
+        .checkbox-option input[type="checkbox"] {
+            accent-color: var(--primary-red);
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+
+        .checkbox-option span {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+
+        .checkbox-option:hover span {
+            color: var(--text-primary);
+        }
+
+
+        /* Text Input */
+        .text-input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 13px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+
+        .text-input:hover {
+            border-color: rgba(220, 20, 60, 0.3);
+        }
+
+
+        .text-input:focus {
+            outline: none;
+            border-color: var(--primary-red);
+        }
+
+
+        .text-input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+
+        /* Export Options */
+        .export-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+
+        .export-option:hover {
+            background: rgba(220, 20, 60, 0.1);
+            border-color: rgba(220, 20, 60, 0.3);
+        }
+
+
+        .export-option input[type="radio"] {
+            accent-color: var(--primary-red);
+        }
+
+
+        .export-option span {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+
+        /* Action Buttons */
+        .action-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary-red), var(--dark-red));
+            border: none;
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(220, 20, 60, 0.5);
+        }
+
+
+        .action-btn:active {
+            transform: translateY(0);
+        }
+
+
+        .action-btn.secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+
+        .action-btn.secondary:hover {
+            background: rgba(220, 20, 60, 0.2);
+            border-color: rgba(220, 20, 60, 0.5);
+        }
+
+
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+
+        .modal.show {
+            display: flex;
+        }
+
+
+        .modal-content {
+            background: rgba(20, 20, 20, 0.95);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 24px;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+
+        .modal-close:hover {
+            color: var(--primary-red);
+            background: rgba(220, 20, 60, 0.1);
+        }
+
+
+        .modal h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: var(--primary-red);
+        }
+
+
+        .modal p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+        }
+
+
+        /* Cost Breakdown */
+        .cost-breakdown {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+
+        .cost-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+
+        .cost-item:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            color: var(--primary-red);
+        }
+
+
+        .cost-item-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+
+        .cost-item-value {
+            font-size: 13px;
+            color: var(--text-primary);
+        }
+
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.95);
+            border: 1px solid var(--primary-red);
+            border-radius: 8px;
+            padding: 16px 20px;
+            color: var(--text-primary);
+            font-size: 13px;
+            z-index: 4000;
+            animation: slideInRight 0.3s ease;
+            display: none;
+        }
+
+
+        .notification.show {
+            display: block;
+        }
+
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+
+        /* Version Timeline */
+        .version-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+
+        .version-item {
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+
+        .version-item:hover {
+            background: rgba(220, 20, 60, 0.1);
+            border-color: var(--primary-red);
+        }
+
+
+        .version-item.active {
+            border-color: var(--primary-red);
+            background: rgba(220, 20, 60, 0.2);
+        }
+
+
+        .version-time {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+
+        .version-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-top: 4px;
+        }
+
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .left-panel {
+                flex: 0 0 240px;
+            }
+            .control-panel {
+                flex: 0 0 280px;
+            }
+        }
+
+
+        /* Loading State */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+
+        .loading-overlay.show {
+            display: flex;
+        }
+
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--primary-red);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="pro-studio">
+        <!-- Header -->
+        <div class="studio-header">
+            <div class="header-left">
+                <div class="studio-logo">STRUT AI</div>
+                <span class="pro-badge">PRO STUDIO</span>
+                <div class="studio-title">Professional Studio</div>
+            </div>
+
+
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <!-- Token Meter -->
+                <div class="token-meter">
+                    <div class="token-info">
+                        <div class="token-label">Tokens</div>
+                        <div class="token-count" id="tokenCount">850 / 1000</div>
+                    </div>
+                    <div class="token-bar-container">
+                        <div class="token-bar" id="tokenBar" style="width: 85%"></div>
+                    </div>
+                </div>
+
+
+                <!-- Session Timer -->
+                <div class="session-timer">
+                    <div class="timer-dot"></div>
+                    <span id="sessionTimer">42:18 remaining</span>
+                </div>
+
+
+                <div class="header-actions">
+                    <button class="header-btn" onclick="showVersionModal()">
+                        📋 Versions
+                    </button>
+                    <button class="header-btn" onclick="showTeamModal()">
+                        👥 Team
+                        <div class="collab-avatars">
+                            <div class="collab-avatar">JD</div>
+                            <div class="collab-avatar">SM</div>
+                            <div class="collab-avatar">+</div>
+                        </div>
+                    </button>
+                    <button class="header-btn" onclick="undo()">↶ Undo</button>
+                    <button class="header-btn" onclick="redo()">↷ Redo</button>
+                    <button class="header-btn" onclick="saveVersion()">💾 Save</button>
+                    <button class="header-btn primary" onclick="showRenderModal()">✨ Render</button>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Main Content -->
+        <div class="studio-content">
+            <!-- Left Panel - Creative Direction -->
+            <div class="left-panel">
+                <div class="left-panel-tabs">
+                    <button class="left-tab active" onclick="switchLeftPanel(event, 'model')">Model</button>
+                    <button class="left-tab" onclick="switchLeftPanel(event, 'pose')">Pose</button>
+                    <button class="left-tab" onclick="switchLeftPanel(event, 'garment')">Garment</button>
+                </div>
+
+
+                <!-- Model Panel -->
+                <div class="left-panel-content active" id="modelLeftPanel">
+                    <div class="control-section">
+                        <h3>Model Library</h3>
+                        <div class="model-library">
+                            <div class="model-card active" onclick="selectModel(this)">
+                                <div class="model-card-label">Model A</div>
+                            </div>
+                            <div class="model-card" onclick="selectModel(this)">
+                                <div class="model-card-label">Model B</div>
+                            </div>
+                            <div class="model-card" onclick="selectModel(this)">
+                                <div class="model-card-label">Model C</div>
+                            </div>
+                            <div class="model-card" onclick="selectModel(this)">
+                                <div class="model-card-label">+ New</div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="control-section">
+                        <h3>Body Type <span class="token-cost-badge">MEDIUM</span></h3>
+                        <select class="studio-select" onchange="updateTokenCost()">
+                            <option>Athletic</option>
+                            <option selected>Average</option>
+                            <option>Hourglass</option>
+                            <option>Pear</option>
+                            <option>Plus Size</option>
+                        </select>
+                    </div>
+
+
+                    <div class="control-section">
+                        <h3>Body Proportions <span class="token-cost-badge">HIGH</span></h3>
+                        <div class="slider-control">
+                            <label>
+                                <span>Height</span>
+                                <span class="slider-value">5'10"</span>
+                            </label>
+                            <input type="range" min="60" max="78" value="70" class="slider" oninput="updateSlider(this, 'height')" onchange="updateTokenCost()">
+                        </div>
+                        <div class="slider-control">
+                            <label>
+                                <span>Bust</span>
+                                <span class="slider-value">34"</span>
+                            </label>
+                            <input type="range" min="28" max="48" value="34" class="slider" oninput="updateSlider(this, 'bust')" onchange="updateTokenCost()">
+                        </div>
+                        <div class="slider-control">
+                            <label>
+                                <span>Waist</span>
+                                <span class="slider-value">24"</span>
+                            </label>
+                            <input type="range" min="22" max="42" value="24" class="slider" oninput="updateSlider(this, 'waist')" onchange="updateTokenCost()">
+                        </div>
+                        <div class="slider-control">
+                            <label>
+                                <span>Hips</span>
+                                <span class="slider-value">35"</span>
+                            </label>
+                            <input type="range" min="30" max="50" value="35" class="slider" oninput="updateSlider(this, 'hips')" onchange="updateTokenCost()">
+                        </div>
+                    </div>
+
+
+                    <div class="control-section">
+                        <h3>Appearance <span class="token-cost-badge">LOW</span></h3>
+                        <div class="slider-control">
+                            <label>
+                                <span>Skin Tone</span>
+                                <span class="slider-value">Medium</span>
+                            </label>
+                            <input type="range" min="0" max="100" value="40" class="slider" oninput="updateSlider(this, 'skin')" onchange="updateTokenCost()">
+                        </div>
+                        <select class="studio-select" style="margin-top: 10px;" onchange="updateTokenCost()">
+                            <option>18-25 years</option>
+                            <option selected>25-35 years</option>
+                            <option>35-45 years</option>
+                            <option>45+ years</option>
+                        </select>
+                    </div>
+
+
+                    <div class="control-section">
+                        <h3>Expression</h3>
+                        <div class="slider-control">
+                            <label>
+                                <span>Eye Openness</span>
+                                <span class="slider-value">50%</span>
+                            </label>
+                            <input type="range" min="0" max="100" value="50" class="slider" oninput="updateSlider(this, 'percentage')">
+                        </div>
+                        <div class="slider-control">
+                            <label>
+                                <span>Smile</span>
+                                <span class="slider-value">30%</span>
+                            </label>
+                            <input type="range" min="0" max="100" value="30" class="slider" oninput="updateSlider(this, 'percentage')">
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Pose Panel -->
+                <div class="left-panel-content" id="poseLeftPanel">
+                    <div class="control-section">
+                        <h3>Pose Library <span class="token-cost-badge">LOW</span></h3>
+                        <div class="btn-grid">
+                            <button class="grid-btn active" onclick="selectGridBtn(this)">Standing</button>
+                            <button class="grid-btn" onclick="selectGridBtn(this)">Walking</button>
+                            <button class="grid-btn" onclick="selectGridBtn(this)">Editorial</button>
+                            <button class="grid-btn" onclick="selectGridBtn(this)">Streetwear</button>
+                            <button class="grid-btn" onclick="selectGridBtn(this)">E-commerce</button>
+                            <button class="grid-btn" onclick="selectGridBtn(this)">Runway</button>
+                            <button class="grid-btn" onclick="selectGridBtn(this)">Sitting</button>
+                            <button class="grid-btn" onclick="selectGridBtn(this)">Leaning</button>
+                        </div>
+                    </div>
+
+
+                    <div class="control-section">
+                        <h3>Fine-Tune Pose</h3>
+                        <div class="slider-control">
+                            <label>
+                                <span>Head Tilt</span>
+                                <span class="slider-value">0°</span>
+                            </label>
+                            <input type="range" min="-45" max="45" value="0" class="slider" oninput="updateSlider(this, 'degrees')">
+                        </div>
+                        <div class="slider-control">
+                            <label>
+                                <span>Shoulder Angle</span>
+                                <span class="slider-value">0°</span>
+                            </label>
+                            <input type="range" min="-30" max="30" value="0" class="slider" oninput="updateSlider(this, 'degrees')">
+                        </div>
+                        <div class="slider-control">
+                            <label>
+                                <span>Hip Shift</span>
+                                <span class="slider-value">0%</span>
+                            </label>
+                            <input type="range" min="-50" max="50" value="0" class="slider" oninput="updateSlider(this, 'percentage')">
+                        </div>
+                        <div class="slider-control">
+                            <label>
+                                <span>Weight Distribution</span>
+                                <span class="slider-value">50/50</span>
+                            </label>
+                            <input type="range" min="0" max="100" value="50" class="slider" oninput="updateSlider(this, 'weight')">
+                        </div>
+                    </div>
+
+
+                    <div class="control-section">
+                        <h3>Motion Preview <span class="token-cost-badge">HIGH</span></h3>
+                        <button class="action-btn secondary">▶ Walking Animation</button>
+                        <button class="action-btn secondary" style="margin-top: 10px;">↻ 360° Turn</button>
+                        <button class="action-btn secondary" style="margin-top: 10px;">🎬 Turntable</button>
+                        <button class="action-btn secondary" style="margin-top: 10px;">🚶 Runway Walk</button>
+                    </div>
+                </div>
+
+
+                <!-- Garment Panel -->
+                <div class="left-panel-content" id="garmentLeftPanel">
+                    <div class="control-section">
+                        <h3>Upload Garment</h3>
+                        <button class="upload-btn" onclick="document.getElementById('garmentUpload').click()">
+                            📤 Upload Files (.obj, .fbx, .gltf)
+                        </button>
+                        <input type="file" id="garmentUpload" style="display: none;" accept=".obj,.fbx,.gltf" onchange="handleGarmentUpload(this)">
+                    </div>
+
+
+                    <div class="control-section">
+                        <h3>Garment Color</h3>
+                        <div class="color-picker-row">
+                            <input type="color" value="#DC143C" class="color-input" onchange="updateGarmentColor(this)">
+                            <div class="color-presets">
+                                <button class="color-swatch" style="background: #000000" onclick="selectColor(this, '#000000')"></button>
+                                <button class="color-swatch" style="background: #FFFFFF" onclick="selectColor(this, '#FFFFFF')"></button>
+                                <button class="color-swatch active" style="background: #DC143C" onclick="selectColor(this, '#DC143C')"></button>
+                                <button class="color-swatch" style="background: #0066CC" onclick="selectColor(this, '#0066CC')"></button>
+                                <button class="color-swatch" style="background: #2E7D32" onclick="selectColor(this, '#2E7D32')"></button>
+                                <button class="color-swatch" style="background: #FFD700" onclick="selectColor(this, '#FFD700')"></button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="control-section">
+                        <h3>Fabric Texture</h3>
+                        <div class="btn-grid">
+                            <button class="grid-btn active" onclick="selectGridBtn(this)">Cotton</button>
+                            <button class="grid-btn" onclick="selectGridBtn(this)">Denim</button>
+                            <button class="grid-btn" onclick="selectGridBtn(this)">Leather</button>
+                            <button class="grid-btn" onclick="selectGridBtn(this)">Silk</button>
+                            <button class="grid-btn" onclick="selectGridBtn(this)">Knit</button>
+                            <button class="grid-btn" onclick="selectGridBtn(this)">Tech</button>
+                        </div>
+                    </div>
+
+
+                    <div class="control-section">
+                        <h3>Fabric Properties</h3>
+                        <div class="slider-control">
+                            <label>
+                                <span>Stiffness</span>
+                                <span class="slider-value">50%</span>
+                            </label>
+                            <input type="range" min="0" max="100" value="50" class="slider" oninput="updateSlider(this, 'percentage')">
+                        </div>
+                        <div class="slider-control">
+                            <label>
+                                <span>Flow Behavior</span>
+                                <span class="slider-value">60%</span>
+                            </label>
+                            <input type="range" min="0" max="100" value="60" class="slider" oninput="updateSlider(this, 'percentage')">
+                        </div>
+                        <div class="slider-control">
+                            <label>
+                                <span>Stretch</span>
+                                <span class="slider-value">30%</span>
+                            </label>
+                            <input type="range" min="0" max="100" value="30" class="slider" oninput="updateSlider(this, 'percentage')">
+                        </div>
+                        <div class="slider-control">
+                            <label>
+                                <span>Wrinkle Density</span>
+                                <span class="slider-value">40%</span>
+                            </label>
+                            <input type="range" min="0" max="100" value="40" class="slider" oninput="updateSlider(this, 'percentage')">
+                        </div>
+                    </div>
+
+
+                    <div class="control-section">
+                        <h3>Physics Simulation</h3>
+                        <label class="checkbox-option">
+                            <input type="checkbox" checked onchange="updateTokenCost()">
+                            <span>Realistic Draping</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" checked onchange="updateTokenCost()">
+                            <span>Gravity Simulation</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" checked onchange="updateTokenCost()">
+                            <span>Wrinkle Generation</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" checked onchange="updateTokenCost()">
+                            <span>Collision Detection</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Canvas Area -->
+            <div class="canvas-area">
+                <div class="canvas-toolbar">
+                    <div class="toolbar-group">
+                        <button class="toolbar-btn" title="Undo" onclick="undo()">↶</button>
+                        <button class="toolbar-btn" title="Redo" onclick="redo()">↷</button>
+                        <button class="toolbar-btn" title="Reset" onclick="resetCanvas()">⟳</button>
+                    </div>
+                    <div class="toolbar-group">
+                        <button class="toolbar-btn active" title="Select">⌖</button>
+                        <button class="toolbar-btn" title="Move">✥</button>
+                        <button class="toolbar-btn" title="Rotate">↻</button>
+                        <button class="toolbar-btn" title="Scale">⤡</button>
+                    </div>
+                    <div class="quality-selector">
+                        <span>Quality:</span>
+                        <select onchange="updateQuality(this)">
+                            <option value="draft">Draft</option>
+                            <option value="production" selected>Production</option>
+                            <option value="print">Print-Ready</option>
+                        </select>
+                    </div>
+                    <div class="toolbar-group">
+                        <button class="toolbar-btn" title="Zoom In" onclick="zoomIn()">+</button>
+                        <button class="toolbar-btn" title="Zoom Out" onclick="zoomOut()">−</button>
+                        <button class="toolbar-btn" title="Fit" onclick="fitView()">⛶</button>
+                    </div>
+                </div>
+
+
+                <div class="viewport-3d" id="viewport">
+                    <!-- Viewport Overlays -->
+                    <div class="viewport-overlays">
+                        <button class="overlay-toggle" onclick="toggleOverlay(this, 'lighting')">💡 Lighting</button>
+                        <button class="overlay-toggle" onclick="toggleOverlay(this, 'shadows')">🌓 Shadows</button>
+                        <button class="overlay-toggle" onclick="toggleOverlay(this, 'guides')">📐 Guides</button>
+                        <button class="overlay-toggle" onclick="toggleOverlay(this, 'fit')">⚠️ Fit Warnings</button>
+                    </div>
+
+
+                    <div class="model-preview">
+                        <img src="https://i.imgur.com/zCukqmO.png" alt="Model" id="modelImage">
+                    </div>
+
+
+                    <div class="viewport-controls">
+                        <button class="view-btn active" onclick="selectView(this, 'front')">Front</button>
+                        <button class="view-btn" onclick="selectView(this, 'side')">Side</button>
+                        <button class="view-btn" onclick="selectView(this, 'back')">Back</button>
+                        <button class="view-btn" onclick="selectView(this, 'three-quarter')">3/4 View</button>
+                    </div>
+
+
+                    <div class="loading-overlay" id="loadingOverlay">
+                        <div class="loading-spinner"></div>
+                    </div>
+                </div>
+
+
+                <div class="canvas-footer">
+                    <div class="cost-estimator">
+                        <span class="cost-label">Estimated Cost:</span>
+                        <span class="cost-value" id="estimatedCost">45 tokens</span>
+                    </div>
+                    <button class="enhance-btn" onclick="aiEnhance()">✨ AI Enhance</button>
+                </div>
+            </div>
+
+
+            <!-- Right Control Panel -->
+            <div class="control-panel">
+                <div class="panel-tabs">
+                    <button class="panel-tab active" onclick="switchPanel(event, 'camera')">Camera</button>
+                    <button class="panel-tab" onclick="switchPanel(event, 'lighting')">Lighting</button>
+                    <button class="panel-tab" onclick="switchPanel(event, 'scene')">Scene</button>
+                    <button class="panel-tab" onclick="switchPanel(event, 'export')">Export</button>
+                </div>
+
+
+                <!-- Camera Panel -->
+                <div class="panel-content active" id="cameraPanel">
+                    <div class="control-section">
+                        <h3>Lens Simulation <span class="token-cost-badge">LOW</span></h3>
+                        <div class="btn-grid three-col">
+                            <button class="grid-btn" onclick="selectGridBtn(this)">35mm</button>
+                            <button class="grid-btn active" onclick="selectGridBtn(this)">50mm</button>
+                            <button class="grid-btn" onclick="selectGridBtn(this)">85mm</button>
+                        </div>
+                    </div>
+
+
+                    <div class="control-section">
+                        <h3>Camera Controls</h3>
+                        <div class="slider-control">
+                            <label>
+                                <span>Camera Angle</span>
+                                <span class="slider-value">0°</span>
+                            </label>
+                            <input type="range" min="0" max="360" value="0" class="slider" oninput="updateSlider(this, 'degrees')" onchange="updateTokenCost()">
+                        </div>
+                        <div class="slider-control">
+                            <label>
+                                <span>Zoom Level</span>
+                                <span class="slider-value">50%</span>
+                            </label>
+                            <input type="range" min="0" max="100" value="50" class="slider" oninput="updateSlider(this, 'percentage')">
+                        </div>
+                        <div class="slider-control">
+                            <label>
+                                <span>Depth of Field</span>
+                                <span class="slider-value">30%</span>
+                            </label>
+                            <input type="range" min="0" max="100" value="30" class="slider" oninput="updateSlider(this, 'percentage')">
+                        </div>
+                    </div>
+
+
+                    <div class="control-section">
+                        <h3>Framing Presets</h3>
+                        <div class="btn-grid">
+                            <button class="grid-btn active" onclick="selectGridBtn(this)">Full Body</button>
+                            <button class="grid-btn" onclick="selectGridBtn(this)">3/4 Length</button>
+                            <button class="grid-btn" onclick="selectGridBtn(this)">Waist Up</button>
+                            <button class="grid-btn" onclick="selectGridBtn(this)">Close-up</button>
+                        </div>
+                    </div>
+
+
+                    <div class="control-section">
+                        <h3>Crop Ratio</h3>
+                        <select class="studio-select">
+                            <option>1:1 Square</option>
+                            <option>4:5 Portrait</option>
+                            <option selected>3:4 Editorial</option>
+                            <option>16:9 Landscape</option>
+                            <option>9:16 Story</option>
+                        </select>
+                    </div>
+
+
+                    <div class="control-section">
+                        <h3>Professional Touch</h3>
+                        <label class="checkbox-option">
+                            <input type="checkbox" checked>
+                            <span>Perspective Correction</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox">
+                            <span>Editorial Crop Bias</span>
+                        </label>
+                    </div>
+                </div>
+
+
+                <!-- Lighting Panel -->
+                <div class="panel-content" id="lightingPanel">
+                    <div class="control-section">
+                        <h3>Lighting Presets <span class="token-cost-badge">MEDIUM</span></h3>
+                        <div class="btn-grid">
+                            <button class="grid-btn active" onclick="selectGridBtn(this)">Studio</button>
+                            <button class="grid-btn" onclick="selectGridBtn(this)">Natural</button>
+                            <button class="grid-btn" onclick="selectGridBtn(this)">Dramatic</button>
+                            <button class="grid-btn" onclick="selectGridBtn(this)">Soft</button>
+                            <button class="grid-btn" onclick="selectGridBtn(this)">Golden Hour</button>
+                            <button class="grid-btn" onclick="selectGridBtn(this)">High Key</button>
+                        </div>
+                    </div>
+
+
+                    <div class="control-section">
+                        <h3>Light Rig</h3>
+                        <label class="checkbox-option">
+                            <input type="checkbox" checked>
+                            <span>Key Light</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" checked>
+                            <span>Fill Light</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox">
+                            <span>Rim Light</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox">
+                            <span>Hair Light</span>
+                        </label>
+                    </div>
+
+
+                    <div class="control-section">
+                        <h3>Light Properties</h3>
+                        <div class="slider-control">
+                            <label>
+                                <span>Light Softness</span>
+                                <span class="slider-value">65%</span>
+                            </label>
+                            <input type="range" min="0" max="100" value="65" class="slider" oninput="updateSlider(this, 'percentage')">
+                        </div>
+                        <div class="slider-control">
+                            <label>
+                                <span>Shadow Intensity</span>
+                                <span class="slider-value">50%</span>
+                            </label>
+                            <input type="range" min="0" max="100" value="50" class="slider" oninput="updateSlider(this, 'percentage')">
+                        </div>
+                        <div class="slider-control">
+                            <label>
+                                <span>Light Direction</span>
+                                <span class="slider-value">45°</span>
+                            </label>
+                            <input type="range" min="0" max="360" value="45" class="slider" oninput="updateSlider(this, 'degrees')">
+                        </div>
+                    </div>
+
+
+                    <div class="control-section">
+                        <h3>Skin Tone Optimization</h3>
+                        <label class="checkbox-option">
+                            <input type="checkbox" checked>
+                            <span>Auto-Balance Skin Tones</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" checked>
+                            <span>Preserve Highlights</span>
+                        </label>
+                        <div class="slider-control">
+                            <label>
+                                <span>Warmth</span>
+                                <span class="slider-value">50%</span>
+                            </label>
+                            <input type="range" min="0" max="100" value="50" class="slider" oninput="updateSlider(this, 'percentage')">
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Scene Panel -->
+                <div class="panel-content" id="scenePanel">
+                    <div class="control-section">
+                        <h3>Background <span class="token-cost-badge">MEDIUM</span></h3>
+                        <div class="btn-grid">
+                            <button class="grid-btn active" onclick="selectGridBtn(this)">Studio</button>
+                            <button class="grid-btn" onclick="selectGridBtn(this)">Urban</button>
+                            <button class="grid-btn" onclick="selectGridBtn(this)">Runway</button>
+                            <button class="grid-btn" onclick="selectGridBtn(this)">Lifestyle</button>
+                            <button class="grid-btn" onclick="selectGridBtn(this)">Transparent</button>
+                            <button class="grid-btn" onclick="selectGridBtn(this)">Custom</button>
+                        </div>
+                    </div>
+
+
+                    <div class="control-section">
+                        <h3>Environment</h3>
+                        <div class="slider-control">
+                            <label>
+                                <span>Floor Reflection</span>
+                                <span class="slider-value">40%</span>
+                            </label>
+                            <input type="range" min="0" max="100" value="40" class="slider" oninput="updateSlider(this, 'percentage')">
+                        </div>
+                        <div class="slider-control">
+                            <label>
+                                <span>Shadow Density</span>
+                                <span class="slider-value">60%</span>
+                            </label>
+                            <input type="range" min="0" max="100" value="60" class="slider" oninput="updateSlider(this, 'percentage')">
+                        </div>
+                        <div class="slider-control">
+                            <label>
+                                <span>Background Depth</span>
+                                <span class="slider-value">50%</span>
+                            </label>
+                            <input type="range" min="0" max="100" value="50" class="slider" oninput="updateSlider(this, 'percentage')">
+                        </div>
+                    </div>
+
+
+                    <div class="control-section">
+                        <h3>Brand World (Pro+)</h3>
+                        <label class="checkbox-option">
+                            <input type="checkbox">
+                            <span>Lock Lighting</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox">
+                            <span>Lock Color Palette</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox">
+                            <span>Consistent Framing</span>
+                        </label>
+                    </div>
+
+
+                    <div class="control-section">
+                        <h3>Text Overlays</h3>
+                        <input type="text" placeholder="Collection Name" class="text-input">
+                        <input type="text" placeholder="Drop Date" class="text-input">
+                        <input type="text" placeholder="Price" class="text-input">
+                    </div>
+                </div>
+
+
+                <!-- Export Panel -->
+                <div class="panel-content" id="exportPanel">
+                    <div class="control-section">
+                        <h3>Format</h3>
+                        <label class="export-option">
+                            <input type="radio" name="format" checked>
+                            <span>PNG High-Res</span>
+                        </label>
+                        <label class="export-option">
+                            <input type="radio" name="format">
+                            <span>PNG Transparent</span>
+                        </label>
+                        <label class="export-option">
+                            <input type="radio" name="format">
+                            <span>JPG Optimized</span>
+                        </label>
+                        <label class="export-option">
+                            <input type="radio" name="format">
+                            <span>MP4 Turntable</span>
+                        </label>
+                        <label class="export-option">
+                            <input type="radio" name="format">
+                            <span>MP4 Walking</span>
+                        </label>
+                    </div>
+
+
+                    <div class="control-section">
+                        <h3>Resolution</h3>
+                        <select class="studio-select">
+                            <option>Social (1080x1080)</option>
+                            <option>Web HD (1920x1080)</option>
+                            <option selected>Print 4K</option>
+                            <option>Print 8K</option>
+                            <option>Ultra 16K</option>
+                        </select>
+                    </div>
+
+
+                    <div class="control-section">
+                        <h3>Platform Optimization</h3>
+                        <div class="btn-grid">
+                            <button class="grid-btn" onclick="selectGridBtn(this)">Instagram</button>
+                            <button class="grid-btn" onclick="selectGridBtn(this)">Shopify</button>
+                            <button class="grid-btn" onclick="selectGridBtn(this)">Etsy</button>
+                            <button class="grid-btn" onclick="selectGridBtn(this)">Website</button>
+                            <button class="grid-btn" onclick="selectGridBtn(this)">Print</button>
+                            <button class="grid-btn" onclick="selectGridBtn(this)">Lookbook</button>
+                        </div>
+                    </div>
+
+
+                    <div class="control-section">
+                        <h3>Batch Export</h3>
+                        <label class="checkbox-option">
+                            <input type="checkbox" id="exportColors">
+                            <span>All color variants (6 colors)</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" id="exportAngles">
+                            <span>All angles (4 views)</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" id="exportSizes">
+                            <span>All sizes (XS-5X)</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" id="exportLookbook">
+                            <span>Lookbook layout</span>
+                        </label>
+                    </div>
+
+
+                    <div class="control-section">
+                        <h3>Watermark</h3>
+                        <label class="checkbox-option">
+                            <input type="checkbox">
+                            <span>Add watermark</span>
+                        </label>
+                    </div>
+
+
+                    <button class="action-btn" onclick="exportRender()">📥 Export Final Render</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Render Cost Modal -->
+    <div class="modal" id="renderModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="hideModal('renderModal')">×</button>
+            <h2>Render Preview</h2>
+            <p>Review estimated token cost before rendering</p>
+
+
+            <div class="cost-breakdown">
+                <div class="cost-item">
+                    <span class="cost-item-label">Base Render</span>
+                    <span class="cost-item-value">20 tokens</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-item-label">Body Customization</span>
+                    <span class="cost-item-value">15 tokens</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-item-label">Physics Simulation</span>
+                    <span class="cost-item-value">10 tokens</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-item-label">Quality: Production</span>
+                    <span class="cost-item-value">+0 tokens</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-item-label">Total Cost</span>
+                    <span class="cost-item-value">45 tokens</span>
+                </div>
+            </div>
+
+
+            <div style="margin-bottom: 20px;">
+                <div style="font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 10px;">
+                    Remaining balance: 850 tokens
+                </div>
+                <div style="font-size: 12px; color: rgba(255,255,255,0.6);">
+                    After render: 805 tokens
+                </div>
+            </div>
+
+
+            <button class="action-btn" onclick="startRender()">✨ Proceed to Render</button>
+            <button class="action-btn secondary" onclick="hideModal('renderModal')" style="margin-top: 10px;">Adjust Settings</button>
+        </div>
+    </div>
+
+
+    <!-- Version History Modal -->
+    <div class="modal" id="versionModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="hideModal('versionModal')">×</button>
+            <h2>Version History</h2>
+            <p>Compare and restore previous versions</p>
+
+
+            <div class="version-timeline">
+                <div class="version-item active">
+                    <div class="version-time">2 minutes ago</div>
+                    <div class="version-name">Current Version</div>
+                </div>
+                <div class="version-item">
+                    <div class="version-time">15 minutes ago</div>
+                    <div class="version-name">Auto-save v3</div>
+                </div>
+                <div class="version-item">
+                    <div class="version-time">1 hour ago</div>
+                    <div class="version-name">Manual save - Red variant</div>
+                </div>
+                <div class="version-item">
+                    <div class="version-time">Yesterday</div>
+                    <div class="version-name">Initial setup</div>
+                </div>
+            </div>
+
+
+            <button class="action-btn secondary" onclick="hideModal('versionModal')">Close</button>
+        </div>
+    </div>
+
+
+    <!-- Team Collaboration Modal -->
+    <div class="modal" id="teamModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="hideModal('teamModal')">×</button>
+            <h2>Team Collaboration</h2>
+            <p>Invite team members to work on this project</p>
+
+
+            <div style="margin-bottom: 25px;">
+                <h3 style="font-size: 13px; margin-bottom: 15px; color: rgba(255,255,255,0.7);">Current Members</h3>
+                <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 12px; margin-bottom: 10px;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div class="collab-avatar" style="margin: 0;">JD</div>
+                        <div style="flex: 1;">
+                            <div style="font-size: 13px; font-weight: 600;">John Doe (You)</div>
+                            <div style="font-size: 11px; color: rgba(255,255,255,0.5);">Owner</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 12px;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div class="collab-avatar" style="margin: 0;">SM</div>
+                        <div style="flex: 1;">
+                            <div style="font-size: 13px; font-weight: 600;">Sarah Miller</div>
+                            <div style="font-size: 11px; color: rgba(255,255,255,0.5);">Editor</div>
+                        </div>
+                        <button style="padding: 6px 12px; background: rgba(255,0,0,0.1); border: 1px solid rgba(255,0,0,0.3); border-radius: 4px; color: #ff4444; font-size: 11px; cursor: pointer;">Remove</button>
+                    </div>
+                </div>
+            </div>
+
+
+            <label style="font-size: 12px; color: rgba(255, 255, 255, 0.6); margin-bottom: 8px; display: block;">Email Address</label>
+            <input type="email" class="text-input" placeholder="teammate@example.com" id="inviteEmail">
+
+
+            <label style="font-size: 12px; color: rgba(255, 255, 255, 0.6); margin-bottom: 8px; display: block;">Permission Level</label>
+            <select class="studio-select" style="margin-bottom: 20px;">
+                <option>Can View Only</option>
+                <option selected>Can Edit</option>
+                <option>Admin (Full Access)</option>
+            </select>
+
+
+            <button class="action-btn" onclick="sendInvite()">Send Invitation</button>
+        </div>
+    </div>
+
+
+    <!-- Notification Toast -->
+    <div class="notification" id="notification"></div>
+
+
+    <script>
+        // State Management
+        let appState = {
+            tokens: 850,
+            maxTokens: 1000,
+            sessionTime: 2538, // seconds
+            estimatedCost: 45,
+            quality: 'production',
+            zoom: 1
+        };
+
+
+        // Session Timer
+        function updateSessionTimer() {
+            const minutes = Math.floor(appState.sessionTime / 60);
+            const seconds = appState.sessionTime % 60;
+            document.getElementById('sessionTimer').textContent = 
+                `${minutes}:${seconds.toString().padStart(2, '0')} remaining`;
+            
+            if (appState.sessionTime > 0) {
+                appState.sessionTime--;
+            }
+        }
+
+
+        setInterval(updateSessionTimer, 1000);
+
+
+        // Token Management
+        function updateTokenDisplay() {
+            const percentage = (appState.tokens / appState.maxTokens) * 100;
+            document.getElementById('tokenCount').textContent = `${appState.tokens} / ${appState.maxTokens}`;
+            document.getElementById('tokenBar').style.width = percentage + '%';
+        }
+
+
+        function updateTokenCost() {
+            // Calculate cost based on settings
+            let baseCost = 20;
+            const bodyCustomization = document.querySelectorAll('#modelLeftPanel .slider-control').length * 3;
+            const physics = document.querySelectorAll('#garmentLeftPanel input[type="checkbox"]:checked').length * 2.5;
+            
+            const qualityMultiplier = {
+                'draft': 1,
+                'production': 1.5,
+                'print': 2.5
+            };
+            
+            const totalCost = Math.round((baseCost + bodyCustomization + physics) * qualityMultiplier[appState.quality]);
+            appState.estimatedCost = totalCost;
+            document.getElementById('estimatedCost').textContent = totalCost + ' tokens';
+        }
+
+
+        // Panel Switching
+        function switchPanel(event, panelName) {
+            document.querySelectorAll('.panel-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            document.querySelectorAll('.panel-content').forEach(panel => panel.classList.remove('active'));
+            document.getElementById(panelName + 'Panel').classList.add('active');
+        }
+
+
+        function switchLeftPanel(event, panelName) {
+            document.querySelectorAll('.left-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            document.querySelectorAll('.left-panel-content').forEach(panel => panel.classList.remove('active'));
+            document.getElementById(panelName + 'LeftPanel').classList.add('active');
+        }
+
+
+        // Slider Updates
+        function updateSlider(slider, type) {
+            const value = parseFloat(slider.value);
+            const valueSpan = slider.previousElementSibling.querySelector('.slider-value');
+            
+            switch(type) {
+                case 'height':
+                    const feet = Math.floor(value / 12);
+                    const inches = value % 12;
+                    valueSpan.textContent = `${feet}'${inches}"`;
+                    break;
+                case 'bust':
+                case 'waist':
+                case 'hips':
+                    valueSpan.textContent = value + '"';
+                    break;
+                case 'degrees':
+                    valueSpan.textContent = value + '°';
+                    break;
+                case 'percentage':
+                    valueSpan.textContent = value + '%';
+                    break;
+                case 'weight':
+                    valueSpan.textContent = `${value}/${100-value}`;
+                    break;
+                case 'skin':
+                    const tones = ['Very Light', 'Light', 'Medium', 'Tan', 'Dark', 'Very Dark'];
+                    const index = Math.floor((value / 100) * (tones.length - 1));
+                    valueSpan.textContent = tones[index];
+                    break;
+                default:
+                    valueSpan.textContent = value;
+            }
+        }
+
+
+        // Grid Button Selection
+        function selectGridBtn(btn) {
+            const grid = btn.closest('.btn-grid');
+            grid.querySelectorAll('.grid-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            updateTokenCost();
+        }
+
+
+        // Model Selection
+        function selectModel(card) {
+            document.querySelectorAll('.model-card').forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+            showNotification('Model selected');
+        }
+
+
+        // Color Selection
+        function selectColor(swatch, color) {
+            document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+            swatch.classList.add('active');
+            document.querySelector('.color-input').value = color;
+        }
+
+
+        function updateGarmentColor(input) {
+            showNotification('Garment color updated');
+        }
+
+
+        // View Selection
+        function selectView(btn, view) {
+            document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            showNotification(`Switched to ${view} view`);
+        }
+
+
+        // Overlay Toggle
+        function toggleOverlay(btn, overlay) {
+            btn.classList.toggle('active');
+            showNotification(`${overlay} overlay ${btn.classList.contains('active') ? 'enabled' : 'disabled'}`);
+        }
+
+
+        // Quality Update
+        function updateQuality(select) {
+            appState.quality = select.value;
+            updateTokenCost();
+            showNotification(`Quality set to ${select.value}`);
+        }
+
+
+        // Canvas Controls
+        function undo() {
+            showNotification('Undone');
+        }
+
+
+        function redo() {
+            showNotification('Redone');
+        }
+
+
+        function resetCanvas() {
+            showNotification('Canvas reset');
+        }
+
+
+        function zoomIn() {
+            appState.zoom = Math.min(appState.zoom * 1.2, 3);
+            document.getElementById('modelImage').style.transform = `scale(${appState.zoom})`;
+        }
+
+
+        function zoomOut() {
+            appState.zoom = Math.max(appState.zoom / 1.2, 0.5);
+            document.getElementById('modelImage').style.transform = `scale(${appState.zoom})`;
+        }
+
+
+        function fitView() {
+            appState.zoom = 1;
+            document.getElementById('modelImage').style.transform = 'scale(1)';
+            showNotification('View fit to canvas');
+        }
+
+
+        // File Upload
+        function handleGarmentUpload(input) {
+            if (input.files && input.files[0]) {
+                showNotification(`Uploaded: ${input.files[0].name}`);
+            }
+        }
+
+
+        // AI Enhance
+        function aiEnhance() {
+            showLoading();
+            setTimeout(() => {
+                hideLoading();
+                showNotification('AI Enhancement complete');
+            }, 2000);
+        }
+
+
+        // Modals
+        function showModal(id) {
+            document.getElementById(id).classList.add('show');
+        }
+
+
+        function hideModal(id) {
+            document.getElementById(id).classList.remove('show');
+        }
+
+
+        function showRenderModal() {
+            updateTokenCost();
+            showModal('renderModal');
+        }
+
+
+        function showVersionModal() {
+            showModal('versionModal');
+        }
+
+
+        function showTeamModal() {
+            showModal('teamModal');
+        }
+
+
+        // Render
+        function startRender() {
+            hideModal('renderModal');
+            showLoading();
+            
+            setTimeout(() => {
+                appState.tokens -= appState.estimatedCost;
+                updateTokenDisplay();
+                hideLoading();
+                showNotification('Render complete! ✨');
+            }, 3000);
+        }
+
+
+        // Export
+        function exportRender() {
+            let multiplier = 1;
+            if (document.getElementById('exportColors').checked) multiplier *= 6;
+            if (document.getElementById('exportAngles').checked) multiplier *= 4;
+            if (document.getElementById('exportSizes').checked) multiplier *= 9;
+            
+            const totalCost = appState.estimatedCost * multiplier;
+            
+            if (confirm(`Export ${multiplier} renders for ${totalCost} tokens?`)) {
+                showLoading();
+                setTimeout(() => {
+                    appState.tokens -= totalCost;
+                    updateTokenDisplay();
+                    hideLoading();
+                    showNotification(`${multiplier} renders exported successfully! 📥`);
+                }, 2000);
+            }
+        }
+
+
+        // Version Control
+        function saveVersion() {
+            showNotification('Version saved ✓');
+        }
+
+
+        // Team Collaboration
+        function sendInvite() {
+            const email = document.getElementById('inviteEmail').value;
+            if (email) {
+                hideModal('teamModal');
+                showNotification(`Invitation sent to ${email}`);
+                document.getElementById('inviteEmail').value = '';
+            }
+        }
+
+
+        // Notifications
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+
+        // Loading State
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.add('show');
+        }
+
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.remove('show');
+        }
+
+
+        // Modal Click Outside
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('show');
+                }
+            });
+        });
+
+
+        // Initialize
+        updateTokenDisplay();
+        updateTokenCost();
+    </script>
+</body>
+</html>
